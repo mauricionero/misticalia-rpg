@@ -1,16 +1,19 @@
-# MesaDoMestre
+# Projeto de RPG - Mesa do Mestre
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.1.
 
-## Development server
+## Para instalar o projeto
+`npm install -g @vue/cli`
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Para rodar o projeto
+`ng serve`
+Navegar pelo endereço `http://localhost:4200/`
 
-## Code scaffolding
+## Para gerar componentes
+`ng generate component component-name` para gerar um novo componente.  
+`ng generate directive|pipe|service|class|guard|interface|enum|module` para selecionar o tipo de componente.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
+## Compilação
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 

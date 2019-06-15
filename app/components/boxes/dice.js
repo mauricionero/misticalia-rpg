@@ -4,7 +4,7 @@ $(window).on('load', function() {
 			$("<div>", {
 				id: "dialog_dice",
 				title: "Dados"
-			})
+			}).html('Hello dice')
 		)
 		
 		$( function() {

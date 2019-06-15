@@ -14,8 +14,12 @@
   <script src="components/menu/menu.js"></script>
   <link href="components/menu/menu.css" rel="stylesheet">
 
+  <script src="components/main_box/main_box.js"></script>
 
-  <script src="components/boxes/dice.js"></script>
+
+  <script src="components/boxes/add_dice.js"></script>
+  <script src="components/boxes/new_adventure.js"></script>
+  <script src="components/boxes/open_adventure.js"></script>
 
 
   <style>
@@ -38,13 +42,11 @@
       </div>
       <ul>
         <li>
-          <div id="new_adventure">Nova aventura
+          <div id="new_adventure" class="open_box">Nova aventura
           </div>
         </li>
-      </ul>
-      <ul>
         <li>
-          <div id="open_adventure">Abrir aventura
+          <div id="open_adventure" class="open_box">Abrir aventura
           </div>
         </li>
       </ul>
@@ -54,7 +56,7 @@
       </div>
       <ul>
         <li>
-          <div id="add-dice">Dados
+          <div id="add_dice" class="open_box">Dados
           </div>
         </li>
       </ul>

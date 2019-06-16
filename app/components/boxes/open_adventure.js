@@ -1,3 +1,9 @@
-function open_adventure () {
-	return 'open_adventure';
+class OpenAdventure {
+
+	boxContent () {
+		return 'open';
+	}
+
 }
+
+boxes['open_adventure'] = OpenAdventure;

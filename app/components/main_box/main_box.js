@@ -4,11 +4,15 @@ $(window).on('load', function() {
 
 		var dialogId = "dialog_"+this.id;
 
+		var klass = new boxes[this.id];
+
+		console.log('klass', klass);
+
 		$("#master-table").append(
 			$("<div>", {
 				id: dialogId,
 				title: this.innerHTML
-			}).html(window[this.id]())
+			}).html(klass.boxContent()) // window[this.id]()
 		);
 		
 		$(function() {

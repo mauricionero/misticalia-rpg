@@ -1,4 +1,4 @@
-class NewAdventure {
+class NewAdventure extends Box {
 
 	boxContent () {
 		return 'abcd';

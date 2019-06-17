@@ -18,7 +18,9 @@ $(window).on('load', function() {
 		$(function() {
 			$('#'+dialogId).dialog({
 				position: { my: "left", at: "left", of: window },
-				show: { effect: "fade", duration: 500 }
+				show: { effect: "fade", duration: 500 },
+				width: klass.boxWidth,
+				height: klass.boxHeight
 			});
 		});
 	});

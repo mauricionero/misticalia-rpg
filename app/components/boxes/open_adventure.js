@@ -1,4 +1,4 @@
-class OpenAdventure {
+class OpenAdventure extends Box {
 
 	boxContent () {
 		return 'open';

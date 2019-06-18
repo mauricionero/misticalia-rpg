@@ -9,6 +9,10 @@
   <link rel="stylesheet" href="resources/css/jquery-ui.css">
   <script src="lib/jquery-3.4.1.min.js"></script>
   <script src="lib/jquery-ui-1.12.1.min.js"></script>
+  
+
+  <script src="models/rmodel.js"></script>
+  <script src="models/player.js"></script>
 
 
   <script src="components/menu/menu.js"></script>
@@ -35,8 +39,14 @@
 
   <script src="components/boxes/open_adventure.js"></script>
 
+  <script src="components/boxes/new_battle.js"></script>
+
 
   <style>
+    body {
+      font-size: 14px;
+    }
+
     #master-table {
       margin-top: 30px;
     }
@@ -47,37 +57,69 @@
   
   <ul id="menubar">
     <li>
-      <div>Aventuras
+      <div>⚙️ Sistema
       </div>
+
       <ul>
         <li>
-          <div id="new_adventure" class="open_box">Nova aventura
+          <div id="new_adventure" class="open_box">➕ Nova aventura
           </div>
         </li>
         <li>
-          <div id="open_adventure" class="open_box">Abrir aventura
+          <div id="open_adventure" class="open_box">📂 Abrir aventura
           </div>
         </li>
       </ul>
+
     </li>
     <li>
-      <div>Adicionar à mesa
+      <div>🔧 Acessorios
       </div>
+
       <ul>
         <li>
           <div id="add_dice" class="open_box">🎲 Dados
           </div>
         </li>
       </ul>
+
     </li>
     <li>
-      <div>Meu usuário
+      <div>♚️ Mestre
+      </div>
+
+      <ul>
+        <li>
+          <div>♟️ Jogadores
+          </div>
+
+          <ul>
+            <li>
+              <div>➕ Adicionar jogador
+              </div>
+            </li>
+            <li>
+              <div>📝 Listar jogadores
+              </div>
+            </li>
+          </ul>
+
+        </li>
+        <li>
+          <div id="new_battle" class="open_box">⚔️ Batalha
+          </div>
+        </li>
+      </ul>
+
+    </li>
+    <li>
+      <div>👤 Meu usuário
       </div>
     </li>
   </ul>
 
   <div id="master-table">
-    KDJHFSDKJFH
+    
   </div>
   
 </body>

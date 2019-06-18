@@ -1,13 +1,17 @@
 class AddDice extends Box {
 
-	boxWidth = 350;
-	boxHeight = 250;
+	boxWidth = 290;
+	boxHeight = 210;
+
+	idWindow = 'add_dice';
 
 	boxContent () {
 
+		var random_id = Math.floor(Math.random() * 10000);
+
 		return $("<div>").append(
 			$("<input>", {
-				id: 'add_dice_number',
+				id: 'add_dice_number_' + random_id,
 				type: 'number',
 				min: "1",
 				max: "6",
@@ -15,7 +19,7 @@ class AddDice extends Box {
 			}),
 			' d',
 			$("<input>", {
-				id: 'add_dice_sides',
+				id: 'add_dice_sides_' + random_id,
 				type: 'number',
 				min: "1",
 				max: "100",
@@ -24,27 +28,25 @@ class AddDice extends Box {
 
 			' ',
 			$("<input>", {
-				id: 'add_dice_roll',
 				type: 'button',
-				onclick: 'AddDice.rollTheDice()',
+				onclick: 'AddDice.rollTheDice('+random_id+')',
 				value: t('Rolar')
 			}),
 			' ',
 			$("<input>", {
-				id: 'add_dice_reset',
 				type: 'button',
-				onclick: 'AddDice.resetDice()',
+				onclick: 'AddDice.resetDice('+random_id+')',
 				value: t('Resetar')
 			}),
 
 			$("<div>", {
-				id: 'add_dice_container'
+				id: 'add_dice_container_'+random_id
 			}),
 		);
 
 	}
 
-	static rollTheDice () {
+	static rollTheDice (random_id) {
 	    var i,
 	        faceValue,
 	        output = '',
@@ -55,17 +57,17 @@ class AddDice extends Box {
 	        faceValue = Math.floor(Math.random() * diceSides) + 1;
 
 	        output = $("<div class='die_style'>", {
-				id: 'add_dice_container'
+				id: 'add_dice_container_'+random_id
 			}).html(faceValue);
 
-	    	$('#add_dice_container').append(output);
+	    	$('#add_dice_container_'+random_id).append(output);
 	    }
 
-	    $('#add_dice_container').append('<br style="clear: left" />');
+	    $('#add_dice_container_'+random_id).append('<br style="clear: left" />');
 	}
 
-	static resetDice () {
-    	$('#add_dice_container').html('');
+	static resetDice (random_id) {
+    	$('#add_dice_container_'+random_id).html('');
 	}
 
 }

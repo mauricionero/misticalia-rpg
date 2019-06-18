@@ -17,7 +17,11 @@ $(window).on('load', function() {
 		
 		$(function() {
 			$('#'+dialogId).dialog({
-				position: { my: "left", at: "left", of: window },
+				position: {
+					my: klass.positionMy,
+					at: klass.positionAt,
+					of: klass.positionOf
+				},
 				show: { effect: "fade", duration: 500 },
 				width: klass.boxWidth,
 				height: klass.boxHeight

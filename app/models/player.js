@@ -24,6 +24,6 @@ class Player extends RModel {
 	static getMax (player_attribute) {
 		let allPlayers = Player.getAllPlayers();
 
-		return Math.max.apply(Math, allPlayers.map(function(player) { console.log('player', player); return player[player_attribute]; }))
+		return Math.max.apply(Math, allPlayers.map(function(player) { return player[player_attribute]; }))
 	}
 }

@@ -50,8 +50,8 @@ class AddDice extends Box {
 	    var i,
 	        faceValue,
 	        output = '',
-	        diceCount = $('#add_dice_number').val() || 1,
-	        diceSides = $('#add_dice_sides').val() || 6;
+	        diceCount = $('#add_dice_number_' + random_id).val() || 1,
+	        diceSides = $('#add_dice_sides_' + random_id).val() || 6;
 
 	    for (i = 0; i < diceCount; i++) {
 	        faceValue = Math.floor(Math.random() * diceSides) + 1;

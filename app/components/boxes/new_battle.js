@@ -28,12 +28,18 @@ class NewBattle extends Box {
 					id: 'new_battle_current_display_' + player['id'] + '_' + random_id,
 					type: 'text',
 					width: 38,
-					value: 0
+					value: '0%'
 				}),
 				$("<input>", {
 					id: 'new_battle_current_' + player['id'] + '_' + random_id,
 					type: 'hidden',
 					value: 0
+				}),
+				$("<input>", {
+					type: 'button',
+					id: 'new_battle_attack_' + player['id'] + '_' + random_id,
+					onclick: 'NewBattle.attack(' + random_id + ', ' + player['id'] + ')',
+					value: t('Atacar')
 				}),
 				'<br />'
 			);
@@ -62,6 +68,7 @@ class NewBattle extends Box {
 		return newBattleDiv;
 	}
 
+	// calcular o proximo a atacar
 	static nextToAtack (random_id, fighterIds) {
 
 		var maxDextery = 0;
@@ -81,7 +88,9 @@ class NewBattle extends Box {
 			
 		});
 
+		console.log('=======');
 		console.log('maxDextery', maxDextery);
+		console.log('___');
 		minToNextAttack = maxDextery;
 
 		// agora com o maximo calculado:
@@ -92,19 +101,36 @@ class NewBattle extends Box {
 			let dextery = $('#new_battle_original_' + fighterId + '_' + random_id).val();
 			let current = $('#new_battle_current_' + fighterId + '_' + random_id).val();
 
+			let fighterToNextAttack = dextery;
+
+			console.log('dextery', dextery);
+			console.log('current', current);
+
 			if (maxDextery != 0) {
 				fighterMultiplier = parseFloat(maxDextery) / parseFloat(dextery);
 			}
 
+			console.log('fighterMultiplier', fighterMultiplier);
+
 			let fighterNextAttack = Math.round(maxDextery * fighterMultiplier);
 			fighterNextAttacks[fighterId] = fighterNextAttack;
 
-			if (fighterNextAttack < minToNextAttack) {
-				minToNextAttack = fighterNextAttack;
+			console.log('fighterNextAttack *', fighterNextAttack);
+
+			fighterToNextAttack = fighterNextAttack - current;
+			
+			console.log('fighterToNextAttack *', fighterToNextAttack);
+
+			if (fighterToNextAttack < minToNextAttack) {
+				minToNextAttack = fighterToNextAttack;
 				nextIdToAttack = fighterId;
 			}
 
 		});
+
+		console.log('___');
+		console.log('minToNextAttack', minToNextAttack);
+		console.log('___');
 
 		// agora sabendo quem ataca e quanto somar a todos, somar
 		fighterIds.forEach(function (fighterId) {
@@ -114,11 +140,20 @@ class NewBattle extends Box {
 			let currentNow = parseInt(current) + parseInt(minToNextAttack);
 			let displayCurrent = Math.round(currentNow * 100 / fighterNextAttacks[fighterId]);
 
+			console.log('currentNow', currentNow);
+			console.log('displayCurrent', displayCurrent);
+
 			$('#new_battle_current_' + fighterId + '_' + random_id).val(currentNow);
 			$('#new_battle_current_display_' + fighterId + '_' + random_id).val(displayCurrent + '%');
 
 		});
 
+	}
+
+	// atacar (resetar o contador de quem atacou)
+	static attack (random_id, fighterId) {
+		$('#new_battle_current_' + fighterId + '_' + random_id).val(0);
+		$('#new_battle_current_display_' + fighterId + '_' + random_id).val('0%');
 	}
 
 }

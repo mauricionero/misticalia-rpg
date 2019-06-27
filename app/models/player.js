@@ -21,9 +21,9 @@ class Player extends RModel {
 		];
 	}
 
-	static getMaxDextery () {
+	static getMax (player_attribute) {
 		let allPlayers = Player.getAllPlayers();
 
-		return Math.max.apply(Math, allPlayers.map(function(player) { return player.dextery; }))
+		return Math.max.apply(Math, allPlayers.map(function(player) { console.log('player', player); return player[player_attribute]; }))
 	}
 }

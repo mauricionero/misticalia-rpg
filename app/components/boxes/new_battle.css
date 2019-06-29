@@ -1,0 +1,16 @@
+.check_wait {
+
+}
+.check_wait:checked {
+
+}
+
+.new_battle_progressbar {
+
+}
+
+.ui-progressbar-value {
+	transition: width 0.5s;
+	-webkit-transition: width 0.5s;
+	background: #0f0;
+}

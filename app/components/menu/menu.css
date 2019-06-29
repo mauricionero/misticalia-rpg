@@ -3,6 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 999999;
 }
 
 /* Make jQuery UI Menu into a horizontal menubar with vertical dropdown */

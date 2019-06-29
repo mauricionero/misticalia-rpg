@@ -1,11 +1,27 @@
 class NewBattle extends Box {
 
 	boxWidth = 360;
-	boxHeight = 210;
+	boxHeight = 220;
+
+	// id das acoes
+	static WAIT = 0;
+	static ACTION = 1;
+	static FIGHT = 2;
+	static ITEM = 3;
+
+	// caractere das acoes
+	static ACTION_EMOJIS = {
+		0: Battle.EMOJI_WAIT,
+		1: Battle.EMOJI_ACTION,
+		2: Battle.EMOJI_FIGHT,
+		3: Battle.EMOJI_ITEM
+	};
+
+	static windowName = 'new_battle';
 
 	boxContent () {
 
-		var random_id = Math.floor(Math.random() * 10000);
+		var randomId = Math.floor(Math.random() * 10000);
 
 		var allPlayers = Player.getAllPlayers();
 		var allPlayerIds = [];
@@ -13,82 +29,190 @@ class NewBattle extends Box {
 		var maxDextery = Player.getMax('dextery');
 
 		let newBattleDiv = $("<div>");
+		let newBattleTable = $("<table>");
+
+		newBattleTable.append(
+			$("<tr>").append(
+				$("<th>", { title: t('Habilita e desabilita o atacante') }).append(
+					Battle.EMOJI_GO_WAIT
+				),
+				$("<th>", { title: t('Combatente') }).append(
+					Player.EMOJI_NAME
+				),
+				$("<th>", { title: t('Destreza') + ' / ' + t('modificador') }).append(
+					Player.EMOJI_DEXTERY
+				),
+				$("<th>", { title: t('% para atacar') }).append(
+					Battle.EMOJI_ACTION_WAIT
+				),
+				$("<th>", { title: t('Ação') }).append(
+					Battle.EMOJI_ACTION
+				),
+				$("<th>", { title: t('Ataque') }).append(
+					Battle.EMOJI_FIGHT
+				),
+				$("<th>", { title: t('Item') }).append(
+					Battle.EMOJI_ITEM
+				)
+			)
+		);
 
 		allPlayers.forEach(function (player) {
 			allPlayerIds.push(player['id']);
-			newBattleDiv.append(
-				player['name'] + ': ',
-				$("<input>", {
-					id: 'new_battle_original_' + player['id'] + '_' + random_id,
-					type: 'text',
-					width: 34,
-					value: player['dextery']
-				}),
-				$("<input>", {
-					id: 'new_battle_current_display_' + player['id'] + '_' + random_id,
-					type: 'text',
-					width: 38,
-					value: '0%'
-				}),
-				$("<input>", {
-					id: 'new_battle_current_' + player['id'] + '_' + random_id,
-					type: 'hidden',
-					value: 0
-				}),
-				$("<input>", {
-					type: 'button',
-					id: 'new_battle_attack_' + player['id'] + '_' + random_id,
-					onclick: 'NewBattle.attack(' + random_id + ', ' + player['id'] + ')',
-					value: t('Atacar')
-				}),
-				'<br />'
+			newBattleTable.append(
+				$("<tr>").append(
+					$("<td>").append(
+						$("<input>", {
+							type: 'checkbox',
+							id: 'new_battle_wait_' + player['id'] + '_' + randomId,
+							class: 'check_wait',
+							checked: 'checked',
+							value: 1
+						})
+					),
+					$("<td>").append(
+						player['name'] + ':',
+						$("<input>", {
+							type: 'hidden',
+							class: 'new_battle_player_ids_' + randomId,
+							readonly: 'readonly',
+							value: player['id']
+						}),
+						$("<input>", {
+							type: 'hidden',
+							id: 'new_battle_player_name_' + player['id'] + '_' + randomId,
+							readonly: 'readonly',
+							value: player['name']
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: 'new_battle_original_' + player['id'] + '_' + randomId,
+							width: 32,
+							title: t('Original: ') + player['dextery'],
+							value: player['dextery']
+						}),
+						$("<input>", {
+							type: 'text',
+							id: 'new_battle_modifier_' + player['id'] + '_' + randomId,
+							width: 26,
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<div>", {
+							id: 'new_battle_current_display_' + player['id'] + '_' + randomId,
+							width: 38,
+							height: 20,
+							class: 'new_battle_progressbar'
+						}).progressbar({ value: 0 }),
+						$("<input>", {
+							type: 'hidden',
+							id: 'new_battle_current_' + player['id'] + '_' + randomId,
+							readonly: 'readonly',
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ACTION + '_' + randomId,
+							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ACTION + ')',
+							value: NewBattle.ACTION_EMOJIS[NewBattle.ACTION]
+						}),
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.FIGHT + '_' + randomId,
+							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.FIGHT + ')',
+							value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
+						}),
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ITEM + '_' + randomId,
+							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ITEM + ')',
+							value: NewBattle.ACTION_EMOJIS[NewBattle.ITEM]
+						})
+					),
+					'<br />'
+				)
 			);
 		});
 
 		// botao de proximo a atacar
 		newBattleDiv.append(
+			newBattleTable,
 			'<br />',
 			$("<input>", {
 				type: 'button',
-				id: 'new_battle_next_' + random_id,
-				onclick: 'NewBattle.nextToAtack(' + random_id + ', [' + allPlayerIds.join(',') + '])',
-				value: t('Próximo')
+				id: 'new_battle_next_' + randomId,
+				onclick: 'NewBattle.nextToAtack(' + randomId + ')',
+				value: '⏭️'
 			}),
+			'<br />',
 			$("<div>", {
-				id: 'new_battle_attackers_' + random_id,
+				id: 'new_battle_attackers_log_' + randomId,
 			}),
 		);
-
-		let newBattleTable = $("<table>");
-
-		allPlayers.forEach(function (player) {
-			newBattleTable.append(player);
-		});
 
 		return newBattleDiv;
 	}
 
 	// calcular o proximo a atacar
-	static nextToAtack (random_id, fighterIds) {
+	static nextToAtack (randomId) {
 
 		var maxDextery = 0;
 		var maxCurrent = 0;
 		var nextIdToAttack = 0;
 		var minToNextAttack = 0;
 		var fighterNextAttacks = {}
+		var fighterIds = []
 
-		// calcular o maximo
-		fighterIds.forEach(function (fighterId) {
+		let allFightersIdInputs = $('.new_battle_player_ids_' + randomId);
 
-			let dextery = $('#new_battle_original_' + fighterId + '_' + random_id).val();
+		console.log("allFightersIdInputs", allFightersIdInputs);
 
-			if (dextery > maxDextery) {
-				maxDextery = dextery;
+		// pegar todos os ids de players, apenas os habilitados
+		allFightersIdInputs.each(function (index) {
+			let fighterInput = this;
+
+			console.log('fighterInput', fighterInput);
+
+			let fighterId = fighterInput.value;
+
+			let enabledPlayer = $('#new_battle_wait_' + fighterId + '_' + randomId).is(':checked');
+
+			console.log('enabledPlayer', enabledPlayer);
+
+			if (enabledPlayer) {
+				fighterIds.push(fighterId);
 			}
 			
 		});
 
 		console.log('=======');
+		console.log('fighterIds', fighterIds);
+		console.log('___');
+
+
+		// calcular o maximo usando ateh mesmo os jogadores pauxados para manter a normalizacao do maximo de agilidade
+		fighterIds.forEach(function (fighterId) {
+
+			let dextery = $('#new_battle_original_' + fighterId + '_' + randomId).val();
+			let modifier = $('#new_battle_modifier_' + fighterId + '_' + randomId).val();
+
+			let totalDextery = parseInt(dextery) + parseInt(modifier);
+
+			if (totalDextery > maxDextery) {
+				maxDextery = totalDextery;
+			}
+			
+		});
+
 		console.log('maxDextery', maxDextery);
 		console.log('___');
 		minToNextAttack = maxDextery;
@@ -98,16 +222,22 @@ class NewBattle extends Box {
 		fighterIds.forEach(function (fighterId) {
 			let fighterMultiplier = 0;
 
-			let dextery = $('#new_battle_original_' + fighterId + '_' + random_id).val();
-			let current = $('#new_battle_current_' + fighterId + '_' + random_id).val();
+			let dextery = $('#new_battle_original_' + fighterId + '_' + randomId).val();
+			let modifier = $('#new_battle_modifier_' + fighterId + '_' + randomId).val();
 
-			let fighterToNextAttack = dextery;
+			let current = $('#new_battle_current_' + fighterId + '_' + randomId).val();
+
+			let totalDextery = parseInt(dextery) + parseInt(modifier);
+
+			let fighterToNextAttack = totalDextery;
 
 			console.log('dextery', dextery);
+			console.log('modifier', modifier);
+			console.log('totalDextery', totalDextery);
 			console.log('current', current);
 
 			if (maxDextery != 0) {
-				fighterMultiplier = parseFloat(maxDextery) / parseFloat(dextery);
+				fighterMultiplier = parseFloat(maxDextery) / parseFloat(totalDextery);
 			}
 
 			console.log('fighterMultiplier', fighterMultiplier);
@@ -118,7 +248,7 @@ class NewBattle extends Box {
 			console.log('fighterNextAttack *', fighterNextAttack);
 
 			fighterToNextAttack = fighterNextAttack - current;
-			
+
 			console.log('fighterToNextAttack *', fighterToNextAttack);
 
 			if (fighterToNextAttack < minToNextAttack) {
@@ -135,27 +265,49 @@ class NewBattle extends Box {
 		// agora sabendo quem ataca e quanto somar a todos, somar
 		fighterIds.forEach(function (fighterId) {
 
-			let current = $('#new_battle_current_' + fighterId + '_' + random_id).val();
+			let current = $('#new_battle_current_' + fighterId + '_' + randomId).val();
 
 			let currentNow = parseInt(current) + parseInt(minToNextAttack);
-			let displayCurrent = Math.round(currentNow * 100 / fighterNextAttacks[fighterId]);
 
-			console.log('currentNow', currentNow);
-			console.log('displayCurrent', displayCurrent);
-
-			$('#new_battle_current_' + fighterId + '_' + random_id).val(currentNow);
-			$('#new_battle_current_display_' + fighterId + '_' + random_id).val(displayCurrent + '%');
+			NewBattle.changeProgress (randomId, fighterId, currentNow, fighterNextAttacks[fighterId]);
 
 		});
 
 	}
 
-	// atacar (resetar o contador de quem atacou)
-	static attack (random_id, fighterId) {
-		$('#new_battle_current_' + fighterId + '_' + random_id).val(0);
-		$('#new_battle_current_display_' + fighterId + '_' + random_id).val('0%');
+	// ação ou ataque
+	static fighterAction (randomId, fighterId, actionId) {
+		let emoji = NewBattle.ACTION_EMOJIS[actionId];
+
+		NewBattle.changeProgress (randomId, fighterId, 0);
+
+		// exibir no log de ataques
+		let playerName = $('#new_battle_player_name_' + fighterId + '_' + randomId).val();
+		$('#new_battle_attackers_log_' + randomId).append(playerName + emoji + ', ');
+	}
+
+	// inserir valor no input de progresso do ataque
+	static changeProgress (randomId, fighterId, currentNow, fighterNextAttacks = 1) {
+		let displayCurrent = Math.round(currentNow * 100 / fighterNextAttacks);
+		let inputDisplayCurrent = $('#new_battle_current_display_' + fighterId + '_' + randomId);
+
+		console.log('currentNow', currentNow);
+		console.log('displayCurrent', displayCurrent);
+
+		$('#new_battle_current_' + fighterId + '_' + randomId).val(currentNow);
+		inputDisplayCurrent.progressbar( "value", displayCurrent );
+
+		if (displayCurrent >= 100) {
+			inputDisplayCurrent.animate({
+				backgroundColor: '#3c3'
+			});
+		} else {
+			inputDisplayCurrent.animate({
+				backgroundColor: '#fff'
+			});
+		}
 	}
 
 }
 
-boxes['new_battle'] = NewBattle;
+boxes[NewBattle.windowName] = NewBattle;

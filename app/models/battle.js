@@ -1,8 +1,9 @@
 class Battle extends RModel {
 
-	static getAtackOrder (fighters, maxDextery) {
+	static EMOJI_GO_WAIT = '⏯️';
+	static EMOJI_ACTION = '🏃';
+	static EMOJI_FIGHT = '🗡️';
+	static EMOJI_ITEM = '💊';
+	static EMOJI_ACTION_WAIT = '⏳';
 
-
-
-	}
 }

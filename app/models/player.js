@@ -15,10 +15,12 @@ class Player extends RModel {
 	static EMOJI_SANITY = '🙂';
 
 	static EMOJI_LEVEL = '🎚️';
+	static EMOJI_POINTS = '🌡️';
 	static EMOJI_ATTRIBUTE = '✔️';
 	static EMOJI_BALANCE = '⚖️';
 	static EMOJI_TEMPORARY_MODIFICATOR = '⌛';
 	static EMOJI_PERMANENT_MODIFICATOR = '⏳';
+	static EMOJI_TOTAL_POINTS = '=';
 
 	static EMOJI_GENDER = {
 		1: Player.EMOJI_GENDER_MALE,
@@ -35,10 +37,36 @@ class Player extends RModel {
 		'sanity',
 	];
 
+	static POINTS_TO_LEVEL = [
+		0, // 0
+		1,
+		5,
+		13,
+		25,
+		44, // 5
+		68,
+		99,
+		137,
+		183,
+		237, // 10
+		299,
+		369,
+		449,
+		538,
+		636,
+		744,
+		862,
+		991,
+		1130,
+		1280 // 20
+	]
+
+	// retorna todos os players num array
+	// esse metodo deve ser comunicar com o servidor, por enquanto apenas simula o retorno de todos os players
 	static getAllPlayers () {
 
 		//TODO: buscar informação do servidor e armazenar numa variavel de classe.
-			// Pensar na possibilidade de um botao para atualizar informacoes.
+			// Pensar na possibilidade de um botao para atualizar informacoes alem de atualizar quando precisar de alguma forma.
 
 		return [
 			{
@@ -80,9 +108,32 @@ class Player extends RModel {
 		];
 	}
 
+	// retorna 1 player especifico pelo id
+	static getPlayer (playerId) {
+		console.log('playerId', playerId);
+		let allplayers = Player.getAllPlayers();
+		console.log('allplayers', allplayers);
+
+		return allplayers.filter(function ( player ) { return player['id'] == playerId })[0];
+	}
+
+	// pegar o maior de um atributo entre os players
+	// TODO: receber os playersIds como parametro opcional para calcular somente entre os selecionados
 	static getMax (playerAttribute) {
 		let allPlayers = Player.getAllPlayers();
 
 		return Math.max.apply(Math, allPlayers.map(function(player) { return player[playerAttribute]; }))
+	}
+
+	// retorna maximo de pontuação de acordo com o nivel
+	// ja esta calculado na constante POINTS_TO_LEVEL para agilizar
+	static levelMaxPointsCalculator (level) {
+		return Math.ceil(level**(2.4) - level**(1.4) + level);
+	}
+
+	// retorna o nivel de acordo com a pontuação
+	static levelCalculator (points) {
+		let points = 
+		return Math.ceil(level**(2,4) - level**(1,4) + level);
 	}
 }

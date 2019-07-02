@@ -1,15 +1,20 @@
 class VisualizePlayer extends Box {
 
 	boxWidth = 360;
-	boxHeight = 220;
+	boxHeight = 240;
 
 	static windowName = 'visualize_player';
 
 	boxContent (options) {
-		console.log('options', options);
+		var randomId = Math.floor(Math.random() * 10000);
 
 		let parentWindowRandomId = options['randomId'];
 		let playerId = options['playerId'];
+
+		let player = Player.getPlayer(playerId);
+
+		let inputWidth = 36;
+		let inputHeight = 12;
 
 		let listPlayerTable = $("<table>");
 
@@ -22,11 +27,8 @@ class VisualizePlayer extends Box {
 				$("<th>", { title: t('Nivel') }).append(
 					Player.EMOJI_LEVEL
 				),
-				$("<th>", { title: t('Pontos base') }).append(
-					''
-				),
-				$("<th>", { title: t('Saldo base') }).append(
-					''
+				$("<th>", { title: t('Pontos') }).append(
+					Player.EMOJI_POINTS
 				),
 				$("<th>", { title: t('Modificador momentâneo') }).append(
 					Player.EMOJI_TEMPORARY_MODIFICATOR
@@ -34,32 +36,83 @@ class VisualizePlayer extends Box {
 				$("<th>", { title: t('Modificador permanente') }).append(
 					Player.EMOJI_PERMANENT_MODIFICATOR
 				),
-				$("<th>", { title: t('Pontos') }).append(
-					''
-				),
-				$("<th>", { title: t('Saldo') }).append(
-					Player.EMOJI_BALANCE
+				$("<th>", { title: t('Total de pontos') }).append(
+					Player.EMOJI_TOTAL_POINTS
 				)
 			)
 		);
 
-		// Player.ALL_ATTRIBUTES.forEach(function (attribute) {
-		// 	listPlayerTable.append(
-		// 		$("<tr>").append(
-		// 			$("<td>").append(
-		// 				$("<input>", {
-		// 					type: 'checkbox',
-		// 					id: 'new_battle_wait_' + player['id'] + '_' + randomId,
-		// 					class: 'check_wait',
-		// 					checked: 'checked',
-		// 					value: 1
-		// 				})
-		// 			)
-		// 		)
-		// 	);
-		// });
+		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+			listPlayerTable.append(
+				$("<tr>").append(
+					$("<td>").append(
+						attribute
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							readonly: 'readonly',
+							id: VisualizePlayer.windowName + '_level_' + playerId + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							value: Player.levelCalculator(player[attribute])
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_base_points_' + playerId + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ')',
+							value: player[attribute]
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_moment_modifier_' + playerId + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ')',
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ')',
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							readonly: 'readonly',
+							id: VisualizePlayer.windowName + '_points_' + playerId + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							value: player[attribute]
+						})
+					)
+				)
+			);
+		});
 
 		return listPlayerTable;
+	}
+
+	static reCalculateTotalPoints (randomId, playerId) {
+		let basePoints = $('#' + VisualizePlayer.windowName + '_base_points_' + playerId + '_' + randomId).val() || 0;
+		let momentModifier = $('#' + VisualizePlayer.windowName + '_moment_modifier_' + playerId + '_' + randomId).val() || 0;
+		let permanentModifier = $('#' + VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + randomId).val() || 0;
+
+		let totalPoints = parseInt(basePoints) + parseInt(momentModifier) + parseInt(permanentModifier);
+
+		$('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + randomId).val(totalPoints);
 	}
 
 }

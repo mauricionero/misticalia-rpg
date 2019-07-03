@@ -37,6 +37,7 @@ class Player extends RModel {
 		'sanity',
 	];
 
+	// formula: Math.ceil(level**(2.4) - level**(1.4) + level)
 	static POINTS_TO_LEVEL = [
 		0, // 0
 		1,
@@ -71,19 +72,21 @@ class Player extends RModel {
 		return [
 			{
 				id: 1,
-				name: 'P1',
+				shortname: 'MN',
+				name: 'Mauricio Nero',
 				gender: Player.MALE_ID,
-				strength: 60,
-				dextery: 80,
-				constitution: 60,
-				inteligence: 80,
-				wisdom: 110,
-				charisma: 30,
-				sanity: 80
+				strength: 0,
+				dextery: 1,
+				constitution: 2,
+				inteligence: 5,
+				wisdom: 12,
+				charisma: 13,
+				sanity: 60
 			},
 			{
 				id: 2,
-				name: 'P2',
+				shortname: 'Zé',
+				name: 'José Fontana',
 				gender: Player.MALE_ID,
 				strength: 40,
 				dextery: 60,
@@ -95,7 +98,8 @@ class Player extends RModel {
 			},
 			{
 				id: 3,
-				name: 'P3',
+				shortname: 'FC',
+				name: 'Francieli Celeghim',
 				gender: Player.FEMALE_ID,
 				strength: 100,
 				dextery: 40,
@@ -108,11 +112,16 @@ class Player extends RModel {
 		];
 	}
 
+	// retorna algo para colocar num espaço pequeno sobre o player, tipo um avatar ou as iniciais
+	static getPlayerShort (playerId) {
+		let player = Player.getPlayer(playerId);
+
+		return player['shortname'];
+	}
+
 	// retorna 1 player especifico pelo id
 	static getPlayer (playerId) {
-		console.log('playerId', playerId);
 		let allplayers = Player.getAllPlayers();
-		console.log('allplayers', allplayers);
 
 		return allplayers.filter(function ( player ) { return player['id'] == playerId })[0];
 	}
@@ -128,12 +137,19 @@ class Player extends RModel {
 	// retorna maximo de pontuação de acordo com o nivel
 	// ja esta calculado na constante POINTS_TO_LEVEL para agilizar
 	static levelMaxPointsCalculator (level) {
-		return Math.ceil(level**(2.4) - level**(1.4) + level);
+		return Player.POINTS_TO_LEVEL[level];
 	}
 
 	// retorna o nivel de acordo com a pontuação
 	static levelCalculator (points) {
-		let points = 
-		return Math.ceil(level**(2,4) - level**(1,4) + level);
+
+		var level = 0;
+
+		while (Player.POINTS_TO_LEVEL[level + 1] <= points) {
+			level++;
+		} 
+
+		return level;
+		
 	}
 }

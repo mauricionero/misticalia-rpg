@@ -53,7 +53,7 @@ class VisualizePlayer extends Box {
 							type: 'text',
 							readonly: 'readonly',
 							id: VisualizePlayer.windowName + '_level_' + playerId + '_' + randomId,
-							width: inputWidth,
+							width: inputWidth - 10,
 							height: inputHeight,
 							value: Player.levelCalculator(player[attribute])
 						})

@@ -56,12 +56,18 @@ class ListPlayers extends Box {
 			listPlayersTable.append(
 				$("<tr>").append(
 					$("<td>").append(
-						player['name'],
+						Player.getPlayerShort(player['id']),
 						$("<input>", {
 							type: 'hidden',
 							id: ListPlayers.windowName + '_name_' + player['id'] + '_' + randomId,
 							readonly: 'readonly',
 							value: player['name']
+						}),
+						$("<input>", {
+							type: 'hidden',
+							id: ListPlayers.windowName + '_shortname_' + player['id'] + '_' + randomId,
+							readonly: 'readonly',
+							value: player['shortname']
 						}),
 						$("<input>", {
 							type: 'hidden',
@@ -157,7 +163,8 @@ class ListPlayers extends Box {
 		let playerName = $('#' + ListPlayers.windowName + '_name_' + playerId + '_' + randomId).val();
 		let playerGenderId = $('#' + ListPlayers.windowName + '_gender_' + playerId + '_' + randomId).val();
 
-		let windowTitle = Player.EMOJI_GENDER[playerGenderId] + ' ' + t('Jogador') + ' ' + playerName;
+		let genderTitle = (playerGenderId == Player.MALE_ID) ? 'Jogador' : 'Jogadora';
+		let windowTitle = Player.EMOJI_GENDER[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
 
 		let options = {
 			randomId: randomId,

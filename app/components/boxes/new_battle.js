@@ -1,6 +1,6 @@
 class NewBattle extends Box {
 
-	boxWidth = 360;
+	boxWidth = 340;
 	boxHeight = 220;
 
 	// id das acoes
@@ -71,7 +71,7 @@ class NewBattle extends Box {
 						})
 					),
 					$("<td>").append(
-						player['name'] + ':',
+						Player.getPlayerShort(player['id']) + ':',
 						$("<input>", {
 							type: 'hidden',
 							class: 'new_battle_player_ids_' + randomId,
@@ -83,6 +83,12 @@ class NewBattle extends Box {
 							id: 'new_battle_player_name_' + player['id'] + '_' + randomId,
 							readonly: 'readonly',
 							value: player['name']
+						}),
+						$("<input>", {
+							type: 'hidden',
+							id: 'new_battle_player_shortname_' + player['id'] + '_' + randomId,
+							readonly: 'readonly',
+							value: Player.getPlayerShort(player['id'])
 						})
 					),
 					$("<td>").append(
@@ -282,7 +288,7 @@ class NewBattle extends Box {
 		NewBattle.changeProgress (randomId, fighterId, 0);
 
 		// exibir no log de ataques
-		let playerName = $('#new_battle_player_name_' + fighterId + '_' + randomId).val();
+		let playerName = $('#new_battle_player_shortname_' + fighterId + '_' + randomId).val();
 		$('#new_battle_attackers_log_' + randomId).append(playerName + emoji + ', ');
 	}
 

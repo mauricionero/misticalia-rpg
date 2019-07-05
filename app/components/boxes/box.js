@@ -11,6 +11,24 @@ class Box {
 
 		var dialogId = "dialog_" + id;
 
+		// se tiver especificado um id para a dialog
+		if (options['windowId']) {
+			dialogId = options['windowId'];
+		}
+
+		// ja existe ?
+		if ($('#' + dialogId).hasClass('ui-dialog-content')) {
+
+			// se for janela unica, nao deixa abrir mais
+			if (options['singleTon']) {
+				// chamar atenção
+				$('#' + dialogId).effect( "shake" );
+				return dialogId;
+			} else {
+				$('#' + dialogId).effect( "fade" );
+			}
+		}
+
 		var klass = new boxes[id];
 
 		$("#master-table").append(
@@ -32,6 +50,8 @@ class Box {
 				height: klass.boxHeight
 			});
 		});
+
+		return true;
 	}
 
 }

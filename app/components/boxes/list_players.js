@@ -143,7 +143,7 @@ class ListPlayers extends Box {
 						$("<input>", {
 							type: 'button',
 							id: ListPlayers.windowName + '_visualize_' + player['id'] + '_' + randomId,
-							onclick: 'ListPlayers.visualize_player(' + randomId + ', ' + player['id'] + ')',
+							onclick: 'VisualizePlayer.visualize_player(' + player['id'] + ')',
 							value: '👁️'
 						}),
 					)
@@ -156,22 +156,6 @@ class ListPlayers extends Box {
 		);
 
 		return listPlayersDiv;
-	}
-
-	static visualize_player (randomId, playerId) {
-
-		let playerName = $('#' + ListPlayers.windowName + '_name_' + playerId + '_' + randomId).val();
-		let playerGenderId = $('#' + ListPlayers.windowName + '_gender_' + playerId + '_' + randomId).val();
-
-		let genderTitle = (playerGenderId == Player.MALE_ID) ? 'Jogador' : 'Jogadora';
-		let windowTitle = Player.EMOJI_GENDER[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
-
-		let options = {
-			randomId: randomId,
-			playerId: playerId
-		};
-
-		Box.openDialog(VisualizePlayer.windowName, windowTitle, options);
 	}
 
 }

@@ -14,14 +14,13 @@
   <script src="models/rmodel.js"></script>
   <script src="models/adventure.js"></script>
   <script src="models/battle.js"></script>
+  <script src="models/menu.js"></script>
   <script src="models/player.js"></script>
   <script src="models/user.js"></script>
 
 
   <script src="components/menu/menu.js"></script>
   <link href="components/menu/menu.css" rel="stylesheet">
-
-  <script src="components/main_box/main_box.js"></script>
 
   <script>
     var boxes = {};
@@ -63,69 +62,9 @@
 
 </head>
 <body>
-  
-  <ul id="menubar">
-    <li>
-      <div>⚙️ Sistema
-      </div>
 
-      <ul>
-        <li>
-          <div id="new_adventure" class="open_box">➕ Nova aventura
-          </div>
-        </li>
-        <li>
-          <div id="open_adventure" class="open_box">📂 Abrir aventura
-          </div>
-        </li>
-      </ul>
-
-    </li>
-    <li>
-      <div>🔧 Acessorios
-      </div>
-
-      <ul>
-        <li>
-          <div id="add_dice" class="open_box">🎲 Dados
-          </div>
-        </li>
-      </ul>
-
-    </li>
-    <li>
-      <div>♚️ Mestre
-      </div>
-
-      <ul>
-        <li>
-          <div>♟️ Jogadores
-          </div>
-
-          <ul>
-            <li>
-              <div>➕ Add
-              </div>
-            </li>
-            <li>
-              <div id="list_players" class="open_box">📝 Listar
-              </div>
-            </li>
-          </ul>
-
-        </li>
-        <li>
-          <div id="new_battle" class="open_box">⚔️ Batalha
-          </div>
-        </li>
-      </ul>
-
-    </li>
-    <li>
-      <div>👤 Meu usuário
-      </div>
-    </li>
-  </ul>
+  <div id="menu_container">
+  </div>
 
   <div id="master-table">
     

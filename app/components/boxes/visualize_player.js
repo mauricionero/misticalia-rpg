@@ -8,7 +8,6 @@ class VisualizePlayer extends Box {
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);
 
-		let parentWindowRandomId = options['randomId'];
 		let playerId = options['playerId'];
 
 		let player = Player.getPlayer(playerId);
@@ -103,6 +102,28 @@ class VisualizePlayer extends Box {
 		});
 
 		return listPlayerTable;
+	}
+
+	// abrir visualização do player
+	static visualize_player (playerId) {
+
+		console.log('playerId', playerId);
+
+		let player = Player.getPlayer(playerId);
+
+		let playerName = player['name'];
+		let playerGenderId = player['gender'];
+
+		let genderTitle = (playerGenderId == Player.MALE_ID) ? 'Jogador' : 'Jogadora';
+		let windowTitle = Player.EMOJI_GENDER[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
+
+		let options = {
+			playerId: playerId,
+			singleTon: true,
+			windowId: VisualizePlayer.windowName + '_' + playerId
+		};
+
+		Box.openDialog(VisualizePlayer.windowName, windowTitle, options);
 	}
 
 	static reCalculateTotalPoints (randomId, playerId) {

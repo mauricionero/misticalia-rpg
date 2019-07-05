@@ -53,6 +53,9 @@ class NewBattle extends Box {
 				),
 				$("<th>", { title: t('Item') }).append(
 					Battle.EMOJI_ITEM
+				),
+				$("<th>", { title: t('Visualizar jogador') }).append(
+					'👁️'
 				)
 			)
 		);
@@ -126,7 +129,7 @@ class NewBattle extends Box {
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ACTION + '_' + randomId,
 							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ACTION + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.ACTION]
-						}),
+						})
 					),
 					$("<td>").append(
 						$("<input>", {
@@ -134,7 +137,7 @@ class NewBattle extends Box {
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.FIGHT + '_' + randomId,
 							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.FIGHT + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
-						}),
+						})
 					),
 					$("<td>").append(
 						$("<input>", {
@@ -144,7 +147,14 @@ class NewBattle extends Box {
 							value: NewBattle.ACTION_EMOJIS[NewBattle.ITEM]
 						})
 					),
-					'<br />'
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: NewBattle.windowName + '_visualize_' + player['id'] + '_' + randomId,
+							onclick: 'VisualizePlayer.visualize_player(' + player['id'] + ')',
+							value: '👁️'
+						})
+					)
 				)
 			);
 		});

@@ -127,7 +127,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ACTION + '_' + randomId,
-							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ACTION + ')',
+							onclick: 'NewBattle.playerAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ACTION + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.ACTION]
 						})
 					),
@@ -135,7 +135,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.FIGHT + '_' + randomId,
-							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.FIGHT + ')',
+							onclick: 'NewBattle.playerAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.FIGHT + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
 						})
 					),
@@ -143,7 +143,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ITEM + '_' + randomId,
-							onclick: 'NewBattle.fighterAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ITEM + ')',
+							onclick: 'NewBattle.playerAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ITEM + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.ITEM]
 						})
 					),
@@ -291,14 +291,28 @@ class NewBattle extends Box {
 
 	}
 
-	// ação ou ataque
-	static fighterAction (randomId, fighterId, actionId) {
+	// ação ou ataque de um jogador
+	static playerAction (randomId, playerId, actionId) {
 		let emoji = NewBattle.ACTION_EMOJIS[actionId];
 
-		NewBattle.changeProgress (randomId, fighterId, 0);
+		// se for ataque, abrir janela de ataque
+		if (actionId == NewBattle.FIGHT) {
+			let options = {
+				playerId: playerId,
+				singleTon: true,
+				windowId: NewAtack.windowName + '_' + playerId
+			};
+
+			let playerName = Player.getPlayer(playerId)['name'];
+			let windowTitle = Battle.EMOJI_FIGHT + ' ' + playerName;
+
+			Box.openDialog(NewAtack.windowName, windowTitle, options);
+		}
+
+		NewBattle.changeProgress (randomId, playerId, 0);
 
 		// exibir no log de ataques
-		let playerName = $('#new_battle_player_shortname_' + fighterId + '_' + randomId).val();
+		let playerName = $('#new_battle_player_shortname_' + playerId + '_' + randomId).val();
 		$('#new_battle_attackers_log_' + randomId).append(playerName + emoji + ', ');
 	}
 

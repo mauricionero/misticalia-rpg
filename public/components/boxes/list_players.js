@@ -11,8 +11,6 @@ class ListPlayers extends Box {
 
 		var allPlayers = Player.getAllPlayers();
 
-		var maxDextery = Player.getMax('dextery');
-
 		let listPlayersDiv = $("<div>");
 
 		let listPlayersTable = $("<table>");

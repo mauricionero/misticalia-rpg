@@ -6,4 +6,6 @@ class Battle extends RModel {
 	static EMOJI_ITEM = '💊';
 	static EMOJI_ACTION_WAIT = '⏳';
 
+	static EMOJI_TARGET = '🎯';
+
 }

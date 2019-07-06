@@ -3,6 +3,8 @@ class Player extends RModel {
 	static MALE_ID = 1;
 	static FEMALE_ID = 2;
 
+	static EMOJI_VISUALIZE = '👁️';
+
 	static EMOJI_NAME = '웃';
 	static EMOJI_GENDER_MALE = '👨';
 	static EMOJI_GENDER_FEMALE = '👩';

@@ -6,7 +6,6 @@ class Box {
 	positionAt = 'center top';
 	positionOf = '#master-table';
 
-
 	static openDialog (id, title, options = {}) {
 
 		var dialogId = "dialog_" + id;

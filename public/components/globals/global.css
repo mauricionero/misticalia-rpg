@@ -1,0 +1,14 @@
+input:-moz-read-only { /* For Firefox */
+  background-color: #ccc;
+  border: 1px solid #a8a8a8;
+  padding: 2px;
+}
+input:read-only { 
+  background-color: #ccc;
+  border: 1px solid #a8a8a8;
+  padding: 2px;
+}
+
+th {
+	font-size: 14px;
+}

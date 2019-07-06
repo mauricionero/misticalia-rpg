@@ -1,6 +1,8 @@
 class Menu extends RModel {
 
 	static getMenu () {
+
+		// sera retornado do server, ira mudar de acordo com a role da aventura
 		return [
 			{
 				id: 1,
@@ -47,7 +49,7 @@ class Menu extends RModel {
 					}
 				]
 			},
-			{
+			{ // role de mestre da aventura atual
 				id: 6,
 				name: 'Mestre',
 				emoji: '♚️',

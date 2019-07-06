@@ -1,6 +1,6 @@
 class ListPlayers extends Box {
 
-	boxWidth = 360;
+	boxWidth = 380;
 	boxHeight = 220;
 
 	static windowName = 'list_players';
@@ -10,7 +10,6 @@ class ListPlayers extends Box {
 		var randomId = Math.floor(Math.random() * 10000);
 
 		var allPlayers = Player.getAllPlayers();
-		var allPlayerIds = [];
 
 		var maxDextery = Player.getMax('dextery');
 
@@ -52,7 +51,7 @@ class ListPlayers extends Box {
 		);
 
 		allPlayers.forEach(function (player) {
-			allPlayerIds.push(player['id']);
+			
 			listPlayersTable.append(
 				$("<tr>").append(
 					$("<td>").append(

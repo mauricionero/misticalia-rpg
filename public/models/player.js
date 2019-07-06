@@ -3,7 +3,7 @@ class Player extends RModel {
 	static MALE_ID = 1;
 	static FEMALE_ID = 2;
 
-	static EMOJI_NAME = '📛';
+	static EMOJI_NAME = '웃';
 	static EMOJI_GENDER_MALE = '👨';
 	static EMOJI_GENDER_FEMALE = '👩';
 	static EMOJI_STRENGTH = '💪';
@@ -20,7 +20,11 @@ class Player extends RModel {
 	static EMOJI_BALANCE = '⚖️';
 	static EMOJI_TEMPORARY_MODIFICATOR = '⌛';
 	static EMOJI_PERMANENT_MODIFICATOR = '⏳';
-	static EMOJI_TOTAL_POINTS = '=';
+	static EMOJI_TOTAL_POINTS = '💯';
+
+	static EMOJI_ROLL_DICE = '🎲';
+	static EMOJI_DIFFICULTY = '䷂';
+	static EMOJI_RESULT = '=';
 
 	static EMOJI_GENDER = {
 		1: Player.EMOJI_GENDER_MALE,
@@ -151,5 +155,18 @@ class Player extends RModel {
 
 		return level;
 		
+	}
+
+	// calcular resultado da rolagem de um dado
+	static calculateDiceResult (diceRoll, totalPoints, difficulty) {
+
+		let rollPoints = diceRoll * (totalPoints / 100);
+
+		let level = Player.levelCalculator(totalPoints);
+
+		let result = Math.round(rollPoints - difficulty) + level - 4;
+
+		return result;
+
 	}
 }

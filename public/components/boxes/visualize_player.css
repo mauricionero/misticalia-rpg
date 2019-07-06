@@ -1,0 +1,15 @@
+.negative_result {
+	color: #e00;
+}
+
+.positive_result {
+	color: #0a0;
+}
+
+.neutral_result {
+	color: #320;
+}
+
+.bold {
+	font-weight: bold;
+}

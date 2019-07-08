@@ -1,5 +1,5 @@
 class Box {
-	boxWidth = 300;
+	boxWidth = 'auto';
 	boxHeight = 'auto';
 
 	positionMy = 'center top';
@@ -14,6 +14,8 @@ class Box {
 		if (options['windowId']) {
 			dialogId = options['windowId'];
 		}
+
+		console.log('dialogId', dialogId);
 
 		// ja existe ?
 		if ($('#' + dialogId).hasClass('ui-dialog-content')) {

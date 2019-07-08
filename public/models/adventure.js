@@ -7,8 +7,8 @@ class Adventure extends RModel {
 	static ROLE_PLAYER = 1;
 	static ROLE_MASTER = 2;
 	
-	static EMOJI_ROLE_PLAYER = '♚️';
-	static EMOJI_ROLE_MASTER = '♟️';
+	static EMOJI_ROLE_PLAYER = '♟️';
+	static EMOJI_ROLE_MASTER = '♚️';
 	static EMOJI_OPEN = '📂';
 	static EMOJI_NAME = '📂';
 

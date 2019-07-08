@@ -1,7 +1,7 @@
 class VisualizePlayer extends Box {
 
-	boxWidth = 440;
-	boxHeight = 240;
+	// boxWidth = 440;
+	// boxHeight = 240;
 
 	static windowName = 'visualize_player';
 
@@ -15,6 +15,8 @@ class VisualizePlayer extends Box {
 		let inputWidth = 36;
 		let inputWidthSmall = 24;
 		let inputHeight = 12;
+
+		let listPlayerDiv = $('<div>');
 
 		let listPlayerTable = $("<table>");
 
@@ -30,11 +32,11 @@ class VisualizePlayer extends Box {
 				$("<th>", { title: t('Pontos') }).append(
 					Player.EMOJI_POINTS
 				),
-				$("<th>", { title: t('Modificador momentâneo') }).append(
-					Player.EMOJI_TEMPORARY_MODIFICATOR
-				),
 				$("<th>", { title: t('Modificador permanente') }).append(
 					Player.EMOJI_PERMANENT_MODIFICATOR
+				),
+				$("<th>", { title: t('Modificador momentâneo') }).append(
+					Player.EMOJI_TEMPORARY_MODIFICATOR
 				),
 				$("<th>", { title: t('Total de pontos') }).append(
 					Player.EMOJI_TOTAL_POINTS
@@ -80,9 +82,10 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_moment_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							id: VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
+							readonly: 'readonly',
 							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ', "' + attribute + '")',
 							value: 0
 						})
@@ -90,7 +93,7 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							id: VisualizePlayer.windowName + '_moment_modifier_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
 							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ', "' + attribute + '")',
@@ -142,7 +145,89 @@ class VisualizePlayer extends Box {
 			);
 		});
 
-		return listPlayerTable;
+		listPlayerDiv.html(listPlayerTable);
+
+		listPlayerDiv.append(
+			'<br />',
+			$('<a>',{
+				href: '#',
+				onclick: 'VisualizePlayer.toggleViewEquipaments(' + playerId + ', ' + randomId + ')'
+			}).html(
+				t('Ver equipamentos e itens')
+			),
+			'<br />',
+			$('<div>', {
+				class: 'visualize_player_equipament',
+				id: VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId,
+				style: 'display: none',
+			}).html(
+				$('<table>').append(
+					$('<tr>').append(
+						$('<td>').html(
+							''
+						),
+						$('<td>').html(
+							Player.EMOJI_HEAD_EQUIPAMENT
+						),
+						$('<td>').html(
+							Player.EMOJI_AMULET_EQUIPAMENT
+						),
+						$('<td>').html(
+							Player.EMOJI_RING_EQUIPAMENT
+						)
+					),
+					$('<tr>').append(
+						$('<td>').html(
+							Player.EMOJI_SHIELD_EQUIPAMENT
+						),
+						$('<td>').html(
+							Player.EMOJI_CHESTPLATE_EQUIPAMENT
+						),
+						$('<td>').html(
+							Player.EMOJI_MAIN_HAND_EQUIPAMENT
+						),
+						$('<td>').html(
+							Player.EMOJI_RING_EQUIPAMENT
+						)
+					),
+					$('<tr>').append(
+						$('<td>').html(
+							''
+						),
+						$('<td>').html(
+							Player.EMOJI_LEGS_EQUIPAMENT
+						),
+						$('<td>').html(
+							''
+						),
+						$('<td>').html(
+							Player.EMOJI_RING_EQUIPAMENT
+						)
+					),
+					$('<tr>').append(
+						$('<td>').html(
+							''
+						),
+						$('<td>').html(
+							Player.EMOJI_FEET_EQUIPAMENT
+						),
+						$('<td>').html(
+							''
+						),
+						$('<td>').html(
+							Player.EMOJI_RING_EQUIPAMENT
+						)
+					)
+				)
+			)
+		);
+
+		return listPlayerDiv;
+	}
+
+	// mostrar e esconder os equipamentos do player
+	static toggleViewEquipaments (playerId, randomId) {
+		$('#' + VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId).slideToggle()
 	}
 
 	// abrir visualização do player

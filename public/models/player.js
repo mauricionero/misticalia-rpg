@@ -28,6 +28,15 @@ class Player extends RModel {
 	static EMOJI_DIFFICULTY = '䷂';
 	static EMOJI_RESULT = '=';
 
+	static EMOJI_HEAD_EQUIPAMENT = '👷';
+	static EMOJI_AMULET_EQUIPAMENT = '🔵';
+	static EMOJI_RING_EQUIPAMENT = '⭕';
+	static EMOJI_SHIELD_EQUIPAMENT = '🛡️';
+	static EMOJI_CHESTPLATE_EQUIPAMENT = '👕';
+	static EMOJI_MAIN_HAND_EQUIPAMENT = '🗡️';
+	static EMOJI_LEGS_EQUIPAMENT = '👖';
+	static EMOJI_FEET_EQUIPAMENT = '👣';
+
 	static EMOJI_GENDER = {
 		1: Player.EMOJI_GENDER_MALE,
 		2: Player.EMOJI_GENDER_FEMALE

@@ -18,7 +18,7 @@ class NewAtack extends Box {
 
 		let newAtackTable = $("<table>");
 
-		NewAtack.insertPlayerLine(newAtackTable, player, randomId, false);
+		NewAtack.insertPlayerLine(newAtackTable, player, randomId, true);
 
 		// titulo das colunas na tabela
 		newAtackTable.append(
@@ -51,7 +51,7 @@ class NewAtack extends Box {
 				return;
 			}
 
-			NewAtack.insertPlayerLine(newAtackTable, player, randomId, true);
+			NewAtack.insertPlayerLine(newAtackTable, player, randomId, false);
 			
 		});
 

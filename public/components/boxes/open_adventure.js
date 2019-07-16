@@ -1,8 +1,5 @@
 class OpenAdventure extends Box {
 
-	boxWidth = 320;
-	boxHeight = 200;
-
 	static windowName = 'open_adventure';
 
 	boxContent () {
@@ -67,7 +64,7 @@ class OpenAdventure extends Box {
 	}
 
 	static open_adventure (adventureId) {
-		Adventure.setCurrentAdventure(adventureId);
+		Adventure.setCurrentAdventureId(adventureId);
 
 		redrawMenu();
 	}

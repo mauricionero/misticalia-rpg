@@ -4,6 +4,7 @@ class Adventure extends RModel {
 		// criar um metodo javascript que renderize o menu (prever permissoes)
 		// ao selecionar uma aventura, o menu deve ser renderizado novamente, pois pode mudar com as permissoes (mestre ou jogador)
 
+	static ROLE_UNDEFINED = 0;
 	static ROLE_PLAYER = 1;
 	static ROLE_MASTER = 2;
 	
@@ -37,7 +38,30 @@ class Adventure extends RModel {
 	}
 
 	static getCurrentAdventureId () {
-		return this.currentAdventureId;
+		return Adventure.currentAdventureId;
+	}
+
+	static getCurrentAdventure () {
+		let myAdventures = Adventure.getUserAdventures();
+		let currentAdventureId = Adventure.getCurrentAdventureId();
+
+		let currentAdventure = myAdventures.filter(adv => {
+			return adv.id == currentAdventureId;
+		});
+
+		console.log('currentAdventure', currentAdventure);
+
+		return currentAdventure[0];
+	}
+
+	static getCurrentAdventureRole () {
+		let currentAdventure = Adventure.getCurrentAdventure();
+
+		if (currentAdventure) {
+			return currentAdventure['role'];
+		} else {
+			return Adventure.ROLE_UNDEFINED
+		}
 	}
 
 	static setCurrentAdventureId (adventureId) {

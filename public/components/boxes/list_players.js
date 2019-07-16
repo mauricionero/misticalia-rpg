@@ -1,8 +1,5 @@
 class ListPlayers extends Box {
 
-	boxWidth = 380;
-	boxHeight = 220;
-
 	static windowName = 'list_players';
 
 	boxContent () {
@@ -15,9 +12,15 @@ class ListPlayers extends Box {
 
 		let listPlayersTable = $("<table>");
 
+		let currentAdventureRoleId = Adventure.getCurrentAdventureRole();
+
+		console.log('currentAdventureRoleId', currentAdventureRoleId);
+
+		let listPlayersTableTitle = $("<tr>");
+
 		// titulo das colunas na tabela
 		listPlayersTable.append(
-			$("<tr>").append(
+			listPlayersTableTitle.append(
 				$("<th>", { title: t('Nome') }).append(
 					Player.EMOJI_NAME
 				),
@@ -43,15 +46,26 @@ class ListPlayers extends Box {
 					Player.EMOJI_SANITY
 				),
 				$("<th>", { title: t('Visualizar jogador') }).append(
-					'👁️'
+					Player.EMOJI_VISUALIZE
 				)
 			)
 		);
 
+		// se for mestre, pode incluir equipamento no inventario
+		if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
+			listPlayersTableTitle.append(
+				$("<th>", { title: t('Adicionar equipamento no inventário') }).append(
+					Player.EMOJI_INCLUDE_EQUIPAMENT
+				)
+			);
+		}
+
 		allPlayers.forEach(function (player) {
+
+			let listPlayersTableLine = $("<tr>");
 			
 			listPlayersTable.append(
-				$("<tr>").append(
+				listPlayersTableLine.append(
 					$("<td>").append(
 						Player.getPlayerShort(player['id']),
 						$("<input>", {
@@ -141,11 +155,25 @@ class ListPlayers extends Box {
 							type: 'button',
 							id: ListPlayers.windowName + '_visualize_' + player['id'] + '_' + randomId,
 							onclick: 'VisualizePlayer.visualize_player(' + player['id'] + ')',
-							value: '👁️'
+							value: Player.EMOJI_VISUALIZE
 						}),
 					)
 				)
-			)
+			);
+
+			// se for mestre, pode incluir equipamento no inventario
+			if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
+				listPlayersTableLine.append(
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: ListPlayers.windowName + '_manage_equipament_' + player['id'] + '_' + randomId,
+							onclick: 'PlayerEquipament.visualizeEquipament(' + player['id'] + ')',
+							value: Player.EMOJI_INCLUDE_EQUIPAMENT
+						}),
+					)
+				);
+			}
 		});
 
 		listPlayersDiv.append(

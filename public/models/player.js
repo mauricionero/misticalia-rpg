@@ -4,6 +4,7 @@ class Player extends RModel {
 	static FEMALE_ID = 2;
 
 	static EMOJI_VISUALIZE = '👁️';
+	static EMOJI_INCLUDE_EQUIPAMENT = '⛨';
 
 	static EMOJI_NAME = '웃';
 	static EMOJI_GENDER_MALE = '👨';
@@ -125,6 +126,60 @@ class Player extends RModel {
 				sanity: 80
 			}
 		];
+	}
+
+	// retorna todos os equipamentos desse jogador
+	static getPlayerEquipaments (playerId) {
+		//TODO: buscar informação do servidor e armazenar numa variavel de classe.
+
+		return [
+			{
+				id: 1,
+				type: Equipament.TYPE_CHESTPLATE,
+				name: t('Peitoral de bronze'),
+				weight: 13000,
+				origin: Equipament.ORIGIN_PLATAFORM,
+				modifiers: [
+					{
+						attribute: Modifier.DEXTERY,
+						value: -10,
+						observation: t('Pesado')
+					},
+					{
+						attribute: Modifier.STRENGTH,
+						value: -4,
+						observation: t('- mobilidade')
+					},
+					{
+						attribute: Modifier.DEFENSE,
+						value: 15,
+					}
+				]
+			},
+			{
+				id: 3,
+				type: Equipament.TYPE_SHIELD,
+				name: t('Escudo de madeira'),
+				weight: 3000,
+				origin: Equipament.ORIGIN_PLATAFORM,
+				modifiers: [
+					{
+						attribute: Modifier.DEXTERY,
+						value: -5,
+						observation: t('Leve')
+					},
+					{
+						attribute: Modifier.STRENGTH,
+						value: -4,
+						observation: t('- mobilidade')
+					},
+					{
+						attribute: Modifier.DEFENSE,
+						value: 10
+					}
+				]
+			}
+		]
 	}
 
 	// retorna algo para colocar num espaço pequeno sobre o player, tipo um avatar ou as iniciais

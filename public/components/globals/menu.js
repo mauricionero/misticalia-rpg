@@ -7,6 +7,8 @@ $(document).ready(function() {
 // se nao mandar os itens, busca como se fosse a raiz
 function buildMenu (items = null) {
 
+	let currentAdventureRoleId = Adventure.getCurrentAdventureRole();
+
 	// se nao tem items, deduz que eh a raiz
 	if (! items) {
 		let items = Menu.getMenu();
@@ -58,14 +60,16 @@ function buildMenu (items = null) {
 			);
 		}
 
-		menuList.push(
-			$("<li>").append(
-				$("<div>", { id: item['action_id'], class: item['class'], single_ton: item['single_ton'] }).html(
-					item['emoji'] + ' ' + t(item['name'])
-				),
-				subMenu
-			)
-		);
+		if (item['roles'].includes(currentAdventureRoleId)) {
+			menuList.push(
+				$("<li>").append(
+					$("<div>", { id: item['action_id'], class: item['class'], single_ton: item['single_ton'] }).html(
+						item['emoji'] + ' ' + t(item['name'])
+					),
+					subMenu
+				)
+			);
+		}
 
 	});
 

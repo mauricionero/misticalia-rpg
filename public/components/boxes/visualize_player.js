@@ -1,8 +1,5 @@
 class VisualizePlayer extends Box {
 
-	// boxWidth = 440;
-	// boxHeight = 240;
-
 	static windowName = 'visualize_player';
 
 	boxContent (options) {
@@ -147,6 +144,71 @@ class VisualizePlayer extends Box {
 
 		listPlayerDiv.html(listPlayerTable);
 
+		let visualizePlayerEquipamentDiv = $('<div>', {
+			class: 'visualize_player_equipament',
+			id: VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId,
+			style: 'display: none',
+		});
+
+		let equipamentListDiv = $('<div>', {
+			id: VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId,
+			class: 'visualize_player_equipament_item_list'
+		});
+
+		visualizePlayerEquipamentDiv.append(
+			$('<table>').append(
+				$('<tr>').append(
+					$('<td>').html(
+						''
+					),
+					$('<td>').html(
+						Player.EMOJI_HEAD_EQUIPAMENT
+					),
+					$('<td>').html(
+						Player.EMOJI_AMULET_EQUIPAMENT
+					)
+				),
+				$('<tr>').append(
+					$('<td>').html(
+						Player.EMOJI_MAIN_HAND_EQUIPAMENT
+					),
+					$('<td>').html(
+						Player.EMOJI_CHESTPLATE_EQUIPAMENT
+					),
+					$('<td>').html(
+						Player.EMOJI_SHIELD_EQUIPAMENT
+					)
+				),
+				$('<tr>').append(
+					$('<td>').html(
+						''
+					),
+					$('<td>').html(
+						Player.EMOJI_LEGS_EQUIPAMENT
+					),
+					$('<td>').html(
+						''
+					)
+				),
+				$('<tr>').append(
+					$('<td>').html(
+						''
+					),
+					$('<td>').html(
+						Player.EMOJI_FEET_EQUIPAMENT
+					),
+					$('<td>').html(
+						''
+					)
+				)
+			),
+			equipamentListDiv,
+			$('<div>', {
+				id: VisualizePlayer.windowName + '_item_list_' + playerId + '_' + randomId,
+				class: 'visualize_player_equipament_item_list'
+			})
+		);
+
 		listPlayerDiv.append(
 			'<br />',
 			$('<a>',{
@@ -156,70 +218,7 @@ class VisualizePlayer extends Box {
 				t('Ver equipamentos e itens')
 			),
 			'<br />',
-			$('<div>', {
-				class: 'visualize_player_equipament',
-				id: VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId,
-				style: 'display: none',
-			}).html(
-				$('<table>').append(
-					$('<tr>').append(
-						$('<td>').html(
-							''
-						),
-						$('<td>').html(
-							Player.EMOJI_HEAD_EQUIPAMENT
-						),
-						$('<td>').html(
-							Player.EMOJI_AMULET_EQUIPAMENT
-						),
-						$('<td>').html(
-							Player.EMOJI_RING_EQUIPAMENT
-						)
-					),
-					$('<tr>').append(
-						$('<td>').html(
-							Player.EMOJI_SHIELD_EQUIPAMENT
-						),
-						$('<td>').html(
-							Player.EMOJI_CHESTPLATE_EQUIPAMENT
-						),
-						$('<td>').html(
-							Player.EMOJI_MAIN_HAND_EQUIPAMENT
-						),
-						$('<td>').html(
-							Player.EMOJI_RING_EQUIPAMENT
-						)
-					),
-					$('<tr>').append(
-						$('<td>').html(
-							''
-						),
-						$('<td>').html(
-							Player.EMOJI_LEGS_EQUIPAMENT
-						),
-						$('<td>').html(
-							''
-						),
-						$('<td>').html(
-							Player.EMOJI_RING_EQUIPAMENT
-						)
-					),
-					$('<tr>').append(
-						$('<td>').html(
-							''
-						),
-						$('<td>').html(
-							Player.EMOJI_FEET_EQUIPAMENT
-						),
-						$('<td>').html(
-							''
-						),
-						$('<td>').html(
-							Player.EMOJI_RING_EQUIPAMENT
-						)
-					)
-				)
-			)
+			visualizePlayerEquipamentDiv
 		);
 
 		return listPlayerDiv;
@@ -227,13 +226,11 @@ class VisualizePlayer extends Box {
 
 	// mostrar e esconder os equipamentos do player
 	static toggleViewEquipaments (playerId, randomId) {
-		$('#' + VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId).slideToggle()
+		$('#' + VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId).slideToggle();
 	}
 
 	// abrir visualização do player
 	static visualize_player (playerId) {
-
-		console.log('playerId', playerId);
 
 		let player = Player.getPlayer(playerId);
 

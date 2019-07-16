@@ -9,13 +9,16 @@ class Menu extends RModel {
 				name: 'Sistema',
 				emoji: '⚙️',
 				action_id: '',
+				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
 				items: [
 					{
 						id: 2,
 						name: 'Nova aventura',
+						single_ton: true,
 						emoji: '➕',
 						action_id: 'new_adventure',
+						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 						class: 'open_box',
 						items: [
 						]
@@ -23,8 +26,10 @@ class Menu extends RModel {
 					{
 						id: 3,
 						name: 'Abrir aventura',
+						single_ton: true,
 						emoji: '📂',
 						action_id: 'open_adventure',
+						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 						class: 'open_box',
 						items: [
 						]
@@ -36,6 +41,7 @@ class Menu extends RModel {
 				name: 'Acessorios',
 				emoji: '🔧',
 				action_id: '',
+				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
 				items: [
 					{
@@ -43,6 +49,7 @@ class Menu extends RModel {
 						name: 'Dados',
 						emoji: '🎲',
 						action_id: 'add_dice',
+						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 						class: 'open_box',
 						items: [
 						]
@@ -54,6 +61,7 @@ class Menu extends RModel {
 				name: 'Mestre',
 				emoji: '♚️',
 				action_id: '',
+				roles: [ Adventure.ROLE_MASTER ],
 				class: '',
 				items: [
 					{
@@ -61,6 +69,7 @@ class Menu extends RModel {
 						name: 'Jogadores',
 						emoji: '♟️',
 						action_id: '',
+						roles: [ Adventure.ROLE_MASTER ],
 						class: '',
 						items: [
 							{
@@ -68,6 +77,7 @@ class Menu extends RModel {
 								name: 'Add',
 								emoji: '➕',
 								action_id: '',
+								roles: [ Adventure.ROLE_MASTER ],
 								class: '',
 								items: [
 								]
@@ -78,6 +88,7 @@ class Menu extends RModel {
 								single_ton: true,
 								emoji: '📝',
 								action_id: 'list_players',
+								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',
 								items: [
 								]
@@ -89,6 +100,17 @@ class Menu extends RModel {
 						name: 'Batalha',
 						emoji: '⚔️',
 						action_id: 'new_battle',
+						roles: [ Adventure.ROLE_MASTER ],
+						class: 'open_box',
+						items: [
+						]
+					},
+					{
+						id: 12,
+						name: t('Equipamentos'),
+						emoji: '⛨',
+						action_id: 'list_equipaments',
+						roles: [ Adventure.ROLE_MASTER ],
 						class: 'open_box',
 						items: [
 						]
@@ -100,6 +122,7 @@ class Menu extends RModel {
 				name: 'Meu usuário',
 				emoji: '👤',
 				action_id: '',
+				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
 				items: [
 				]

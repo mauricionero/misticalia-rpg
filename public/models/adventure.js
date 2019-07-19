@@ -11,30 +11,51 @@ class Adventure extends RModel {
 	static EMOJI_ROLE_PLAYER = '♟️';
 	static EMOJI_ROLE_MASTER = '♚️';
 	static EMOJI_OPEN = '📂';
-	static EMOJI_NAME = '📂';
+	static EMOJI_NAME = '🏷';
+	static EMOJI_WORLD_STYLE = '🌎';
 
 	static EMOJI_ROLE = {
 		1: Adventure.EMOJI_ROLE_PLAYER,
 		2: Adventure.EMOJI_ROLE_MASTER
 	};
 
-	static currentAdventureId = null;
+	static currentAdventureId = 0;
 
 	// pegar do server todas as aventuras que o usuario atual pertence
 	static getUserAdventures () {
 
-		return [
-			{
-				id: 1,
-				role: Adventure.ROLE_MASTER,
-				name: 'Misticália'
-			},
-			{
-				id: 2,
-				role: Adventure.ROLE_PLAYER,
-				name: 'Teste'
-			}
-		]
+		let localAdventures = localStorage.getItem('adventures');
+
+		let adventures = JSON.parse(localStorage.getItem('adventures'));
+
+		if (adventures == null) {
+			adventures = [];
+		}
+
+		return adventures;
+	}
+
+	// criar uma nova aventura
+	static newAdventure (adventure) {
+
+		let adventures = Adventure.getUserAdventures();
+
+		adventure['role'] = Adventure.ROLE_MASTER;
+
+		adventures.push(adventure);
+
+		console.log('adventures', adventures);
+
+		try {
+			localStorage.setItem("adventures", JSON.stringify(adventures));
+
+			return true;
+		}
+		catch (err) {
+			alert(err.name);
+
+			return false;
+		}
 	}
 
 	static getCurrentAdventureId () {
@@ -44,14 +65,17 @@ class Adventure extends RModel {
 	static getCurrentAdventure () {
 		let myAdventures = Adventure.getUserAdventures();
 		let currentAdventureId = Adventure.getCurrentAdventureId();
+		let currentAdventure = null;
 
-		let currentAdventure = myAdventures.filter(adv => {
-			return adv.id == currentAdventureId;
-		});
+		if (myAdventures != null) {
+			currentAdventure = myAdventures.filter(adv => {
+				return adv.id == currentAdventureId;
+			});
 
-		console.log('currentAdventure', currentAdventure);
+			currentAdventure = currentAdventure[0];
+		}
 
-		return currentAdventure[0];
+		return currentAdventure;
 	}
 
 	static getCurrentAdventureRole () {

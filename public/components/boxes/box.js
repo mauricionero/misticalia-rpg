@@ -23,6 +23,7 @@ class Box {
 			// se for janela unica, nao deixa abrir mais
 			if (options['singleTon']) {
 				// chamar atenção
+				$('#' + dialogId).dialog("open");
 				$('#' + dialogId).effect( "shake" );
 				return dialogId;
 			} else {

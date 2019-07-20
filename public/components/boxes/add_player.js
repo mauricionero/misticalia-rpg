@@ -177,10 +177,6 @@ class AddPlayer extends Box {
 		let playerGender = $("input[name='" + AddPlayer.windowName + '_gender_' + randomId + "']:checked").val()
 		let playerName = $('#' + AddPlayer.windowName + '_name_' + randomId).val();
 
-		console.log('playerLogin', playerLogin);
-		console.log('playerGender', playerGender);
-		console.log('playerName', playerName);
-
 		let newPlayer = {
 			'login': playerLogin,
 			'gender': playerGender,
@@ -199,13 +195,10 @@ class AddPlayer extends Box {
 				'points': points
 			}
 		});
-		console.log('newPlayer', newPlayer);
 
 		let resultSaved = Player.addPlayer(newPlayer);
 
 		let saveButton = $('#' + AddPlayer.windowName + '_save_' + randomId);
-
-		console.log('resultSaved', resultSaved);
 
 		if (resultSaved) {
 

@@ -102,8 +102,6 @@ class Player extends RModel {
 
 		let players = JSON.parse(localStorage.getItem('players'));
 
-		console.log('get players', players);
-
 		if (players == null || players == undefined) {
 			players = [];
 		}
@@ -235,8 +233,6 @@ class Player extends RModel {
 		newPlayer['currentAdventureId'] = currentAdventureId;
 
 		players.push(newPlayer);
-
-		console.log('newPlayer', newPlayer);
 
 		try {
 			localStorage.setItem("players", JSON.stringify(players));

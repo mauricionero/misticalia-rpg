@@ -12,6 +12,10 @@ class Equipament extends RModel {
 	static EMOJI_ATACK = '🗡️';
 	static TYPE_SHIELD = 6;
 	static EMOJI_SHIELD = '🛡️';
+	static TYPE_AMULET = 7;
+	static EMOJI_AMULET = '🔵';
+	static TYPE_RING = 8;
+	static EMOJI_RING = '⭕';
 
 	static ORIGIN_PLATAFORM = 1;
 	static ORIGIN_OTHER_PLAYER = 2;
@@ -20,9 +24,6 @@ class Equipament extends RModel {
 	static EMOJI_NAME = '🏷️';
 	static EMOJI_WEIGHT = '⚖️';
 
-	static EMOJI_AMULET_EQUIPAMENT = '🔵';
-	static EMOJI_RING_EQUIPAMENT = '⭕';
-
 	static EMOJI_TYPES = {
 		1: Equipament.EMOJI_CHESTPLATE,
 		2: Equipament.EMOJI_HELMET,
@@ -30,11 +31,38 @@ class Equipament extends RModel {
 		4: Equipament.EMOJI_BOOTS,
 		5: Equipament.EMOJI_ATACK,
 		6: Equipament.EMOJI_SHIELD,
+		7: Equipament.EMOJI_AMULET,
+		8: Equipament.EMOJI_RING
 	};
 
+	static ALL_TYPE_NAMES = {
+		1: 'Peitoral',
+		2: 'Capacete',
+		3: 'Pernas',
+		4: 'Botas',
+		5: 'Ataque',
+		6: 'Escudo',
+		7: 'Amuleto',
+		8: 'Anel'
+	};
+
+	// pegar a tradução do tipo
+	static getTypeName (typeId) {
+		return t(Equipament.ALL_TYPE_NAMES[typeId])
+	}
+
 	// retorna todos os equipamentos num array
-	// esse metodo deve ser comunicar com o servidor, por enquanto apenas simula o retorno de todos os equipamentos
 	static getAllEquipaments () {
+
+		let equipaments = JSON.parse(localStorage.getItem('equipaments'));
+
+		console.log('get equipaments', equipaments);
+
+		if (equipaments == null || equipaments == undefined) {
+			equipaments = [];
+		}
+
+		return equipaments;
 
 		//TODO: buscar informação do servidor e armazenar numa variavel de classe.
 			// Pensar na possibilidade de um botao para atualizar informacoes alem de atualizar quando precisar de alguma forma.
@@ -112,6 +140,20 @@ class Equipament extends RModel {
 		];
 	}
 
+	// retorna todos os equipamentos da aventura atual
+	static getAllEquipamentsCurrentAdventure () {
+		let currentAdventureId = Adventure.getCurrentAdventureId
+
+		// se nenhuma aventura esta selecionada, retorna vazio
+		if (currentAdventureId == undefined || currentAdventureId == null) {
+			return [];
+		}
+
+		let allEquipaments = Equipament.getAllEquipaments();
+
+		return allEquipaments.filter(function ( equipament ) { return equipament['currentAdventureId'] == currentAdventureId });
+	}
+
 	// converter peso sendo recebido em gramas em algo mais legivel
 	static weightHuman (weight) {
 		var measureUnit = 'g';
@@ -131,5 +173,33 @@ class Equipament extends RModel {
 		}
 
 		return weight + measureUnit;
+	}
+
+	// adicionar um novo equipamento aa aventura
+	static addEquipament (newEquipament) {
+		var randomId = Math.floor(Math.random() * 100000);
+
+		let equipaments = Equipament.getAllEquipaments();
+		let currentAdventureId = Adventure.getCurrentAdventureId();
+
+		//TODO: validar preenchimento
+
+		newEquipament['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
+		newEquipament['currentAdventureId'] = currentAdventureId;
+
+		equipaments.push(newEquipament);
+
+		console.log('newEquipament', newEquipament);
+
+		try {
+			localStorage.setItem("equipaments", JSON.stringify(equipaments));
+
+			return true;
+		}
+		catch (err) {
+			alert(err.name);
+
+			return false;
+		}
 	}
 }

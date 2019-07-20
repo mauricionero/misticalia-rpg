@@ -33,7 +33,9 @@ function buildMenu (items = null) {
 
 		$(".open_box").click(function() {
 
-			let options = {}
+			//TODO: aceitar atributo options no menu
+				// seria bom para passar filtragens e outras opcoes para as box quando abrir, daria para chamar a mesma dialog com filtros diferentes
+			let options = {};
 
 			if (this.getAttribute('single_ton')) {
 				options['singleTon'] = this.getAttribute('single_ton')

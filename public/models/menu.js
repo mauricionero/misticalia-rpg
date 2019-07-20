@@ -58,7 +58,7 @@ class Menu extends RModel {
 			},
 			{ // role de mestre da aventura atual
 				id: 6,
-				name: 'Mestre',
+				name: '%ADVENTURE_NAME%',
 				emoji: '♚️',
 				action_id: '',
 				roles: [ Adventure.ROLE_MASTER ],
@@ -118,7 +118,7 @@ class Menu extends RModel {
 								id: 14,
 								name: t('Add equipamento'),
 								emoji: '➕',
-								action_id: 'add_equipaments',
+								action_id: 'add_equipament',
 								single_ton: true,
 								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',
@@ -147,16 +147,6 @@ class Menu extends RModel {
 				action_id: '',
 				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
-				items: [
-				]
-			},
-			{
-				id: 13,
-				name: '%ADVENTURE_NAME%',
-				emoji: '🌐',
-				action_id: '',
-				roles: [ Adventure.ROLE_MASTER ],
-				class: 'current_adventure',
 				items: [
 				]
 			}

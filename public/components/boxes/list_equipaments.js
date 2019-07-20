@@ -33,12 +33,12 @@ class ListEquipaments extends Box {
 			listEquipamentTable.append(
 				$("<tr>").append(
 					$("<td>").append(
-						Equipament.EMOJI_TYPES[equipament['type']],
+						Equipament.EMOJI_TYPES[equipament['typeId']],
 						$("<input>", {
 							type: 'hidden',
 							id: ListEquipaments.windowName + '_type_' + equipament['id'] + '_' + randomId,
 							readonly: 'readonly',
-							value: equipament['type']
+							value: equipament['typeId']
 						})
 					),
 					$("<td>").append(
@@ -47,7 +47,7 @@ class ListEquipaments extends Box {
 							type: 'hidden',
 							id: ListEquipaments.windowName + '_name_' + equipament['id'] + '_' + randomId,
 							readonly: 'readonly',
-							value: equipament['type']
+							value: equipament['name']
 						})
 					),
 					$("<td>").append(

@@ -39,7 +39,7 @@ class NewAdventure extends Box {
 						$("<input>", {
 							type: 'button',
 							id: NewAdventure.windowName + '_save_' + randomId,
-							onclick: 'NewAdventure.save_adventure(' + randomId + ')',
+							onclick: 'NewAdventure.saveAdventure(' + randomId + ')',
 							value: t('Criar')
 						})
 					)
@@ -50,13 +50,11 @@ class NewAdventure extends Box {
 		return formNewAdventure;
 	}
 
-	static save_adventure (randomId) {
+	// salvar aventura
+	static saveAdventure (randomId) {
 
 		let adventureName = $('#' + NewAdventure.windowName + '_name_' + randomId).val();
 		let adventureStyle = $('#' + NewAdventure.windowName + '_style_' + randomId).val();
-
-		console.log('adventureName', adventureName);
-		console.log('adventureStyle', adventureStyle);
 
 		let newAdventure = {
 			'name': adventureName,
@@ -66,12 +64,11 @@ class NewAdventure extends Box {
 		let resultSaved = Adventure.newAdventure(newAdventure);
 		let saveButton = $('#' + NewAdventure.windowName + '_save_' + randomId);
 
-		console.log('resultSaved', resultSaved);
-
 		if (resultSaved) {
 
 			saveButton.val(t('Criado!'));
-			saveButton.attr('disabled','disabled')
+			saveButton.attr('disabled','disabled');
+			
 		} else {
 
 			saveButton.val(t('Erro :('));

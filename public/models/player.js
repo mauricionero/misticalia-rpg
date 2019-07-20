@@ -7,6 +7,8 @@ class Player extends RModel {
 	static EMOJI_INCLUDE_EQUIPAMENT = '⛨';
 
 	static EMOJI_NAME = '웃';
+	static EMOJI_SHORT_NAME = '…';
+	static EMOJI_GENDER = '⚤';
 	static EMOJI_GENDER_MALE = '👨';
 	static EMOJI_GENDER_FEMALE = '👩';
 	static EMOJI_STRENGTH = '💪';
@@ -39,6 +41,7 @@ class Player extends RModel {
 	static EMOJI_FEET_EQUIPAMENT = '👣';
 
 	static EMOJI_GENDER = {
+		0: Player.EMOJI_GENDER,
 		1: Player.EMOJI_GENDER_MALE,
 		2: Player.EMOJI_GENDER_FEMALE
 	};
@@ -52,6 +55,16 @@ class Player extends RModel {
 		'charisma',
 		'sanity',
 	];
+
+	static ALL_ATTRIBUTES_NAMES = {
+		'strength': 'Força',
+		'dextery': 'Destreza',
+		'constitution': 'Constiuĩção',
+		'inteligence': 'Inteligencia',
+		'wisdom': 'Sabedoria',
+		'charisma': 'Carisma',
+		'sanity': 'Sanidade',
+	};
 
 	// formula: Math.ceil(level**(2.4) - level**(1.4) + level)
 	static POINTS_TO_LEVEL = [
@@ -78,54 +91,24 @@ class Player extends RModel {
 		1280 // 20
 	]
 
+	// pegar a tradução do atributo
+	static getAttributeName (attribute) {
+		return t(Player.ALL_ATTRIBUTES_NAMES[attribute])
+	}
+
 	// retorna todos os players num array
 	// esse metodo deve ser comunicar com o servidor, por enquanto apenas simula o retorno de todos os players
 	static getAllPlayers () {
 
-		//TODO: buscar informação do servidor e armazenar numa variavel de classe.
-			// Pensar na possibilidade de um botao para atualizar informacoes alem de atualizar quando precisar de alguma forma.
+		let players = JSON.parse(localStorage.getItem('players'));
 
-		return [
-			{
-				id: 1,
-				shortname: 'MN',
-				name: 'Mauricio Nero',
-				gender: Player.MALE_ID,
-				strength: 0,
-				dextery: 1,
-				constitution: 2,
-				inteligence: 5,
-				wisdom: 12,
-				charisma: 13,
-				sanity: 60
-			},
-			{
-				id: 2,
-				shortname: 'Zé',
-				name: 'José Fontana',
-				gender: Player.MALE_ID,
-				strength: 40,
-				dextery: 60,
-				constitution: 100,
-				inteligence: 60,
-				wisdom: 110,
-				charisma: 30,
-				sanity: 80
-			},
-			{
-				id: 3,
-				shortname: 'FC',
-				name: 'Francieli Celeghim',
-				gender: Player.FEMALE_ID,
-				strength: 100,
-				dextery: 40,
-				constitution: 40,
-				inteligence: 110,
-				wisdom: 110,
-				charisma: 30,
-				sanity: 80
-			}
-		];
+		console.log('get players', players);
+
+		if (players == null || players == undefined) {
+			players = [];
+		}
+
+		return players;
 	}
 
 	// retorna todos os equipamentos desse jogador
@@ -182,11 +165,14 @@ class Player extends RModel {
 		]
 	}
 
-	// retorna algo para colocar num espaço pequeno sobre o player, tipo um avatar ou as iniciais
+	// retorna algo para colocar num espaço pequeno sobre o player (html), tipo um avatar ou as iniciais
 	static getPlayerShort (playerId) {
 		let player = Player.getPlayer(playerId);
 
-		return player['shortname'];
+		// pegar as primeiras letras do nome e deixar maiusculo
+		let playerShort = player['name'].match(/\b(\w)/g).join('').toUpperCase();
+
+		return playerShort;
 	}
 
 	// retorna 1 player especifico pelo id
@@ -201,7 +187,7 @@ class Player extends RModel {
 	static getMax (playerAttribute) {
 		let allPlayers = Player.getAllPlayers();
 
-		return Math.max.apply(Math, allPlayers.map(function(player) { return player[playerAttribute]; }))
+		return Math.max.apply(Math, allPlayers.map(function(player) { return player[playerAttribute]['basePoints']; }))
 	}
 
 	// retorna maximo de pontuação de acordo com o nivel
@@ -234,5 +220,48 @@ class Player extends RModel {
 
 		return result;
 
+	}
+
+	// adicionar um novo jogador aa aventura
+	static addPlayer (newPlayer) {
+		var randomId = Math.floor(Math.random() * 100000);
+
+		let players = Player.getAllPlayers();
+		let currentAdventureId = Adventure.getCurrentAdventureId();
+
+		//TODO: validar preenchimento
+
+		newPlayer['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
+		newPlayer['currentAdventureId'] = currentAdventureId;
+
+		players.push(newPlayer);
+
+		console.log('newPlayer', newPlayer);
+
+		try {
+			localStorage.setItem("players", JSON.stringify(players));
+
+			return true;
+		}
+		catch (err) {
+			alert(err.name);
+
+			return false;
+		}
+	}
+
+	// calcular o total de pontos do atributo do player
+	static calculateTotalPoints (basePoints, temporaryModifier, permanentModifier) {
+		if (basePoints == undefined || basePoints == null) {
+			basePoints = 0;
+		}
+		if (temporaryModifier == undefined || temporaryModifier == null) {
+			temporaryModifier = 0;
+		}
+		if (permanentModifier == undefined || permanentModifier == null) {
+			permanentModifier = 0;
+		}
+
+		return parseInt(basePoints) + parseInt(temporaryModifier) + parseInt(permanentModifier);
 	}
 }

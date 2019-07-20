@@ -61,10 +61,18 @@ function buildMenu (items = null) {
 		}
 
 		if (item['roles'].includes(currentAdventureRoleId)) {
+
+			let menuText = t(item['name']);
+
+			// variaveis magicas
+			if (item['name'] == '%ADVENTURE_NAME%') {
+				menuText = Adventure.getCurrentAdventureName();
+			}
+
 			menuList.push(
 				$("<li>").append(
 					$("<div>", { id: item['action_id'], class: item['class'], single_ton: item['single_ton'] }).html(
-						item['emoji'] + ' ' + t(item['name'])
+						item['emoji'] + ' ' + menuText
 					),
 					subMenu
 				)

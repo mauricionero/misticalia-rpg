@@ -32,7 +32,7 @@ class VisualizePlayer extends Box {
 				$("<th>", { title: t('Modificador permanente') }).append(
 					Player.EMOJI_PERMANENT_MODIFICATOR
 				),
-				$("<th>", { title: t('Modificador momentâneo') }).append(
+				$("<th>", { title: t('Modificador temporario') }).append(
 					Player.EMOJI_TEMPORARY_MODIFICATOR
 				),
 				$("<th>", { title: t('Total de pontos') }).append(
@@ -51,10 +51,14 @@ class VisualizePlayer extends Box {
 		);
 
 		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+			let basePoints = player[attribute]['basePoints'] || 0;
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
+
 			listPlayerTable.append(
 				$("<tr>").append(
 					$("<td>").append(
-						attribute
+						Player.getAttributeName(attribute)
 					),
 					$("<td>").append(
 						$("<input>", {
@@ -63,7 +67,7 @@ class VisualizePlayer extends Box {
 							id: VisualizePlayer.windowName + '_level_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidthSmall,
 							height: inputHeight,
-							value: Player.levelCalculator(player[attribute])
+							value: Player.levelCalculator(basePoints)
 						})
 					),
 					$("<td>").append(
@@ -72,8 +76,8 @@ class VisualizePlayer extends Box {
 							id: VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ', "' + attribute + '")',
-							value: player[attribute]
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: basePoints
 						})
 					),
 					$("<td>").append(
@@ -83,18 +87,18 @@ class VisualizePlayer extends Box {
 							width: inputWidth,
 							height: inputHeight,
 							readonly: 'readonly',
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ', "' + attribute + '")',
-							value: 0
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: permanentModifier
 						})
 					),
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_moment_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							id: VisualizePlayer.windowName + '_temporary_modifier_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', ' + playerId + ', "' + attribute + '")',
-							value: 0
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: temporaryModifier
 						})
 					),
 					$("<td>").append(
@@ -104,7 +108,7 @@ class VisualizePlayer extends Box {
 							id: VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
-							value: player[attribute]
+							value: Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier)
 						})
 					),
 					$("<td>").append(
@@ -113,7 +117,7 @@ class VisualizePlayer extends Box {
 							id: VisualizePlayer.windowName + '_dice_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', ' + playerId + ', "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
 							value: 0
 						})
 					),
@@ -123,7 +127,7 @@ class VisualizePlayer extends Box {
 							id: VisualizePlayer.windowName + '_difficulty_' + playerId + '_' + attribute + '_' + randomId,
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', ' + playerId + ', "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
 							value: 0
 						})
 					),
@@ -212,8 +216,8 @@ class VisualizePlayer extends Box {
 		listPlayerDiv.append(
 			'<br />',
 			$('<a>',{
-				href: '#',
-				onclick: 'VisualizePlayer.toggleViewEquipaments(' + playerId + ', ' + randomId + ')'
+				href: 'javascript: void(0)',
+				onclick: 'VisualizePlayer.toggleViewEquipaments("' + playerId + '", ' + randomId + ')'
 			}).html(
 				t('Ver equipamentos e itens')
 			),
@@ -224,20 +228,17 @@ class VisualizePlayer extends Box {
 		return listPlayerDiv;
 	}
 
-	// mostrar e esconder os equipamentos do player
-	static toggleViewEquipaments (playerId, randomId) {
-		$('#' + VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId).slideToggle();
-	}
-
-	// abrir visualização do player
+	// abrir dialog de visualização do player
 	static visualize_player (playerId) {
 
 		let player = Player.getPlayer(playerId);
 
 		let playerName = player['name'];
-		let playerGenderId = player['gender'];
+		let playerGenderId = player['gender'] || 0;
 
-		let genderTitle = (playerGenderId == Player.MALE_ID) ? 'Jogador' : 'Jogadora';
+		console.log('playerGenderId', playerGenderId);
+
+		let genderTitle = (playerGenderId == Player.FEMALE_ID) ? 'Jogadora' : 'Jogador';
 		let windowTitle = Player.EMOJI_GENDER[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
 
 		let options = {
@@ -249,15 +250,25 @@ class VisualizePlayer extends Box {
 		Box.openDialog(VisualizePlayer.windowName, windowTitle, options);
 	}
 
-	// recalcula o total de pontos
+	// mostrar e esconder os equipamentos do player
+	static toggleViewEquipaments (playerId, randomId) {
+		$('#' + VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId).slideToggle();
+	}
+
+	// recalcula o nivel e total de pontos
 	static reCalculateTotalPoints (randomId, playerId, attribute) {
 		let basePoints = $('#' + VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
-		let momentModifier = $('#' + VisualizePlayer.windowName + '_moment_modifier_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
+		let temporaryModifier = $('#' + VisualizePlayer.windowName + '_temporary_modifier_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
 		let permanentModifier = $('#' + VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
 
-		let totalPoints = parseInt(basePoints) + parseInt(momentModifier) + parseInt(permanentModifier);
+		let levelInput = $('#' + VisualizePlayer.windowName + '_level_' + playerId + '_' + attribute + '_' + randomId);
+		let totalPointsInput = $('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId)
 
-		$('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId).val(totalPoints);
+		let level = Player.levelCalculator(basePoints);
+		let totalPoints = Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier);
+
+		totalPointsInput.val(totalPoints);
+		levelInput.val(level);
 	}
 
 	// recalcula o resultado da rolagem de dados

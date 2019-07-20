@@ -78,7 +78,7 @@ class PlayerEquipament extends Box {
 			style: 'display: none'
 		});
 
-		// // listar botoes para filtrar a tabela posteriormente por tipos
+		// // listar botoes para filtrar a tabela por tipos
 		// Object.keys(Equipament.EMOJI_TYPES).forEach(function(key, index) {
 		// 	listPlayerEquipamentItemTabs.append(
 		// 		$("<input>", {
@@ -96,7 +96,7 @@ class PlayerEquipament extends Box {
 
 		listPlayerEquipamentDiv.append(
 			$('<a>',{
-				href: '#',
+				href: 'javascript: void(0)',
 				onclick: 'PlayerEquipament.toggleViewEquipaments(' + playerId + ', ' + randomId + ')'
 			}).html(
 				t('Ver equipamentos e itens >>')

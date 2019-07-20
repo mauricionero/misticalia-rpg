@@ -1,0 +1,23 @@
+.add_player_login {
+	text-align: right;
+}
+
+/* HIDE RADIO */
+[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+}
+
+/* IMAGE STYLES */
+[type=radio] + span {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + span {
+  outline: 2px solid #666;
+  background-color: #ccc;
+}

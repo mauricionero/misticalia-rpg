@@ -52,7 +52,7 @@ class OpenAdventure extends Box {
 						$("<input>", {
 							type: 'button',
 							id: OpenAdventure.windowName + '_open_' + adventure['id'] + '_' + randomId,
-							onclick: 'OpenAdventure.open_adventure(' + adventure['id'] + ')',
+							onclick: 'OpenAdventure.open_adventure("' + adventure['id'] + '")',
 							value: Adventure.EMOJI_OPEN
 						}),
 					)

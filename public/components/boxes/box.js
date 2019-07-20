@@ -49,7 +49,12 @@ class Box {
 				},
 				show: { effect: "fade", duration: 500 },
 				width: klass.boxWidth,
-				height: klass.boxHeight
+				height: klass.boxHeight,
+		        close: function(event, ui)
+		        {
+		            $(this).dialog("close");
+		            $(this).remove();
+		        }
 			});
 		});
 

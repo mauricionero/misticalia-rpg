@@ -74,17 +74,17 @@ class Menu extends RModel {
 						items: [
 							{
 								id: 8,
-								name: 'Add',
+								name: 'Add jogador',
 								emoji: '➕',
-								action_id: '',
+								action_id: 'add_player',
 								roles: [ Adventure.ROLE_MASTER ],
-								class: '',
+								class: 'open_box',
 								items: [
 								]
 							},
 							{
 								id: 9,
-								name: 'Listar',
+								name: 'Listar jogadores',
 								single_ton: true,
 								emoji: '📝',
 								action_id: 'list_players',
@@ -109,10 +109,33 @@ class Menu extends RModel {
 						id: 12,
 						name: t('Equipamentos'),
 						emoji: '⛨',
-						action_id: 'list_equipaments',
+						action_id: '',
+						single_ton: true,
 						roles: [ Adventure.ROLE_MASTER ],
-						class: 'open_box',
+						class: '',
 						items: [
+							{
+								id: 14,
+								name: t('Add equipamento'),
+								emoji: '➕',
+								action_id: 'add_equipaments',
+								single_ton: true,
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							},
+							{
+								id: 15,
+								name: t('Listar equipamentos'),
+								emoji: '⛨',
+								action_id: 'list_equipaments',
+								single_ton: true,
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							}
 						]
 					}
 				]
@@ -124,6 +147,16 @@ class Menu extends RModel {
 				action_id: '',
 				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
+				items: [
+				]
+			},
+			{
+				id: 13,
+				name: '%ADVENTURE_NAME%',
+				emoji: '🌐',
+				action_id: '',
+				roles: [ Adventure.ROLE_MASTER ],
+				class: 'current_adventure',
 				items: [
 				]
 			}

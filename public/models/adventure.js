@@ -19,16 +19,12 @@ class Adventure extends RModel {
 		2: Adventure.EMOJI_ROLE_MASTER
 	};
 
-	static currentAdventureId = 0;
-
 	// pegar do server todas as aventuras que o usuario atual pertence
 	static getUserAdventures () {
 
-		let localAdventures = localStorage.getItem('adventures');
-
 		let adventures = JSON.parse(localStorage.getItem('adventures'));
 
-		if (adventures == null) {
+		if (adventures == null || adventures == undefined) {
 			adventures = [];
 		}
 
@@ -37,10 +33,14 @@ class Adventure extends RModel {
 
 	// criar uma nova aventura
 	static newAdventure (adventure) {
+		var randomId = Math.floor(Math.random() * 100000);
 
 		let adventures = Adventure.getUserAdventures();
 
+		adventure['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
 		adventure['role'] = Adventure.ROLE_MASTER;
+		
+		//TODO: validar preenchimento
 
 		adventures.push(adventure);
 
@@ -58,10 +58,33 @@ class Adventure extends RModel {
 		}
 	}
 
+	// pegar o id da aventura atual
 	static getCurrentAdventureId () {
-		return Adventure.currentAdventureId;
+		let currentAdventureId = localStorage.getItem('currentAdventureId');
+
+		if (currentAdventureId == null || currentAdventureId == undefined) {
+			currentAdventureId = 0;
+		}
+
+		return currentAdventureId;
 	}
 
+	// setar o id da aventura atual
+	static setCurrentAdventureId (currentAdventureId) {
+		console.log('currentAdventureId', currentAdventureId);
+		try {
+			localStorage.setItem("currentAdventureId", currentAdventureId);
+
+			return true;
+		}
+		catch (err) {
+			alert(err.name);
+
+			return false;
+		}
+	}
+
+	// pegar a aventura atual
 	static getCurrentAdventure () {
 		let myAdventures = Adventure.getUserAdventures();
 		let currentAdventureId = Adventure.getCurrentAdventureId();
@@ -78,18 +101,26 @@ class Adventure extends RModel {
 		return currentAdventure;
 	}
 
+	// pegar o papel da aventura atual (mestre, jogador ou nenhum)
 	static getCurrentAdventureRole () {
 		let currentAdventure = Adventure.getCurrentAdventure();
 
 		if (currentAdventure) {
 			return currentAdventure['role'];
 		} else {
-			return Adventure.ROLE_UNDEFINED
+			return Adventure.ROLE_UNDEFINED;
 		}
 	}
 
-	static setCurrentAdventureId (adventureId) {
-		return this.currentAdventureId = adventureId;
+	// pegar o nome da aventura atual
+	static getCurrentAdventureName () {
+		let currentAdventure = Adventure.getCurrentAdventure();
+
+		if (currentAdventure) {
+			return currentAdventure['name'];
+		} else {
+			return '';
+		}
 	}
 
 }

@@ -1,8 +1,5 @@
 class AddDice extends Box {
 
-	boxWidth = 300;
-	boxHeight = 220;
-
 	idWindow = 'add_dice';
 
 	boxContent () {

@@ -17,9 +17,9 @@
 /* Change dropdown carets to correct direction */
 #menubar > li > div > span.ui-icon-caret-1-e {
   /* Caret on menubar */
-  background:url(https://www.drupal.org/files/issues/ui-icons-222222-256x240.png) no-repeat -64px -16px !important;
+  background:url(../../resources/images/ui-icons-222222-256x240.png) no-repeat -64px -16px !important;
 }
 #menubar ul li div span.ui-icon-caret-1-e {
   /* Caret on dropdowns */
-  background:url(https://www.drupal.org/files/issues/ui-icons-222222-256x240.png) no-repeat -32px -16px !important;
+  background:url(../../resources/images/ui-icons-222222-256x240.png) no-repeat -32px -16px !important;
 }

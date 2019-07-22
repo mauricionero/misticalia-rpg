@@ -1,6 +1,6 @@
 class ListPlayers extends Box {
 
-	static windowName = 'list_players';
+	static get windowName () { return 'list_players' };
 
 	boxContent () {
 

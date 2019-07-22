@@ -1,9 +1,6 @@
 class NewAtack extends Box {
 
-	boxWidth = 260;
-	boxHeight = 220;
-
-	windowName = 'new_atack';
+	static get windowName () { return 'new_atack' };
 
 	boxContent (options) {
 

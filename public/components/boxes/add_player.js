@@ -1,6 +1,6 @@
 class AddPlayer extends Box {
 
-	static windowName = 'add_player';
+	static get windowName () { return 'add_player' };
 
 	boxContent () {
 

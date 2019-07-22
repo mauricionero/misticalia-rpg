@@ -1,10 +1,13 @@
 class Box {
-	boxWidth = 'auto';
-	boxHeight = 'auto';
 
-	positionMy = 'center top';
-	positionAt = 'center top';
-	positionOf = '#master-table';
+	constructor() {
+		this.boxWidth = 'auto';
+		this.boxHeight = 'auto';
+
+		this.positionMy = 'center top';
+		this.positionAt = 'center top';
+		this.positionOf = '#master-table';
+	}
 
 	static openDialog (id, title, options = {}) {
 

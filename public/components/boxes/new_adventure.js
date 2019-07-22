@@ -1,6 +1,6 @@
 class NewAdventure extends Box {
 
-	static windowName = 'new_adventure';
+	static get windowName () { return 'new_adventure' };
 
 	boxContent () {
 		var randomId = Math.floor(Math.random() * 10000);

@@ -1,6 +1,6 @@
 class AddDice extends Box {
 
-	idWindow = 'add_dice';
+	static get windowName () { return 'add_dice' };
 
 	boxContent () {
 

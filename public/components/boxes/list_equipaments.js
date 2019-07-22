@@ -1,6 +1,6 @@
 class ListEquipaments extends Box {
 
-	static windowName = 'list_equipaments';
+	static get windowName () { return 'list_equipaments' };
 
 	boxContent () {
 

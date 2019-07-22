@@ -1,6 +1,6 @@
 class PlayerEquipament extends Box {
 
-	static windowName = 'player_equipament';
+	static get windowName () { return 'player_equipament' };
 
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);

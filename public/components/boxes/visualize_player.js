@@ -1,6 +1,6 @@
 class VisualizePlayer extends Box {
 
-	static windowName = 'visualize_player';
+	static get windowName () { return 'visualize_player' };
 
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);

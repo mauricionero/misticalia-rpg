@@ -1,23 +1,22 @@
 class NewBattle extends Box {
 
-	boxWidth = 340;
-	boxHeight = 220;
-
 	// id das acoes
-	static WAIT = 0;
-	static ACTION = 1;
-	static FIGHT = 2;
-	static ITEM = 3;
+	static get WAIT () { return 0 };
+	static get ACTION () { return 1 };
+	static get FIGHT () { return 2 };
+	static get ITEM () { return 3 };
 
 	// caractere das acoes
-	static ACTION_EMOJIS = {
-		0: Battle.EMOJI_WAIT,
-		1: Battle.EMOJI_ACTION,
-		2: Battle.EMOJI_FIGHT,
-		3: Battle.EMOJI_ITEM
+	static get ACTION_EMOJIS () {
+		return {
+			0: Battle.EMOJI_WAIT,
+			1: Battle.EMOJI_ACTION,
+			2: Battle.EMOJI_FIGHT,
+			3: Battle.EMOJI_ITEM
+		}
 	};
 
-	static windowName = 'new_battle';
+	static get windowName () { return 'new_battle' };
 
 	boxContent () {
 

@@ -1,6 +1,6 @@
 class OpenAdventure extends Box {
 
-	static windowName = 'open_adventure';
+	static get windowName () { return 'open_adventure' };
 
 	boxContent () {
 

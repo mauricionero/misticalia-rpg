@@ -239,7 +239,7 @@ class VisualizePlayer extends Box {
 		console.log('playerGenderId', playerGenderId);
 
 		let genderTitle = (playerGenderId == Player.FEMALE_ID) ? 'Jogadora' : 'Jogador';
-		let windowTitle = Player.EMOJI_GENDER[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
+		let windowTitle = Player.EMOJI_GENDERS[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
 
 		let options = {
 			playerId: playerId,

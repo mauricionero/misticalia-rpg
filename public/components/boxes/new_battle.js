@@ -99,8 +99,8 @@ class NewBattle extends Box {
 							type: 'text',
 							id: 'new_battle_original_' + player['id'] + '_' + randomId,
 							width: 32,
-							title: t('Original: ') + player['dextery'],
-							value: player['dextery']
+							title: t('Original: ') + player['dextery']['basePoints'],
+							value: player['dextery']['basePoints']
 						}),
 						$("<input>", {
 							type: 'text',
@@ -127,7 +127,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ACTION + '_' + randomId,
-							onclick: 'NewBattle.playerAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ACTION + ')',
+							onclick: 'NewBattle.playerAction(' + randomId + ', "' + player['id'] + '", ' + NewBattle.ACTION + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.ACTION]
 						})
 					),
@@ -135,7 +135,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.FIGHT + '_' + randomId,
-							onclick: 'NewBattle.playerAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.FIGHT + ')',
+							onclick: 'NewBattle.playerAction(' + randomId + ', "' + player['id'] + '", ' + NewBattle.FIGHT + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
 						})
 					),
@@ -143,7 +143,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: 'new_battle_action_' + player['id'] + '_' + NewBattle.ITEM + '_' + randomId,
-							onclick: 'NewBattle.playerAction(' + randomId + ', ' + player['id'] + ', ' + NewBattle.ITEM + ')',
+							onclick: 'NewBattle.playerAction(' + randomId + ', "' + player['id'] + '", ' + NewBattle.ITEM + ')',
 							value: NewBattle.ACTION_EMOJIS[NewBattle.ITEM]
 						})
 					),
@@ -151,7 +151,7 @@ class NewBattle extends Box {
 						$("<input>", {
 							type: 'button',
 							id: NewBattle.windowName + '_visualize_' + player['id'] + '_' + randomId,
-							onclick: 'VisualizePlayer.visualize_player(' + player['id'] + ')',
+							onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
 							value: '👁️'
 						})
 					)

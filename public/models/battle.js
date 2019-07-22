@@ -1,11 +1,11 @@
 class Battle extends RModel {
 
-	static EMOJI_GO_WAIT = '⏯️';
-	static EMOJI_ACTION = '🏃';
-	static EMOJI_FIGHT = '🗡️';
-	static EMOJI_ITEM = '💊';
-	static EMOJI_ACTION_WAIT = '⏳';
+	static get EMOJI_GO_WAIT () { return '⏯️' };
+	static get EMOJI_ACTION () { return '🏃' };
+	static get EMOJI_FIGHT () { return '🗡️' };
+	static get EMOJI_ITEM () { return '💊' };
+	static get EMOJI_ACTION_WAIT () { return '⏳' };
 
-	static EMOJI_TARGET = '🎯';
+	static get EMOJI_TARGET () { return '🎯' };
 
 }

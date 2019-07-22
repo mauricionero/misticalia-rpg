@@ -1,95 +1,103 @@
 class Player extends RModel {
 
-	static MALE_ID = 1;
-	static FEMALE_ID = 2;
+	static get MALE_ID () { return 1 };
+	static get FEMALE_ID () { return 2 };
 
-	static EMOJI_VISUALIZE = '👁️';
-	static EMOJI_INCLUDE_EQUIPAMENT = '⛨';
+	static get EMOJI_VISUALIZE () { return '👁️' };
+	static get EMOJI_INCLUDE_EQUIPAMENT () { return '⛨' };
 
-	static EMOJI_NAME = '웃';
-	static EMOJI_SHORT_NAME = '…';
-	static EMOJI_GENDER = '⚤';
-	static EMOJI_GENDER_MALE = '👨';
-	static EMOJI_GENDER_FEMALE = '👩';
-	static EMOJI_STRENGTH = '💪';
-	static EMOJI_DEXTERY = '🏃';
-	static EMOJI_CONSTITUTION = '✚';
-	static EMOJI_INTELIGENCE = '💡';
-	static EMOJI_WISDOM = '📚';
-	static EMOJI_CHARISMA = '👹';
-	static EMOJI_SANITY = '🙂';
+	static get EMOJI_NAME () { return '웃' };
+	static get EMOJI_SHORT_NAME () { return '…' };
+	static get EMOJI_GENDER () { return '⚤' };
+	static get EMOJI_GENDER_MALE () { return '👨' };
+	static get EMOJI_GENDER_FEMALE () { return '👩' };
+	static get EMOJI_STRENGTH () { return '💪' };
+	static get EMOJI_DEXTERY () { return '🏃' };
+	static get EMOJI_CONSTITUTION () { return '✚' };
+	static get EMOJI_INTELIGENCE () { return '💡' };
+	static get EMOJI_WISDOM () { return '📚' };
+	static get EMOJI_CHARISMA () { return '👹' };
+	static get EMOJI_SANITY () { return '🙂' };
 
-	static EMOJI_LEVEL = '🎚️';
-	static EMOJI_POINTS = '🌡️';
-	static EMOJI_ATTRIBUTE = '✔️';
-	static EMOJI_BALANCE = '⚖️';
-	static EMOJI_TEMPORARY_MODIFICATOR = '⌛';
-	static EMOJI_PERMANENT_MODIFICATOR = '⏳';
-	static EMOJI_TOTAL_POINTS = '💯';
+	static get EMOJI_LEVEL () { return '🎚️' };
+	static get EMOJI_POINTS () { return '🌡️' };
+	static get EMOJI_ATTRIBUTE () { return '✔️' };
+	static get EMOJI_BALANCE () { return '⚖️' };
+	static get EMOJI_TEMPORARY_MODIFICATOR () { return '⌛' };
+	static get EMOJI_PERMANENT_MODIFICATOR () { return '⏳' };
+	static get EMOJI_TOTAL_POINTS () { return '💯' };
 
-	static EMOJI_ROLL_DICE = '🎲';
-	static EMOJI_DIFFICULTY = '䷂';
-	static EMOJI_RESULT = '=';
+	static get EMOJI_ROLL_DICE () { return '🎲' };
+	static get EMOJI_DIFFICULTY () { return '䷂' };
+	static get EMOJI_RESULT () { return '=' };
 
-	static EMOJI_HEAD_EQUIPAMENT = '👷';
-	static EMOJI_AMULET_EQUIPAMENT = '🔵';
-	static EMOJI_RING_EQUIPAMENT = '⭕';
-	static EMOJI_SHIELD_EQUIPAMENT = '🛡️';
-	static EMOJI_CHESTPLATE_EQUIPAMENT = '👕';
-	static EMOJI_MAIN_HAND_EQUIPAMENT = '🗡️';
-	static EMOJI_LEGS_EQUIPAMENT = '👖';
-	static EMOJI_FEET_EQUIPAMENT = '👣';
+	static get EMOJI_HEAD_EQUIPAMENT () { return '👷' };
+	static get EMOJI_AMULET_EQUIPAMENT () { return '🔵' };
+	static get EMOJI_RING_EQUIPAMENT () { return '⭕' };
+	static get EMOJI_SHIELD_EQUIPAMENT () { return '🛡️' };
+	static get EMOJI_CHESTPLATE_EQUIPAMENT () { return '👕' };
+	static get EMOJI_MAIN_HAND_EQUIPAMENT () { return '🗡️' };
+	static get EMOJI_LEGS_EQUIPAMENT () { return '👖' };
+	static get EMOJI_FEET_EQUIPAMENT () { return '👣' };
 
-	static EMOJI_GENDER = {
-		0: Player.EMOJI_GENDER,
-		1: Player.EMOJI_GENDER_MALE,
-		2: Player.EMOJI_GENDER_FEMALE
+	static get EMOJI_GENDERS () {
+		return {
+			0: Player.EMOJI_GENDER,
+			1: Player.EMOJI_GENDER_MALE,
+			2: Player.EMOJI_GENDER_FEMALE
+		}
 	};
 
-	static ALL_ATTRIBUTES = [
-		'strength',
-		'dextery',
-		'constitution',
-		'inteligence',
-		'wisdom',
-		'charisma',
-		'sanity',
-	];
+	static get ALL_ATTRIBUTES () {
+		return [
+			'strength',
+			'dextery',
+			'constitution',
+			'inteligence',
+			'wisdom',
+			'charisma',
+			'sanity'
+		]
+	};
 
-	static ALL_ATTRIBUTES_NAMES = {
-		'strength': 'Força',
-		'dextery': 'Destreza',
-		'constitution': 'Constiuĩção',
-		'inteligence': 'Inteligencia',
-		'wisdom': 'Sabedoria',
-		'charisma': 'Carisma',
-		'sanity': 'Sanidade',
+	static get ALL_ATTRIBUTES_NAMES () {
+		return {
+			'strength': 'Força',
+			'dextery': 'Destreza',
+			'constitution': 'Constiuĩção',
+			'inteligence': 'Inteligencia',
+			'wisdom': 'Sabedoria',
+			'charisma': 'Carisma',
+			'sanity': 'Sanidade'
+		}
 	};
 
 	// formula: Math.ceil(level**(2.4) - level**(1.4) + level)
-	static POINTS_TO_LEVEL = [
-		0, // 0
-		1,
-		5,
-		13,
-		25,
-		44, // 5
-		68,
-		99,
-		137,
-		183,
-		237, // 10
-		299,
-		369,
-		449,
-		538,
-		636,
-		744,
-		862,
-		991,
-		1130,
-		1280 // 20
-	]
+	static get POINTS_TO_LEVEL () {
+		return [
+			0, // 0
+			1,
+			5,
+			13,
+			25,
+			44, // 5
+			68,
+			99,
+			137,
+			183,
+			237, // 10
+			299,
+			369,
+			449,
+			538,
+			636,
+			744,
+			862,
+			991,
+			1130,
+			1280 // 20
+		]
+	}
 
 	// pegar a tradução do atributo
 	static getAttributeName (attribute) {

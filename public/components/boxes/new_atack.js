@@ -110,7 +110,7 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_strength_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
-						value: player['strength']
+						value: player['strength']['basePoints']
 					})
 				),
 				$("<td>").append(
@@ -119,7 +119,7 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_dextery_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
-						value: player['dextery']
+						value: player['dextery']['basePoints']
 					})
 				),
 				$("<td>").append(
@@ -128,14 +128,14 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_constitution_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
-						value: player['constitution']
+						value: player['constitution']['basePoints']
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
 						id: NewAtack.windowName + '_visualize_' + player['id'] + '_' + randomId,
-						onclick: 'VisualizePlayer.visualize_player(' + player['id'] + ')',
+						onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
 						value: Player.EMOJI_VISUALIZE
 					})
 				)

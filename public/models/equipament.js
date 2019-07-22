@@ -1,49 +1,53 @@
 class Equipament extends RModel {
 
-	static TYPE_CHESTPLATE = 1;
-	static EMOJI_CHESTPLATE = '👕';
-	static TYPE_HELMET = 2;
-	static EMOJI_HELMET = '👷';
-	static TYPE_LEGGING = 3;
-	static EMOJI_LEGGING = '👖';
-	static TYPE_BOOTS = 4;
-	static EMOJI_BOOTS = '👣';
-	static TYPE_ATACK = 5;
-	static EMOJI_ATACK = '🗡️';
-	static TYPE_SHIELD = 6;
-	static EMOJI_SHIELD = '🛡️';
-	static TYPE_AMULET = 7;
-	static EMOJI_AMULET = '🔵';
-	static TYPE_RING = 8;
-	static EMOJI_RING = '⭕';
+	static get TYPE_CHESTPLATE () { return 1 };
+	static get EMOJI_CHESTPLATE () { return '👕' };
+	static get TYPE_HELMET () { return 2 };
+	static get EMOJI_HELMET () { return '👷' };
+	static get TYPE_LEGGING () { return 3 };
+	static get EMOJI_LEGGING () { return '👖' };
+	static get TYPE_BOOTS () { return 4 };
+	static get EMOJI_BOOTS () { return '👣' };
+	static get TYPE_ATACK () { return 5 };
+	static get EMOJI_ATACK () { return '🗡️' };
+	static get TYPE_SHIELD () { return 6 };
+	static get EMOJI_SHIELD () { return '🛡️' };
+	static get TYPE_AMULET () { return 7 };
+	static get EMOJI_AMULET () { return '🔵' };
+	static get TYPE_RING () { return 8 };
+	static get EMOJI_RING () { return '⭕' };
 
-	static ORIGIN_PLATAFORM = 1;
-	static ORIGIN_OTHER_PLAYER = 2;
+	static get ORIGIN_PLATAFORM () { return 1 };
+	static get ORIGIN_OTHER_PLAYER () { return 2 };
 
-	static EMOJI_TYPE = '⛨';
-	static EMOJI_NAME = '🏷️';
-	static EMOJI_WEIGHT = '⚖️';
+	static get EMOJI_TYPE () { return '⛨' };
+	static get EMOJI_NAME () { return '🏷️' };
+	static get EMOJI_WEIGHT () { return '⚖️' };
 
-	static EMOJI_TYPES = {
-		1: Equipament.EMOJI_CHESTPLATE,
-		2: Equipament.EMOJI_HELMET,
-		3: Equipament.EMOJI_LEGGING,
-		4: Equipament.EMOJI_BOOTS,
-		5: Equipament.EMOJI_ATACK,
-		6: Equipament.EMOJI_SHIELD,
-		7: Equipament.EMOJI_AMULET,
-		8: Equipament.EMOJI_RING
+	static get EMOJI_TYPES () {
+		return {
+			1: Equipament.EMOJI_CHESTPLATE,
+			2: Equipament.EMOJI_HELMET,
+			3: Equipament.EMOJI_LEGGING,
+			4: Equipament.EMOJI_BOOTS,
+			5: Equipament.EMOJI_ATACK,
+			6: Equipament.EMOJI_SHIELD,
+			7: Equipament.EMOJI_AMULET,
+			8: Equipament.EMOJI_RING
+		}
 	};
 
-	static ALL_TYPE_NAMES = {
-		1: 'Peitoral',
-		2: 'Capacete',
-		3: 'Pernas',
-		4: 'Botas',
-		5: 'Ataque',
-		6: 'Escudo',
-		7: 'Amuleto',
-		8: 'Anel'
+	static get ALL_TYPE_NAMES () {
+		return {
+			1: 'Peitoral',
+			2: 'Capacete',
+			3: 'Pernas',
+			4: 'Botas',
+			5: 'Ataque',
+			6: 'Escudo',
+			7: 'Amuleto',
+			8: 'Anel'
+		}
 	};
 
 	// pegar a tradução do tipo

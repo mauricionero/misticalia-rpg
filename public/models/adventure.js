@@ -4,19 +4,21 @@ class Adventure extends RModel {
 		// criar um metodo javascript que renderize o menu (prever permissoes)
 		// ao selecionar uma aventura, o menu deve ser renderizado novamente, pois pode mudar com as permissoes (mestre ou jogador)
 
-	static ROLE_UNDEFINED = 0;
-	static ROLE_PLAYER = 1;
-	static ROLE_MASTER = 2;
+	static get ROLE_UNDEFINED () { return 0 };
+	static get ROLE_PLAYER () { return 1 };
+	static get ROLE_MASTER () { return 2 };
 	
-	static EMOJI_ROLE_PLAYER = '♟️';
-	static EMOJI_ROLE_MASTER = '♚️';
-	static EMOJI_OPEN = '📂';
-	static EMOJI_NAME = '🏷';
-	static EMOJI_WORLD_STYLE = '🌎';
+	static get EMOJI_ROLE_PLAYER () { return '♟️' };
+	static get EMOJI_ROLE_MASTER () { return '♚️' };
+	static get EMOJI_OPEN () { return '📂' };
+	static get EMOJI_NAME () { return '🏷' };
+	static get EMOJI_WORLD_STYLE () { return '🌎' };
 
-	static EMOJI_ROLE = {
-		1: Adventure.EMOJI_ROLE_PLAYER,
-		2: Adventure.EMOJI_ROLE_MASTER
+	static get EMOJI_ROLE () {
+		return {
+			1: Adventure.EMOJI_ROLE_PLAYER,
+			2: Adventure.EMOJI_ROLE_MASTER
+		}
 	};
 
 	// pegar do server todas as aventuras que o usuario atual pertence

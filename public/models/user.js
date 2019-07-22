@@ -1,6 +1,6 @@
 class User extends RModel {
 
-	static EMOJI_LOGIN = '@';
+	static get EMOJI_LOGIN () { return '@' };
 
 	// retornar o usuario atual (logado)
 	static myUser () {

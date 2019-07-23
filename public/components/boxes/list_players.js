@@ -6,7 +6,7 @@ class ListPlayers extends Box {
 
 		var randomId = Math.floor(Math.random() * 10000);
 
-		var allPlayers = Player.getAllPlayers();
+		var allPlayers = Player.getAllPlayersCurrentAdventure();
 
 		let listPlayersDiv = $("<div>");
 

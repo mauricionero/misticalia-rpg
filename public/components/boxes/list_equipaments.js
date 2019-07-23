@@ -6,7 +6,7 @@ class ListEquipaments extends Box {
 
 		var randomId = Math.floor(Math.random() * 10000);
 
-		let allEquipaments = Equipament.getAllEquipaments();
+		let allEquipaments = Equipament.getAllEquipamentsCurrentAdventure();
 
 		let listEquipamentDiv = $('<div>');
 

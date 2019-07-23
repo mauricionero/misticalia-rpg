@@ -4,7 +4,9 @@ class User extends RModel {
 
 	// retornar o usuario atual (logado)
 	static myUser () {
-		// null quando nao estiver logado
+
+		//TODO: criar no server algo que retorne o user e salvar na localStorage
+			// null quando nao estiver logado
 		
 		return {
 			username: 'mauricionero',

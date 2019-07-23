@@ -50,21 +50,25 @@ class Equipament extends RModel {
 		}
 	};
 
+	//TODO: criar metodo estatico padronizado e colocar os campos a serem validados e o tipo de validacao
+
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
 		return t(Equipament.ALL_TYPE_NAMES[typeId])
 	}
 
+	// retorna todos os equipamentos da aventura atual
+	static getAllEquipamentsCurrentAdventure () {
+
+		let allCurrentPEquipaments = Equipament.getAllFromCurrentAdventure();
+
+		return allCurrentEquipaments;
+	}
+
 	// retorna todos os equipamentos num array
 	static getAllEquipaments () {
 
-		let equipaments = JSON.parse(localStorage.getItem('equipaments'));
-
-		console.log('get equipaments', equipaments);
-
-		if (equipaments == null || equipaments == undefined) {
-			equipaments = [];
-		}
+		let equipaments = Equipament.getAll(); 
 
 		return equipaments;
 
@@ -146,16 +150,10 @@ class Equipament extends RModel {
 
 	// retorna todos os equipamentos da aventura atual
 	static getAllEquipamentsCurrentAdventure () {
-		let currentAdventureId = Adventure.getCurrentAdventureId
 
-		// se nenhuma aventura esta selecionada, retorna vazio
-		if (currentAdventureId == undefined || currentAdventureId == null) {
-			return [];
-		}
+		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure();
 
-		let allEquipaments = Equipament.getAllEquipaments();
-
-		return allEquipaments.filter(function ( equipament ) { return equipament['currentAdventureId'] == currentAdventureId });
+		return allCurrentEquipaments;
 	}
 
 	// converter peso sendo recebido em gramas em algo mais legivel
@@ -181,29 +179,7 @@ class Equipament extends RModel {
 
 	// adicionar um novo equipamento aa aventura
 	static addEquipament (newEquipament) {
-		var randomId = Math.floor(Math.random() * 100000);
 
-		let equipaments = Equipament.getAllEquipaments();
-		let currentAdventureId = Adventure.getCurrentAdventureId();
-
-		//TODO: validar preenchimento
-
-		newEquipament['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
-		newEquipament['currentAdventureId'] = currentAdventureId;
-
-		equipaments.push(newEquipament);
-
-		console.log('newEquipament', newEquipament);
-
-		try {
-			localStorage.setItem("equipaments", JSON.stringify(equipaments));
-
-			return true;
-		}
-		catch (err) {
-			alert(err.name);
-
-			return false;
-		}
+		return Equipament.saveNew(newEquipament);
 	}
 }

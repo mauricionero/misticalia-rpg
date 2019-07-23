@@ -105,21 +105,24 @@ class Player extends RModel {
 	}
 
 	// retorna todos os players num array
-	// esse metodo deve ser comunicar com o servidor, por enquanto apenas simula o retorno de todos os players
 	static getAllPlayers () {
 
-		let players = JSON.parse(localStorage.getItem('players'));
-
-		if (players == null || players == undefined) {
-			players = [];
-		}
+		let players = Player.getAll(); 
 
 		return players;
 	}
 
+	// retorna todos os jogadores da aventura atual
+	static getAllPlayersCurrentAdventure () {
+
+		let allCurrentPlayers = Player.getAllFromCurrentAdventure();
+
+		return allCurrentPlayers;
+	}
+
 	// retorna todos os equipamentos desse jogador
 	static getPlayerEquipaments (playerId) {
-		//TODO: buscar informação do servidor e armazenar numa variavel de classe.
+		//TODO: passar para uma nova model
 
 		return [
 			{
@@ -230,28 +233,9 @@ class Player extends RModel {
 
 	// adicionar um novo jogador aa aventura
 	static addPlayer (newPlayer) {
-		var randomId = Math.floor(Math.random() * 100000);
+		
+		return Player.saveNew(newPlayer);
 
-		let players = Player.getAllPlayers();
-		let currentAdventureId = Adventure.getCurrentAdventureId();
-
-		//TODO: validar preenchimento
-
-		newPlayer['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
-		newPlayer['currentAdventureId'] = currentAdventureId;
-
-		players.push(newPlayer);
-
-		try {
-			localStorage.setItem("players", JSON.stringify(players));
-
-			return true;
-		}
-		catch (err) {
-			alert(err.name);
-
-			return false;
-		}
 	}
 
 	// calcular o total de pontos do atributo do player

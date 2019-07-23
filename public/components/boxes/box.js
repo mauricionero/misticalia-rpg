@@ -18,8 +18,6 @@ class Box {
 			dialogId = options['windowId'];
 		}
 
-		console.log('dialogId', dialogId);
-
 		// ja existe ?
 		if ($('#' + dialogId).hasClass('ui-dialog-content')) {
 

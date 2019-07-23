@@ -33,9 +33,11 @@ function buildMenu (items = null) {
 
 		$(".open_box").click(function() {
 
-			//TODO: aceitar atributo options no menu
-				// seria bom para passar filtragens e outras opcoes para as box quando abrir, daria para chamar a mesma dialog com filtros diferentes
 			let options = {};
+
+			if (this.getAttribute('options')) {
+				options = JSON.parse(this.getAttribute('options'));
+			}
 
 			if (this.getAttribute('single_ton')) {
 				options['singleTon'] = this.getAttribute('single_ton')
@@ -73,7 +75,7 @@ function buildMenu (items = null) {
 
 			menuList.push(
 				$("<li>").append(
-					$("<div>", { id: item['action_id'], class: item['class'], single_ton: item['single_ton'] }).html(
+					$("<div>", { id: item['action_id'], class: item['class'], single_ton: item['single_ton'], options: JSON.stringify(item['options']) }).html(
 						item['emoji'] + ' ' + menuText
 					),
 					subMenu

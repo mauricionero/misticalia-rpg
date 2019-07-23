@@ -88,6 +88,7 @@ class Menu extends RModel {
 								single_ton: true,
 								emoji: '📝',
 								action_id: 'list_players',
+								options: { filterAdventureId: true },
 								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',
 								items: [
@@ -130,6 +131,7 @@ class Menu extends RModel {
 								name: t('Listar equipamentos'),
 								emoji: '⛨',
 								action_id: 'list_equipaments',
+								options: { filterAdventureId: true },
 								single_ton: true,
 								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',

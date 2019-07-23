@@ -2,11 +2,24 @@ class ListEquipaments extends Box {
 
 	static get windowName () { return 'list_equipaments' };
 
-	boxContent () {
+	boxContent (options = {}) {
+
+		let allEquipaments = [];
+
+		console.log('options', options);
+		console.log('typeof options', typeof options);
+		console.log("options['filterAdventureId']", options['filterAdventureId']);
+
+		// se deve filtrar por aventura
+		if (options['filterAdventureId']) {
+			console.log('filtrar!');
+			allEquipaments = Equipament.getAllEquipamentsCurrentAdventure();
+		} else {
+			console.log('nao filtrar!');
+			allEquipaments = Equipament.getAllEquipaments();
+		}
 
 		var randomId = Math.floor(Math.random() * 10000);
-
-		let allEquipaments = Equipament.getAllEquipamentsCurrentAdventure();
 
 		let listEquipamentDiv = $('<div>');
 

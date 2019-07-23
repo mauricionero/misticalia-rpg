@@ -66,27 +66,54 @@ class RModel {
 		return errorMessages;
 	}
 
-	// inserir um novo dado relacionado aa essa model
-	static saveNew (newData) {
+	// criar novo ou editar um item
+	static saveItem (item) {
 		let storeName = this.name;
 
 		let randomId = Math.floor(Math.random() * 100000);
 
-		let storeData = this.getAll();
+		item['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
 
-		newData['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
-		newData['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
+		console.log('item', item);
 
 		let errorMessages = [];
 
 		// validação
 		if (this.validate === 'function') {
-			errorMessages = this.validate(newData);
+			errorMessages = this.validate(item);
 		}
 		
 		// se for valido
 		if (errorMessages.length == 0) {
-			storeData.push(newData);
+			let storeData = this.getAll();
+
+			console.log('storeData antes', storeData);
+
+			// se nao tiver id: criar um para depois adicionar o novo item
+			if (! item['id']) {
+				item['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
+				console.log('criando novo');
+
+			// se ja tiver id, procurar na store local e apagar para depois re-adicionar o item
+			} else {
+				// filtrando os dados
+				storeData = storeData.filter(function (singleData) {
+
+					// soh remove do filtro se for o id atual
+					if (singleData['id'] == item['id']) {
+						return false;
+					}
+
+					return true;
+				});
+				console.log('editando');
+			}
+			console.log('storeData depois', storeData);
+
+			// adicionar item na store local
+			storeData.push(item);
+
+			console.log('storeData adicionado novo', storeData);
 
 			try {
 				localStorage.setItem(storeName, JSON.stringify(storeData));

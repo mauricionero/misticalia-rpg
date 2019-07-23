@@ -32,7 +32,7 @@ class Adventure extends RModel {
 	static newAdventure (adventure) {
 		adventure['role'] = Adventure.ROLE_MASTER;
 		
-		return Adventure.saveNew(adventure);
+		return this.saveItem(adventure);
 	}
 
 	// pegar o id da aventura atual

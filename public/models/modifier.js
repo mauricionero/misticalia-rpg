@@ -1,5 +1,8 @@
 class Modifier extends RModel {
 
+	static get EMOJI_ADD () { return '⚡' }
+	static get EMOJI_VISUALIZE () { return '🗲' }
+
 	static get STRENGTH () { return 1 };
 	static get DEXTERY () { return 2 };
 	static get CONSTITUTION () { return 3 };

@@ -30,10 +30,12 @@ class ListEquipaments extends Box {
 				),
 				$("<th>", { title: t('Peso') }).append(
 					Equipament.EMOJI_WEIGHT
+				),
+				$("<th>", { title: t('Detalhes') }).append(
+					Equipament.EMOJI_VISUALIZE
 				)
 			)
 		);
-
 
 		allEquipaments.forEach(function (equipament) {
 			
@@ -65,6 +67,14 @@ class ListEquipaments extends Box {
 							readonly: 'readonly',
 							value: equipament['weight']
 						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: ListEquipaments.windowName + '_visualize_' + equipament['id'] + '_' + randomId,
+							onclick: 'ListEquipaments.visualizeEquipament("' + equipament['id'] + '", ' + randomId + ')',
+							value: Equipament.EMOJI_VISUALIZE
+						})
 					)
 				)
 			)
@@ -73,6 +83,23 @@ class ListEquipaments extends Box {
 		listEquipamentDiv.html(listEquipamentTable);
 
 		return listEquipamentDiv;
+	}
+
+	// abrir visualização de detalhes do equipamento
+	static visualizeEquipament (equipamentId, randomId) {
+
+		let equipamentName = $('#' + ListEquipaments.windowName + '_name_' + equipamentId + '_' + randomId).val();
+		let equipamentTypeId = $('#' + ListEquipaments.windowName + '_type_' + equipamentId + '_' + randomId).val();
+
+		let windowTitle = Equipament.EMOJI_TYPES[equipamentTypeId] + ' ' + equipamentName;
+
+		let options = {
+			equipamentId: equipamentId,
+			singleTon: true,
+			windowId: VisualizeEquipament.windowName + '_' + equipamentId
+		};
+
+		Box.openDialog(VisualizeEquipament.windowName, windowTitle, options);
 	}
 
 }

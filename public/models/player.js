@@ -106,7 +106,7 @@ class Player extends RModel {
 	// adicionar um novo jogador aa aventura
 	static addPlayer (newPlayer) {
 		
-		return Player.saveNew(newPlayer);
+		return this.saveItem(newPlayer);
 
 	}
 

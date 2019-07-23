@@ -98,7 +98,7 @@ class AddEquipament extends Box {
 			'weight': equipamentWeight
 		}
 
-		let resultSaved = Equipament.addEquipament(newEquipament);
+		let resultSaved = Equipament.saveEquipament(newEquipament);
 
 		let saveButton = $('#' + AddEquipament.windowName + '_save_' + randomId);
 

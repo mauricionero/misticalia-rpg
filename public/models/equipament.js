@@ -1,6 +1,7 @@
 class Equipament extends RModel {
 
 	static get EMOJI_ADD () { return '⛨' }
+    static get EMOJI_VISUALIZE () { return '👁️' };
 	static get EMOJI_QUANTITY () { return '📦' }
 
 	static get TYPE_CHESTPLATE () { return 1 };
@@ -58,6 +59,13 @@ class Equipament extends RModel {
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
 		return t(Equipament.ALL_TYPE_NAMES[typeId])
+	}
+
+	// retorna 1 equipamento especifico pelo id
+	static getEquipament (EquipamentId) {
+		let allEquipaments = Equipament.getAllEquipaments();
+
+		return allEquipaments.filter(function ( equipament ) { return equipament['id'] == EquipamentId })[0];
 	}
 
 	// retorna todos os equipamentos da aventura atual
@@ -180,9 +188,9 @@ class Equipament extends RModel {
 		return weight + measureUnit;
 	}
 
-	// adicionar um novo equipamento aa aventura
-	static addEquipament (newEquipament) {
+	// salvar um equipamento (editar ou criar um novo)
+	static saveEquipament (equipament) {
 
-		return Equipament.saveNew(newEquipament);
+		return Equipament.saveItem(equipament);
 	}
 }

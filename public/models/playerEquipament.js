@@ -26,7 +26,7 @@ class PlayerEquipament extends RModel {
 	// adicionar um novo equipamento ao jogador
 	static addPlayerEquipament (newPlayerEquipament) {
 		
-		return this.saveNew(newPlayerEquipament);
+		return this.saveItem(newPlayerEquipament);
 	}
 
 	// retorna todos os equipamentos do jogador

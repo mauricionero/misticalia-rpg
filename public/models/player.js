@@ -4,7 +4,6 @@ class Player extends RModel {
 	static get FEMALE_ID () { return 2 };
 
 	static get EMOJI_VISUALIZE () { return '👁️' };
-	static get EMOJI_INCLUDE_EQUIPAMENT () { return '⛨' };
 
 	static get EMOJI_NAME () { return '웃' };
 	static get EMOJI_SHORT_NAME () { return '…' };

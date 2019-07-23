@@ -13,12 +13,6 @@ class AddPlayerEquipament extends Box {
 
 		let inputWidth = 32;
 
-		let listPlayerEquipamentDiv = $('<div>');
-
-		let listPlayerEquipamentItemTabs = $('<div>', {
-			class: 'player_equipaments_list'
-		});
-
 		let listPlayerEquipamentTable = $("<table>");
 
 		// titulo das colunas na tabela
@@ -92,46 +86,7 @@ class AddPlayerEquipament extends Box {
 			);
 		});
 
-		let visualizeAllEquipamentDiv = $('<div>', {
-			class: 'player_equipaments_view_all',
-			id: AddPlayerEquipament.windowName + '_all_equipaments_' + playerId + '_' + randomId,
-			style: 'display: none'
-		});
-
-		// // listar botoes para filtrar a tabela por tipos
-		// Object.keys(Equipament.EMOJI_TYPES).forEach(function(key, index) {
-		// 	listPlayerEquipamentItemTabs.append(
-		// 		$("<input>", {
-		// 			type: 'button',
-		// 			id: ListEquipaments.windowName + '_equip_item_tab_' + key + '_' + randomId,
-		// 			value: Equipament.EMOJI_TYPES[key]
-		// 		})
-		// 	);
-		// });
-
-		listPlayerEquipamentItemTabs.append(
-			'<br />',
-			listPlayerEquipamentTable
-		);
-
-		listPlayerEquipamentDiv.append(
-			$('<a>',{
-				href: 'javascript: void(0)',
-				onclick: 'AddPlayerEquipament.toggleViewEquipaments("' + playerId + '", ' + randomId + ')'
-			}).html(
-				t('Ver equipamentos e itens >>')
-			),
-			'<br />',
-			visualizeAllEquipamentDiv,
-			listPlayerEquipamentItemTabs
-		);
-
-		// habilitar tabs
-		$( function() {
-			$( "#" + ListEquipaments.windowName + '_equip_item_' + randomId ).tabs();
-		} );
-
-		return listPlayerEquipamentDiv;
+		return listPlayerEquipamentTable;
 	}
 
 	// adicionar o equipamento ao inventario do jogador
@@ -163,14 +118,14 @@ class AddPlayerEquipament extends Box {
 		}
 	}
 
-	// abrir visualização dos equipamentos do player
+	// abrir visualização da adição dos equipamentos do player
 	static visualizeEquipament (playerId) {
 
 		let player = Player.getPlayer(playerId);
 
 		let playerName = player['name'];
 
-		let windowTitle = Equipament.EMOJI_TYPE + ' ' + playerName;
+		let windowTitle = Equipament.EMOJI_ADD + ' ' + playerName;
 
 		let options = {
 			playerId: playerId,
@@ -179,11 +134,6 @@ class AddPlayerEquipament extends Box {
 		};
 
 		Box.openDialog(AddPlayerEquipament.windowName, windowTitle, options);
-	}
-
-	// mostrar e esconder os equipamentos do player
-	static toggleViewEquipaments (playerId, randomId) {
-		$('#' + AddPlayerEquipament.windowName + '_all_equipaments_' + playerId + '_' + randomId).animate({'height': 'toggle'});
 	}
 
 }

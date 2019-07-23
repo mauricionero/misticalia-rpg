@@ -54,6 +54,9 @@ class ListPlayers extends Box {
 				),
 				$("<th>", { title: t('Visualizar jogador') }).append(
 					Player.EMOJI_VISUALIZE
+				),
+				$("<th>", { title: t('Visualizar equipamentos do jogador') }).append(
+					PlayerEquipament.EMOJI_VISUALIZE
 				)
 			)
 		);
@@ -61,8 +64,8 @@ class ListPlayers extends Box {
 		// se for mestre, pode incluir equipamento no inventario
 		if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
 			listPlayersTableTitle.append(
-				$("<th>", { title: t('Adicionar equipamento no inventário') }).append(
-					Player.EMOJI_INCLUDE_EQUIPAMENT
+				$("<th>", { title: t('Adicionar equipamento no inventário do jogador') }).append(
+					Equipament.EMOJI_ADD
 				)
 			);
 		}
@@ -164,6 +167,14 @@ class ListPlayers extends Box {
 							onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
 							value: Player.EMOJI_VISUALIZE
 						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: ListPlayers.windowName + '_visualize_equipaments_' + player['id'] + '_' + randomId,
+							onclick: 'ListPlayerEquipaments.visualize_player_equipaments("' + player['id'] + '")',
+							value: PlayerEquipament.EMOJI_VISUALIZE
+						})
 					)
 				)
 			);
@@ -176,7 +187,7 @@ class ListPlayers extends Box {
 							type: 'button',
 							id: ListPlayers.windowName + '_manage_equipament_' + player['id'] + '_' + randomId,
 							onclick: 'AddPlayerEquipament.visualizeEquipament("' + player['id'] + '")',
-							value: Player.EMOJI_INCLUDE_EQUIPAMENT
+							value: Equipament.EMOJI_ADD
 						}),
 					)
 				);

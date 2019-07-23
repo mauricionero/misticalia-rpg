@@ -77,8 +77,12 @@ class RModel {
 		newData['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
 		newData['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
 
+		let errorMessages = [];
+
 		// validação
-		let errorMessages = this.validate(newData);
+		if (this.validate === 'function') {
+			errorMessages = this.validate(newData);
+		}
 		
 		// se for valido
 		if (errorMessages.length == 0) {
@@ -113,6 +117,7 @@ class RModel {
 			storeData = [];
 		}
 
+		console.log("storeName", storeName);
 		console.log("storeData Be", storeData);
 
 		// verificar se tem alguma filtragem dos dados

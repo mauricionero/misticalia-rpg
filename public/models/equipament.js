@@ -60,7 +60,7 @@ class Equipament extends RModel {
 	// retorna todos os equipamentos da aventura atual
 	static getAllEquipamentsCurrentAdventure () {
 
-		let allCurrentPEquipaments = Equipament.getAllFromCurrentAdventure();
+		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure();
 
 		return allCurrentEquipaments;
 	}

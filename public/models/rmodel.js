@@ -16,8 +16,6 @@ class RModel {
 
 		storeData.push(newData);
 
-		console.log('storeData', storeData);
-
 		try {
 			localStorage.setItem(storeName, JSON.stringify(storeData));
 
@@ -40,8 +38,6 @@ class RModel {
 			storeData = [];
 		}
 
-		console.log('storeData', storeData);
-
 		return storeData;
 	}
 	
@@ -53,12 +49,7 @@ class RModel {
 
 		let storeData = this.getAll();
 
-		console.log('storeName', storeName);
-		console.log('currentAdventureId', currentAdventureId);
-
 		return storeData.filter(function ( singleData ) { return singleData['currentAdventureId'] == currentAdventureId });
-
-		console.log('storeData', storeData);
 
 		return storeData;
 	}

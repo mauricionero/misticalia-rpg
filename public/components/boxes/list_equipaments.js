@@ -6,16 +6,10 @@ class ListEquipaments extends Box {
 
 		let allEquipaments = [];
 
-		console.log('options', options);
-		console.log('typeof options', typeof options);
-		console.log("options['filterAdventureId']", options['filterAdventureId']);
-
 		// se deve filtrar por aventura
 		if (options['filterAdventureId']) {
-			console.log('filtrar!');
 			allEquipaments = Equipament.getAllEquipamentsCurrentAdventure();
 		} else {
-			console.log('nao filtrar!');
 			allEquipaments = Equipament.getAllEquipaments();
 		}
 

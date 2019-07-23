@@ -1,5 +1,8 @@
 class Equipament extends RModel {
 
+	static get EMOJI_ADD () { return '➕' }
+	static get EMOJI_QUANTITY () { return '📦' }
+
 	static get TYPE_CHESTPLATE () { return 1 };
 	static get EMOJI_CHESTPLATE () { return '👕' };
 	static get TYPE_HELMET () { return 2 };

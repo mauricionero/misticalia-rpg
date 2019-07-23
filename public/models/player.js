@@ -104,6 +104,13 @@ class Player extends RModel {
 		return t(Player.ALL_ATTRIBUTES_NAMES[attribute])
 	}
 
+	// adicionar um novo jogador aa aventura
+	static addPlayer (newPlayer) {
+		
+		return Player.saveNew(newPlayer);
+
+	}
+
 	// retorna todos os players num array
 	static getAllPlayers () {
 
@@ -118,60 +125,6 @@ class Player extends RModel {
 		let allCurrentPlayers = Player.getAllFromCurrentAdventure();
 
 		return allCurrentPlayers;
-	}
-
-	// retorna todos os equipamentos desse jogador
-	static getPlayerEquipaments (playerId) {
-		//TODO: passar para uma nova model
-
-		return [
-			{
-				id: 1,
-				type: Equipament.TYPE_CHESTPLATE,
-				name: t('Peitoral de bronze'),
-				weight: 13000,
-				origin: Equipament.ORIGIN_PLATAFORM,
-				modifiers: [
-					{
-						attribute: Modifier.DEXTERY,
-						value: -10,
-						observation: t('Pesado')
-					},
-					{
-						attribute: Modifier.STRENGTH,
-						value: -4,
-						observation: t('- mobilidade')
-					},
-					{
-						attribute: Modifier.DEFENSE,
-						value: 15,
-					}
-				]
-			},
-			{
-				id: 3,
-				type: Equipament.TYPE_SHIELD,
-				name: t('Escudo de madeira'),
-				weight: 3000,
-				origin: Equipament.ORIGIN_PLATAFORM,
-				modifiers: [
-					{
-						attribute: Modifier.DEXTERY,
-						value: -5,
-						observation: t('Leve')
-					},
-					{
-						attribute: Modifier.STRENGTH,
-						value: -4,
-						observation: t('- mobilidade')
-					},
-					{
-						attribute: Modifier.DEFENSE,
-						value: 10
-					}
-				]
-			}
-		]
 	}
 
 	// retorna algo para colocar num espaço pequeno sobre o player (html), tipo um avatar ou as iniciais
@@ -228,13 +181,6 @@ class Player extends RModel {
 		let result = Math.round(rollPoints - difficulty) + level - 4;
 
 		return result;
-
-	}
-
-	// adicionar um novo jogador aa aventura
-	static addPlayer (newPlayer) {
-		
-		return Player.saveNew(newPlayer);
 
 	}
 

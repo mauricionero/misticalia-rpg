@@ -175,7 +175,7 @@ class ListPlayers extends Box {
 						$("<input>", {
 							type: 'button',
 							id: ListPlayers.windowName + '_manage_equipament_' + player['id'] + '_' + randomId,
-							onclick: 'PlayerEquipament.visualizeEquipament("' + player['id'] + '")',
+							onclick: 'AddPlayerEquipament.visualizeEquipament("' + player['id'] + '")',
 							value: Player.EMOJI_INCLUDE_EQUIPAMENT
 						}),
 					)

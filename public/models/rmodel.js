@@ -111,40 +111,32 @@ class RModel {
 
 		let storeData = JSON.parse(localStorage.getItem(storeName));
 
-		console.log("options", options);
-
 		if (storeData == null || storeData == undefined) {
 			storeData = [];
 		}
-
-		console.log("storeName", storeName);
-		console.log("storeData Be", storeData);
 
 		// verificar se tem alguma filtragem dos dados
 		if (typeof options['filters'] == 'object') {
 
 			// filtrando os dados
-			storeData.filter(function (singleData) {
+			storeData = storeData.filter(function (singleData) {
 				let onFilter = true;
 
 				for (var filterField in options['filters']) {
 					let filterValue = options['filters'][filterField];
 
-					// a nao ser que nao esteja no filtro, esta no filtro por default
+					// soh remove do filtro se algum dos valores nao estiver no filtro
 					if (singleData[filterField] != filterValue) {
 						onFilter = false;
 
+						// break para otimizar, nao precisa continuar verificando se alguma condição nao satisfez
 						break;
 					}
 				}
 
-				console.log("onFilter", onFilter);
-
 				return onFilter;
 			});
 		}
-
-		console.log("storeData Af", storeData);
 
 		return storeData;
 	}

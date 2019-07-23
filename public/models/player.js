@@ -63,7 +63,7 @@ class Player extends RModel {
 		return {
 			'strength': 'Força',
 			'dextery': 'Destreza',
-			'constitution': 'Constiuĩção',
+			'constitution': 'Constituição',
 			'inteligence': 'Inteligencia',
 			'wisdom': 'Sabedoria',
 			'charisma': 'Carisma',

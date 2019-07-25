@@ -40,6 +40,10 @@ class Box {
 				title: title
 			}).html(klass.boxContent(options)) // window[id]()
 		);
+
+		if (typeof klass.callBackRender === 'function'){
+			klass.callBackRender();
+		}
 		
 		$(function() {
 			$('#'+dialogId).dialog({

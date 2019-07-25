@@ -79,84 +79,9 @@ class Equipament extends RModel {
 	// retorna todos os equipamentos num array
 	static getAllEquipaments () {
 
-		let equipaments = Equipament.getAll(); 
+		let equipaments = this.getAll(); 
 
 		return equipaments;
-
-		//TODO: buscar informação do servidor e armazenar numa variavel de classe.
-			// Pensar na possibilidade de um botao para atualizar informacoes alem de atualizar quando precisar de alguma forma.
-
-		return [
-			{
-				id: 1,
-				type: Equipament.TYPE_CHESTPLATE,
-				name: t('Peitoral de bronze'),
-				weight: 13000,
-				origin: Equipament.ORIGIN_PLATAFORM,
-				modifiers: [
-					{
-						attribute: Modifier.DEXTERY,
-						value: -10,
-						observation: t('Pesado')
-					},
-					{
-						attribute: Modifier.STRENGTH,
-						value: -4,
-						observation: t('- mobilidade')
-					},
-					{
-						attribute: Modifier.DEFENSE,
-						value: 15,
-					}
-				]
-			},
-			{
-				id: 1,
-				type: Equipament.TYPE_CHESTPLATE,
-				name: t('Peitoral de aço'),
-				weight: 16000,
-				origin: Equipament.ORIGIN_PLATAFORM,
-				modifiers: [
-					{
-						attribute: Modifier.DEXTERY,
-						value: -13,
-						observation: t('Pesado')
-					},
-					{
-						attribute: Modifier.STRENGTH,
-						value: -4,
-						observation: t('- mobilidade')
-					},
-					{
-						attribute: Modifier.DEFENSE,
-						value: 20
-					}
-				]
-			},
-			{
-				id: 3,
-				type: Equipament.TYPE_SHIELD,
-				name: t('Escudo de madeira'),
-				weight: 3000,
-				origin: Equipament.ORIGIN_PLATAFORM,
-				modifiers: [
-					{
-						attribute: Modifier.DEXTERY,
-						value: -5,
-						observation: t('Leve')
-					},
-					{
-						attribute: Modifier.STRENGTH,
-						value: -4,
-						observation: t('- mobilidade')
-					},
-					{
-						attribute: Modifier.DEFENSE,
-						value: 10
-					}
-				]
-			}
-		];
 	}
 
 	// retorna todos os equipamentos da aventura atual
@@ -191,6 +116,6 @@ class Equipament extends RModel {
 	// salvar um equipamento (editar ou criar um novo)
 	static saveEquipament (equipament) {
 
-		return Equipament.saveItem(equipament);
+		return this.saveItem(equipament);
 	}
 }

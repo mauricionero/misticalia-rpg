@@ -4,8 +4,10 @@ class VisualizeEquipament extends Box {
 
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);
+		this.randomId = randomId;
 
 		let equipamentId = options['equipamentId'];
+		this.equipamentId = equipamentId;
 
 		let equipament = Equipament.getEquipament(equipamentId);
 
@@ -69,7 +71,7 @@ class VisualizeEquipament extends Box {
 					),
 					$('<td>').append(
 						$("<input>", {
-							type: 'text',
+							type: 'number',
 							id: VisualizeEquipament.windowName + '_weight_' + randomId,
 							placeholder: t('Peso em gramas'),
 							value: equipamentWeight
@@ -81,16 +83,17 @@ class VisualizeEquipament extends Box {
 					$('<th>' ).append(
 						$("<input>", {
 							type: 'button',
-							id: VisualizeEquipament.windowName + '_modifier_form_' + randomId,
+							id: VisualizeEquipament.windowName + '_modifier_form_button_' + randomId,
+							title: t('Adicionar modificador'),
 							onclick: 'VisualizeEquipament.newFormModifier("' + equipamentId + '", ' + randomId + ')',
-							value: Modifier.EMOJI_ADD + ' ' + t('Modificador')
+							value: '+ ' + t('Modificador')
 						})
 					),
 					$('<th>' ).append(
 						$("<input>", {
 							type: 'button',
 							id: VisualizeEquipament.windowName + '_save_' + randomId,
-							title: t('Adicionar modificador'),
+							title: t('Salvar modificações'),
 							onclick: 'VisualizeEquipament.updateEquipament("' + equipamentId + '", ' + randomId + ')',
 							value: t('Salvar')
 						})
@@ -99,9 +102,92 @@ class VisualizeEquipament extends Box {
 			)
 		);
 
-		//TODO: adicionar modificadores igual ao adicionar o equipamento, inclusive com os radiobuttons para o atributo
+		let radioButtonModifierTypes = [];
 
-		divEditEquipament.html(formEditEquipament);
+		Object.keys(Modifier.EMOJI_TYPES).forEach(function(key, index) {
+
+			radioButtonModifierTypes.push(
+				$('<label>', { title: t(Modifier.getTypeName(key)) } ).append(
+					$('<input>', {
+						type: 'radio',
+						class: 'radio_modifier_type',
+						name: VisualizeEquipament.windowName + '_modifier_type_' + randomId,
+						value: key,
+						checked: (key == 1) // selecionar o primeiro
+					}),
+					$('<span>').append(
+						Modifier.EMOJI_TYPES[key]
+					),
+					' '
+				)
+			);
+		});
+
+		let addEquipamentModifiersDiv = $('<div>', {
+			class: 'visualize_equipament_modifiers',
+			id: VisualizeEquipament.windowName + '_equipament_modifiers_' + equipamentId + '_' + randomId,
+			style: 'display: none',
+		});
+
+		addEquipamentModifiersDiv.append(
+			$('<table>').append(
+				$('<tr>').append(
+					$('<th>').append(
+						Modifier.EMOJI_ADD + ' ' + t('Tipo')
+					),
+					$('<th>').append(
+						radioButtonModifierTypes
+					)
+				),
+
+				$('<tr>').append(
+					$('<th>').append(
+						Modifier.EMOJI_VALUE + ' ' + t('Valor')
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'number',
+							id: VisualizeEquipament.windowName + '_modifier_value_' + randomId
+						})
+					)
+				),
+
+				$('<tr>').append(
+					$('<th>').append(
+						Modifier.EMOJI_OBSERVATIONS + ' ' + t('Notas')
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizeEquipament.windowName + '_modifier_observations_' + randomId
+						})
+					)
+				),
+
+				$('<tr>').append(
+					$('<th>', { colspan: 2 } ).append(
+						$("<input>", {
+							type: 'button',
+							id: VisualizeEquipament.windowName + '_modifier_save_' + randomId,
+							onclick: 'VisualizeEquipament.addModifier("' + equipamentId + '", ' + randomId + ')',
+							value: t('Adicionar')
+						})
+					)
+				)
+			)
+		);
+
+		let listEquipamentModifierDiv = $('<div>', {
+			id: VisualizeEquipament.windowName + '_equipament_modifiers_list_' + equipamentId + '_' + randomId
+		});
+
+		divEditEquipament.append(
+			formEditEquipament,
+			'<br />',
+			addEquipamentModifiersDiv,
+			'<br />',
+			listEquipamentModifierDiv
+		);
 
 		return divEditEquipament;
 	}
@@ -141,7 +227,84 @@ class VisualizeEquipament extends Box {
 
 	// abrir formulario de novo modificador no equipamento
 	static newFormModifier (equipamentId, randomId) {
-		$('#' + VisualizeEquipament.windowName + '_modifier_form_' + playerId + '_' + randomId).slideToggle();
+		console.log('equipamentId', equipamentId);
+		console.log('randomId', randomId);
+		$('#' + VisualizeEquipament.windowName + '_equipament_modifiers_' + equipamentId + '_' + randomId).slideToggle();
+	}
+
+	// adicionar modificador ao equipamento
+	static addModifier (equipamentId, randomId) {
+
+		let modifierType = $("input[name='" + VisualizeEquipament.windowName + '_modifier_type_' + randomId + "']:checked").val();
+		let modifierValue = $('#' + VisualizeEquipament.windowName + '_modifier_value_' + randomId).val();
+		let modifierObservations = $('#' + VisualizeEquipament.windowName + '_modifier_observations_' + randomId).val();
+
+		let newModifier = {
+			'equipamentId': equipamentId,
+			'typeId': modifierType,
+			'value': modifierValue,
+			'observations': modifierObservations
+		}
+
+		let resultSaved = Modifier.saveModifier(newModifier);
+
+		let saveButton = $('#' + VisualizeEquipament.windowName + '_modifier_save_' + randomId);
+
+		//TODO: adicionar modificadores
+
+		if (resultSaved) {
+
+			saveButton.val(t('Adicionado!'));
+			saveButton.attr('disabled', 'disabled');
+			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+
+			VisualizeEquipament.listModifiers(equipamentId, randomId);
+
+		} else {
+
+			saveButton.val('😟'); // :(
+			saveButton.attr('disabled', 'disabled');
+			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+			saveButton.val(t('Adicionar'));
+		}
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+		let randomId = this.randomId;
+		let equipamentId = this.equipamentId;
+
+		VisualizeEquipament.listModifiers(equipamentId, randomId);
+	}
+
+	// atualizar lista de modificadores quando precisar
+	static listModifiers (equipamentId, randomId) {
+		
+		let allModifiers = Modifier.getAllModifiers(equipamentId);
+
+		let listEquipamentModifiersDiv = $('#' + VisualizeEquipament.windowName + '_equipament_modifiers_list_' + equipamentId + '_' + randomId);
+
+		// apagar o conteudo antes de inserir um novo
+		listEquipamentModifiersDiv.html('');
+
+		allModifiers.forEach(function (modifier) {
+			
+			listEquipamentModifiersDiv.append(
+				$("<table>").append(
+					$("<tr>").append(
+						$("<th>", { title: Modifier.ALL_TYPE_NAMES[modifier['typeId']] }).append(
+							Modifier.EMOJI_TYPES[modifier['typeId']]
+						),
+						$("<td>").append(
+							modifier['value']
+						),
+						$("<td>").append(
+							modifier['observations']
+						)
+					)
+				)
+			)
+		});
 	}
 }
 

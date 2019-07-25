@@ -10,6 +10,7 @@ class Player extends RModel {
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
 	static get EMOJI_GENDER_FEMALE () { return '👩' };
+	
 	static get EMOJI_STRENGTH () { return '💪' };
 	static get EMOJI_DEXTERY () { return '🏃' };
 	static get EMOJI_CONSTITUTION () { return '✚' };

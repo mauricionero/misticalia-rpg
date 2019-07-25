@@ -335,6 +335,8 @@ class VisualizePlayer extends Box {
 	static listEquipaments (playerId, randomId) {
 		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId);
 
+		let selectedEquipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
+
 		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
 
 		let playerEquipamentListTable = $("<table>", {
@@ -354,29 +356,47 @@ class VisualizePlayer extends Box {
 		allPlayerEquipaments.forEach(function (playerEquipament) {
 
 			let equipamentId = playerEquipament['equipamentId'];
+			let playerEquipamentId = playerEquipament['id'];
 
 			// criar filtro de equipamento
 			let options = { 'filters': { 'id': equipamentId } }
 			let equipament = Equipament.getAll(options)[0];
 
-			//TODO: quando tiver a informação do que o player esta usando, destacar os em uso
+			// criar filtro de equipamento
+			options = { 'filters': { 'equipamentId': equipamentId } }
+			let hasEquipedEquipament = (EquipedEquipament.getAllPlayerEquipedEquipaments(playerId, options)[0]) ? true : false;
+
+			let extraClass = '';
+
+			// se esta equipado esse equipamento, destacar
+			if (hasEquipedEquipament) {
+				extraClass = 'visualize_player_equiped'
+			}
+
+			let equipamentTypeId = equipament['typeId'];
+
+			//TODO: recalcular os modificadores, caso alguma informação esteja desatualizada... salvar apos o loop
 
 			playerEquipamentListTable.append(
-				$("<tr>").append(
-					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipament['typeId']] } ).append(
-						Equipament.EMOJI_TYPES[equipament['typeId']],
+				$("<tr>", {
+					id: VisualizePlayer.windowName + '_player_equipament_item_' + playerEquipamentId + '_' + randomId,
+					class: 'visualize_player_select_item ' + extraClass,
+					onclick: 'VisualizePlayer.equipEquipament("' + playerId + '", "' + playerEquipamentId + '", "' + equipamentId + '", ' + randomId + ', ' + (hasEquipedEquipament != true) + ')'
+				}).append(
+					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipamentTypeId] } ).append(
+						Equipament.EMOJI_TYPES[equipamentTypeId],
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayerEquipaments.windowName + '_player_equipament_type_' + equipamentId + '_' + randomId,
+							id: VisualizePlayer.windowName + '_player_equipament_type_' + equipamentId + '_' + randomId,
 							readonly: 'readonly',
-							value: equipament['typeId']
+							value: equipamentTypeId
 						})
 					),
 					$("<td>").append(
 						equipament['name'],
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayerEquipaments.windowName + '_player_equipament_name_' + equipamentId + '_' + randomId,
+							id: VisualizePlayer.windowName + '_player_equipament_name_' + equipamentId + '_' + randomId,
 							readonly: 'readonly',
 							value: equipament['name']
 						})
@@ -390,6 +410,44 @@ class VisualizePlayer extends Box {
 		playerEquipamentListDiv.html('');
 
 		playerEquipamentListDiv.append(playerEquipamentListTable);
+
+		VisualizePlayer.filterListEquipaments (playerId, randomId, selectedEquipamentTypeId);
+	}
+
+	// equipar o item selecionado do jogador
+	static equipEquipament (playerId, playerEquipamentId, equipamentId, randomId, inserting = true) {
+
+		let equipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
+
+		let resultSaved = false;
+
+		// se estiver equipando
+		if (inserting) {
+			let newEquipedEquipament = {
+				'equipamentTypeId': equipamentTypeId,
+				'playerId': playerId,
+				'playerEquipamentId': playerEquipamentId,
+				'equipamentId': equipamentId
+			}
+
+			resultSaved = EquipedEquipament.equipEquipament(newEquipedEquipament);
+
+		// se estiver desequipando
+		} else {
+
+			resultSaved = EquipedEquipament.unequipEquipament(playerId, playerEquipamentId);
+		}
+
+		let itemClicked = $('#' + VisualizePlayer.windowName + '_player_equipament_item_' + playerEquipamentId + '_' + randomId);
+
+		if (resultSaved) {
+			itemClicked.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300);
+
+			// recarregar listagem
+			VisualizePlayer.listEquipaments(playerId, randomId);
+		} else {
+			itemClicked.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300);
+		}
 	}
 
 	// filtrar tabela contendo os equipamentos do jogador
@@ -404,7 +462,8 @@ class VisualizePlayer extends Box {
 
 		playerEquipamentListTable.filter(function() {
 			$(this).toggle(
-				$(this).text().toLowerCase().indexOf(filterValue) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_NAME) > -1
+				// filtrar pelo tipo do equipamento + a label no titulo + remover equipamento
+				$(this).text().toLowerCase().indexOf(filterValue) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_NAME) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_REMOVE) > -1
 			)
 		});
 	}

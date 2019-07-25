@@ -1,17 +1,12 @@
 .die_style {
-	float: left;
-
-	width: 40px;
-	height: 34px;
-
-	font-size: 22px;
-	font-weight: bold;
-
-	text-align: center;
-
-	margin: 8px 5px 0 5px;
-	padding-top: 6px;
-
 	border: 4px outset #666;
 	border-radius: 8px;
+  float: left;
+	font-size: 22px;
+	font-weight: bold;
+  height: 34px;
+  margin: 8px 5px 0 5px;
+  padding-top: 6px;
+	text-align: center;
+	width: 40px;
 }

@@ -29,7 +29,7 @@ class PlayerEquipament extends RModel {
 		return this.saveItem(newPlayerEquipament);
 	}
 
-	// retorna todos os equipamentos do jogador
+	// retorna todos os equipamentos do jogador, opcionalmente filtrando o tipo
 	static getAllPlayerEquipaments (playerId) {
 
 		let options = { 'filters': { 'playerId': playerId } };

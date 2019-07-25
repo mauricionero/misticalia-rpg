@@ -25,10 +25,14 @@
 
 .visualize_player_equipament_item_list {
 	float: right;
-	width: 32%;
+	width: 34%;
 	height: 100px;
-	border: 1px solid #f00;
+	border: 1px solid #666;
 	margin: 5px;
 	padding: 2px;
 	overflow-y: auto;
+}
+
+.visualize_player_equipament_item_list td {
+	font-size: 12px;
 }

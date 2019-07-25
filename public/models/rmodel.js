@@ -131,9 +131,31 @@ class RModel {
 			return false;
 		}
 	}
+
+	// remover item de acordo com filtros
+	static removeItem (options = {}) {
+		let storeName = this.name;
+
+		// pega todos os itens que nao estao no filtro
+		let storeData = this.getAll(options, true);
+
+		console.log('options removeItem', options);
+		console.log('storeData removeItem', storeData);
+
+		try {
+			localStorage.setItem(storeName, JSON.stringify(storeData));
+
+			return true;
+		}
+		catch (err) {
+			alert(err.name);
+
+			return false;
+		}
+	}
 	
 	// retornar todos os dados relacionados aa essa model
-	static getAll (options = {}) {
+	static getAll (options = {}, invert = false) {
 		let storeName = this.name;
 
 		let storeData = JSON.parse(localStorage.getItem(storeName));
@@ -156,12 +178,13 @@ class RModel {
 					if (singleData[filterField] != filterValue) {
 						onFilter = false;
 
-						// break para otimizar, nao precisa continuar verificando se alguma condição nao satisfez
+						// se ja achou o que precisava, sai do loop
 						break;
 					}
 				}
 
-				return onFilter;
+				// retorna verificando se deve inverter a logica
+				return onFilter != invert;
 			});
 		}
 

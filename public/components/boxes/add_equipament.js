@@ -102,8 +102,6 @@ class AddEquipament extends Box {
 
 		let saveButton = $('#' + AddEquipament.windowName + '_save_' + randomId);
 
-		//TODO: adicionar modificadores
-
 		if (resultSaved) {
 
 			saveButton.val(t('Adicionado!'));

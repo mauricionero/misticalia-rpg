@@ -36,3 +36,12 @@
 .visualize_player_equipament_item_list td {
 	font-size: 12px;
 }
+
+.visualize_player_select_item {
+	cursor: pointer;
+}
+
+.visualize_player_equiped {
+	font-weight: bold;
+	background-color: #ddd;
+}

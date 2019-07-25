@@ -1,32 +1,34 @@
 class Equipament extends RModel {
 
 	static get EMOJI_ADD () { return '⛨' }
-    static get EMOJI_VISUALIZE () { return '👁️' };
+    static get EMOJI_VISUALIZE () { return '👁️' }
 	static get EMOJI_QUANTITY () { return '📦' }
 
-	static get TYPE_CHESTPLATE () { return 1 };
-	static get EMOJI_CHESTPLATE () { return '👕' };
-	static get TYPE_HELMET () { return 2 };
-	static get EMOJI_HELMET () { return '👷' };
-	static get TYPE_LEGGING () { return 3 };
-	static get EMOJI_LEGGING () { return '👖' };
-	static get TYPE_BOOTS () { return 4 };
-	static get EMOJI_BOOTS () { return '👣' };
-	static get TYPE_ATACK () { return 5 };
-	static get EMOJI_ATACK () { return '🗡️' };
-	static get TYPE_SHIELD () { return 6 };
-	static get EMOJI_SHIELD () { return '🛡️' };
-	static get TYPE_AMULET () { return 7 };
-	static get EMOJI_AMULET () { return '🔵' };
-	static get TYPE_RING () { return 8 };
-	static get EMOJI_RING () { return '⭕' };
+	static get EMOJI_REMOVE () { return '❎' }
 
-	static get ORIGIN_PLATAFORM () { return 1 };
-	static get ORIGIN_OTHER_PLAYER () { return 2 };
+	static get TYPE_CHESTPLATE () { return 1 }
+	static get EMOJI_CHESTPLATE () { return '👕' }
+	static get TYPE_HELMET () { return 2 }
+	static get EMOJI_HELMET () { return '👷' }
+	static get TYPE_LEGGING () { return 3 }
+	static get EMOJI_LEGGING () { return '👖' }
+	static get TYPE_BOOTS () { return 4 }
+	static get EMOJI_BOOTS () { return '👣' }
+	static get TYPE_ATACK () { return 5 }
+	static get EMOJI_ATACK () { return '🗡️' }
+	static get TYPE_SHIELD () { return 6 }
+	static get EMOJI_SHIELD () { return '🛡️' }
+	static get TYPE_AMULET () { return 7 }
+	static get EMOJI_AMULET () { return '🔵' }
+	static get TYPE_RING () { return 8 }
+	static get EMOJI_RING () { return '⭕' }
 
-	static get EMOJI_TYPE () { return '🛡️' };
-	static get EMOJI_NAME () { return '🏷️' };
-	static get EMOJI_WEIGHT () { return '⚖️' };
+	static get ORIGIN_PLATAFORM () { return 1 }
+	static get ORIGIN_OTHER_PLAYER () { return 2 }
+
+	static get EMOJI_TYPE () { return '🛡️' }
+	static get EMOJI_NAME () { return '🏷️' }
+	static get EMOJI_WEIGHT () { return '⚖️' }
 
 	static get EMOJI_TYPES () {
 		return {
@@ -39,7 +41,7 @@ class Equipament extends RModel {
 			7: Equipament.EMOJI_AMULET,
 			8: Equipament.EMOJI_RING
 		}
-	};
+	}
 
 	static get ALL_TYPE_NAMES () {
 		return {
@@ -52,7 +54,7 @@ class Equipament extends RModel {
 			7: 'Amuleto',
 			8: 'Anel'
 		}
-	};
+	}
 
 	//TODO: criar metodo estatico padronizado e colocar os campos a serem validados e o tipo de validacao
 

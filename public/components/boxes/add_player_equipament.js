@@ -6,6 +6,7 @@ class AddPlayerEquipament extends Box {
 		var randomId = Math.floor(Math.random() * 10000);
 
 		let playerId = options['playerId'];
+		let originRandomId = options['originRandomId'];
 
 		let player = Player.getPlayer(playerId);
 
@@ -39,13 +40,13 @@ class AddPlayerEquipament extends Box {
 		equipaments.forEach(function (equipament) {
 			listPlayerEquipamentTable.append(
 				$("<tr>").append(
-					$("<td>").append(
-						Equipament.EMOJI_TYPES[equipament['type']],
+					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipament['typeId']] } ).append(
+						Equipament.EMOJI_TYPES[equipament['typeId']],
 						$("<input>", {
 							type: 'hidden',
 							id: AddPlayerEquipament.windowName + '_type_' + equipament['id'] + '_' + randomId,
 							readonly: 'readonly',
-							value: equipament['type']
+							value: equipament['typeId']
 						})
 					),
 					$("<td>").append(
@@ -78,7 +79,7 @@ class AddPlayerEquipament extends Box {
 						$("<input>", {
 							type: 'button',
 							id: AddPlayerEquipament.windowName + '_add_' + equipament['id'] + '_' + randomId,
-							onclick: 'AddPlayerEquipament.addPlayerEquipament("' + playerId + '", "' + equipament['id'] + '", ' + randomId + ')',
+							onclick: 'AddPlayerEquipament.addPlayerEquipament("' + playerId + '", "' + equipament['id'] + '", ' + randomId + ', ' + originRandomId + ')',
 							value: Equipament.EMOJI_ADD
 						})
 					),
@@ -90,7 +91,7 @@ class AddPlayerEquipament extends Box {
 	}
 
 	// adicionar o equipamento ao inventario do jogador
-	static addPlayerEquipament (playerId, equipamentId, randomId) {
+	static addPlayerEquipament (playerId, equipamentId, randomId, originRandomId = null) {
 		let quantity = $('#' + AddPlayerEquipament.windowName + '_quantity_' + equipamentId + '_' + randomId).val();
 		let addButton = $('#' + AddPlayerEquipament.windowName + '_add_' + equipamentId + '_' + randomId);
 
@@ -109,6 +110,11 @@ class AddPlayerEquipament extends Box {
 			addButton.attr('disabled', 'disabled');
 			addButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 
+			// atualizar listagem da dialog que originou essa dialog
+			if (originRandomId) {
+				ListPlayerEquipaments.listEquipaments(playerId, originRandomId);
+			}
+
 		} else {
 
 			addButton.val('😟'); // :(
@@ -119,7 +125,7 @@ class AddPlayerEquipament extends Box {
 	}
 
 	// abrir visualização da adição dos equipamentos do player
-	static visualizeEquipament (playerId) {
+	static visualizeEquipaments (playerId, originRandomId) {
 
 		let player = Player.getPlayer(playerId);
 
@@ -129,6 +135,7 @@ class AddPlayerEquipament extends Box {
 
 		let options = {
 			playerId: playerId,
+			originRandomId: originRandomId,
 			singleTon: true,
 			windowId: AddPlayerEquipament.windowName + '_' + playerId
 		};

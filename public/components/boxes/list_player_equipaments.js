@@ -4,13 +4,38 @@ class ListPlayerEquipaments extends Box {
 
 	boxContent (options = {}) {
 
+		let randomId = Math.floor(Math.random() * 10000);
+		this.randomId = randomId;
+
 		let playerId = options['playerId'];
+		this.playerId = playerId;
+
+		let listEquipamentDiv = $('<div>', {
+			id: ListPlayerEquipaments.windowName + '_list_equipaments_' + playerId + '_' + randomId
+		});
+
+		return listEquipamentDiv;
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+		let randomId = this.randomId;
+		let playerId = this.playerId;
+
+		ListPlayerEquipaments.listEquipaments(playerId, randomId);
+	}
+
+	// atualizar lista de equipamentos quando precisar
+	static listEquipaments (playerId, randomId) {
 
 		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
 
-		let randomId = Math.floor(Math.random() * 10000);
+		let currentAdventureRoleId = Adventure.getCurrentAdventureRole();
 
-		let listEquipamentDiv = $('<div>');
+		let listEquipamentDiv = $('#' + ListPlayerEquipaments.windowName + '_list_equipaments_' + playerId + '_' + randomId);
+
+		// apagar conteudo antes de inserir
+		listEquipamentDiv.html('');
 
 		let listEquipamentTable = $("<table>");
 
@@ -29,7 +54,6 @@ class ListPlayerEquipaments extends Box {
 			)
 		);
 
-
 		allPlayerEquipaments.forEach(function (playerEquipament) {
 
 			let equipamentId = playerEquipament['equipamentId'];
@@ -38,11 +62,9 @@ class ListPlayerEquipaments extends Box {
 			let options = { 'filters': { 'id': equipamentId } }
 			let equipament = Equipament.getAll(options)[0];
 
-			console.log('equipament', equipament);
-			
 			listEquipamentTable.append(
 				$("<tr>").append(
-					$("<td>").append(
+					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipament['typeId']] } ).append(
 						Equipament.EMOJI_TYPES[equipament['typeId']],
 						$("<input>", {
 							type: 'hidden',
@@ -71,11 +93,29 @@ class ListPlayerEquipaments extends Box {
 					)
 				)
 			)
+
 		});
+		
+		// se for mestre, pode incluir equipamento no inventario
+		if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
+			listEquipamentTable.append(
+				$("<tr>").append(
+					$("<th>", { colspan: 3 } ).append(
+						$("<input>", {
+							type: 'button',
+							id: ListPlayerEquipaments.windowName + '_manage_equipament_' + playerId + '_' + randomId,
+							title: t('Adicionar equipamento'),
+							onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", ' + randomId + ')',
+							value: Equipament.EMOJI_ADD
+						})
+					)
+				)
+			);
+		}
 
-		listEquipamentDiv.html(listEquipamentTable);
-
-		return listEquipamentDiv;
+		listEquipamentDiv.append(
+			listEquipamentTable
+		);
 	}
 
 	// abrir visualização dos equipamentos do player

@@ -185,11 +185,18 @@ class VisualizeEquipament extends Box {
 			formEditEquipament,
 			'<br />',
 			addEquipamentModifiersDiv,
-			'<br />',
 			listEquipamentModifierDiv
 		);
 
 		return divEditEquipament;
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+		let randomId = this.randomId;
+		let equipamentId = this.equipamentId;
+
+		VisualizeEquipament.listModifiers(equipamentId, randomId);
 	}
 
 	// salvar modificações do equipamento
@@ -215,6 +222,8 @@ class VisualizeEquipament extends Box {
 			saveButton.val(t('Salvo!'));
 			saveButton.attr('disabled', 'disabled');
 			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+
+			//TODO: quando salvar com sucesso, fazer com que a dialog de origem recarregue a lista
 
 		} else {
 
@@ -267,14 +276,6 @@ class VisualizeEquipament extends Box {
 			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 			saveButton.val(t('Adicionar'));
 		}
-	}
-
-	// executa após printar a janela
-	callBackRender () {
-		let randomId = this.randomId;
-		let equipamentId = this.equipamentId;
-
-		VisualizeEquipament.listModifiers(equipamentId, randomId);
 	}
 
 	// atualizar lista de modificadores quando precisar

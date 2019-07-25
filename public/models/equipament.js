@@ -24,7 +24,7 @@ class Equipament extends RModel {
 	static get ORIGIN_PLATAFORM () { return 1 };
 	static get ORIGIN_OTHER_PLAYER () { return 2 };
 
-	static get EMOJI_TYPE () { return '⛨' };
+	static get EMOJI_TYPE () { return '🛡️' };
 	static get EMOJI_NAME () { return '🏷️' };
 	static get EMOJI_WEIGHT () { return '⚖️' };
 

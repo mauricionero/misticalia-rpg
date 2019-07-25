@@ -19,10 +19,6 @@ class ListPlayers extends Box {
 
 		let listPlayersTable = $("<table>");
 
-		let currentAdventureRoleId = Adventure.getCurrentAdventureRole();
-
-		console.log('currentAdventureRoleId', currentAdventureRoleId);
-
 		let listPlayersTableTitle = $("<tr>");
 
 		// titulo das colunas na tabela
@@ -60,15 +56,6 @@ class ListPlayers extends Box {
 				)
 			)
 		);
-
-		// se for mestre, pode incluir equipamento no inventario
-		if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
-			listPlayersTableTitle.append(
-				$("<th>", { title: t('Adicionar equipamento no inventário do jogador') }).append(
-					Equipament.EMOJI_ADD
-				)
-			);
-		}
 
 		allPlayers.forEach(function (player) {
 
@@ -178,20 +165,6 @@ class ListPlayers extends Box {
 					)
 				)
 			);
-
-			// se for mestre, pode incluir equipamento no inventario
-			if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
-				listPlayersTableLine.append(
-					$("<td>").append(
-						$("<input>", {
-							type: 'button',
-							id: ListPlayers.windowName + '_manage_equipament_' + player['id'] + '_' + randomId,
-							onclick: 'AddPlayerEquipament.visualizeEquipament("' + player['id'] + '")',
-							value: Equipament.EMOJI_ADD
-						}),
-					)
-				);
-			}
 		});
 
 		listPlayersDiv.append(

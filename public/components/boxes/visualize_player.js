@@ -4,8 +4,10 @@ class VisualizePlayer extends Box {
 
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);
+		this.randomId = randomId
 
 		let playerId = options['playerId'];
+		this.playerId = playerId
 
 		let player = Player.getPlayer(playerId);
 
@@ -154,63 +156,149 @@ class VisualizePlayer extends Box {
 			style: 'display: none',
 		});
 
-		let equipamentListDiv = $('<div>', {
+
+		let playerEquipamentTable = $('<table>').append(
+			$('<tr>').append(
+				$('<td>').html(
+					$('<label>', { title: t('Sem filtro') } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							checked: true,
+							value: 0
+						}),
+						$('<span>').append(
+							'&nbsp;&nbsp;&nbsp;'
+						)
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_HELMET)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_HELMET
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_HELMET
+						)
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_AMULET)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_AMULET
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_AMULET
+						)
+					)
+				)
+			),
+			$('<tr>').append(
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_ATACK)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_ATACK
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_ATACK
+						)
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_CHESTPLATE)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_CHESTPLATE
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_CHESTPLATE
+						)
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_CHESTPLATE)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_SHIELD
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_SHIELD
+						)
+					)
+				)
+			),
+			$('<tr>').append(
+				$('<td>').html(
+					''
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_LEGGING)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_LEGGING
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_LEGGING
+						)
+					)
+				),
+				$('<td>').html(
+					''
+				)
+			),
+			$('<tr>').append(
+				$('<td>').html(
+					''
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_BOOTS)) } ).append(
+						$('<input>', {
+							type: 'radio',
+							class: 'radio_equipament_type',
+							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							value: Equipament.TYPE_BOOTS
+						}),
+						$('<span>').append(
+							Equipament.EMOJI_BOOTS
+						)
+					)
+				),
+				$('<td>').html(
+					''
+				)
+			)
+		);
+
+		let playerEquipamentListDiv = $('<div>', {
 			id: VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId,
 			class: 'visualize_player_equipament_item_list'
 		});
 
+		let itemListDiv = $('<div>', {
+			id: VisualizePlayer.windowName + '_item_list_' + playerId + '_' + randomId,
+			class: 'visualize_player_equipament_item_list'
+		});
+
 		visualizePlayerEquipamentDiv.append(
-			$('<table>').append(
-				$('<tr>').append(
-					$('<td>').html(
-						''
-					),
-					$('<td>').html(
-						Player.EMOJI_HEAD_EQUIPAMENT
-					),
-					$('<td>').html(
-						Player.EMOJI_AMULET_EQUIPAMENT
-					)
-				),
-				$('<tr>').append(
-					$('<td>').html(
-						Player.EMOJI_MAIN_HAND_EQUIPAMENT
-					),
-					$('<td>').html(
-						Player.EMOJI_CHESTPLATE_EQUIPAMENT
-					),
-					$('<td>').html(
-						Player.EMOJI_SHIELD_EQUIPAMENT
-					)
-				),
-				$('<tr>').append(
-					$('<td>').html(
-						''
-					),
-					$('<td>').html(
-						Player.EMOJI_LEGS_EQUIPAMENT
-					),
-					$('<td>').html(
-						''
-					)
-				),
-				$('<tr>').append(
-					$('<td>').html(
-						''
-					),
-					$('<td>').html(
-						Player.EMOJI_FEET_EQUIPAMENT
-					),
-					$('<td>').html(
-						''
-					)
-				)
-			),
-			equipamentListDiv,
-			$('<div>', {
-				id: VisualizePlayer.windowName + '_item_list_' + playerId + '_' + randomId,
-				class: 'visualize_player_equipament_item_list'
-			})
+			playerEquipamentTable,
+			itemListDiv,
+			playerEquipamentListDiv
 		);
 
 		listPlayerDiv.append(
@@ -226,6 +314,99 @@ class VisualizePlayer extends Box {
 		);
 
 		return listPlayerDiv;
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+		let randomId = this.randomId;
+		let playerId = this.playerId;
+
+		VisualizePlayer.listEquipaments(playerId, randomId);
+
+		// verificar quando eh alterado o equipamento clicado
+		$("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']").change(function() {
+			let equipamentTypeId = $(this).val();
+
+			VisualizePlayer.filterListEquipaments (playerId, randomId, equipamentTypeId);
+		});
+	}
+
+	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
+	static listEquipaments (playerId, randomId) {
+		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId);
+
+		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
+
+		let playerEquipamentListTable = $("<table>", {
+			id: VisualizePlayer.windowName + '_table_equipament_list_' + playerId + '_' + randomId
+		});
+		playerEquipamentListTable.append(
+			$("<tr>").append(
+				$("<th>", { title: t('Tipo') }).append(
+					Equipament.EMOJI_TYPE
+				),
+				$("<th>", { title: t('Nome') }).append(
+					Equipament.EMOJI_NAME
+				)
+			)
+		);
+
+		allPlayerEquipaments.forEach(function (playerEquipament) {
+
+			let equipamentId = playerEquipament['equipamentId'];
+
+			// criar filtro de equipamento
+			let options = { 'filters': { 'id': equipamentId } }
+			let equipament = Equipament.getAll(options)[0];
+
+			//TODO: quando tiver a informação do que o player esta usando, destacar os em uso
+
+			playerEquipamentListTable.append(
+				$("<tr>").append(
+					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipament['typeId']] } ).append(
+						Equipament.EMOJI_TYPES[equipament['typeId']],
+						$("<input>", {
+							type: 'hidden',
+							id: ListPlayerEquipaments.windowName + '_player_equipament_type_' + equipamentId + '_' + randomId,
+							readonly: 'readonly',
+							value: equipament['typeId']
+						})
+					),
+					$("<td>").append(
+						equipament['name'],
+						$("<input>", {
+							type: 'hidden',
+							id: ListPlayerEquipaments.windowName + '_player_equipament_name_' + equipamentId + '_' + randomId,
+							readonly: 'readonly',
+							value: equipament['name']
+						})
+					)
+				)
+			)
+
+		});
+
+		// limpar antes de inserir o conteudo
+		playerEquipamentListDiv.html('');
+
+		playerEquipamentListDiv.append(playerEquipamentListTable);
+	}
+
+	// filtrar tabela contendo os equipamentos do jogador
+	static filterListEquipaments (playerId, randomId, equipamentTypeId) {
+		let playerEquipamentListTable = $('#' + VisualizePlayer.windowName + '_table_equipament_list_' + playerId + '_' + randomId + ' tr');
+
+		let filterValue = '';
+
+		if (equipamentTypeId != 0) {
+			filterValue = Equipament.EMOJI_TYPES[equipamentTypeId];
+		}
+
+		playerEquipamentListTable.filter(function() {
+			$(this).toggle(
+				$(this).text().toLowerCase().indexOf(filterValue) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_NAME) > -1
+			)
+		});
 	}
 
 	// abrir dialog de visualização do player

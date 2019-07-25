@@ -10,7 +10,7 @@ class Player extends RModel {
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
 	static get EMOJI_GENDER_FEMALE () { return '👩' };
-	
+
 	static get EMOJI_STRENGTH () { return '💪' };
 	static get EMOJI_DEXTERY () { return '🏃' };
 	static get EMOJI_CONSTITUTION () { return '✚' };
@@ -30,15 +30,6 @@ class Player extends RModel {
 	static get EMOJI_ROLL_DICE () { return '🎲' };
 	static get EMOJI_DIFFICULTY () { return '䷂' };
 	static get EMOJI_RESULT () { return '=' };
-
-	static get EMOJI_HEAD_EQUIPAMENT () { return '👷' };
-	static get EMOJI_AMULET_EQUIPAMENT () { return '🔵' };
-	static get EMOJI_RING_EQUIPAMENT () { return '⭕' };
-	static get EMOJI_SHIELD_EQUIPAMENT () { return '🛡️' };
-	static get EMOJI_CHESTPLATE_EQUIPAMENT () { return '👕' };
-	static get EMOJI_MAIN_HAND_EQUIPAMENT () { return '🗡️' };
-	static get EMOJI_LEGS_EQUIPAMENT () { return '👖' };
-	static get EMOJI_FEET_EQUIPAMENT () { return '👣' };
 
 	static get EMOJI_GENDERS () {
 		return {

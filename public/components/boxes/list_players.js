@@ -4,13 +4,22 @@ class ListPlayers extends Box {
 
 	boxContent (options = {}) {
 
+		// se eh NPC
+		let isNPC = false;
+		if (options['isNPC']) {
+			isNPC = true;
+		}
+
+		// filtrar se eh npc ou nao
+		let optionFilter = { 'filters': { 'isNPC': isNPC } }
+
 		let allPlayers = [];
 
 		// se deve filtrar por aventura
 		if (options['filterAdventureId']) {
-			allPlayers = Player.getAllPlayersCurrentAdventure();
+			allPlayers = Player.getAllPlayersCurrentAdventure(optionFilter);
 		} else {
-			allPlayers = Player.getAllPlayers();
+			allPlayers = Player.getAllPlayers(optionFilter);
 		}
 
 		var randomId = Math.floor(Math.random() * 10000);

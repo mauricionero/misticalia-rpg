@@ -102,6 +102,8 @@ class RModel {
 			// adicionar item na store local
 			storeData.push(item);
 
+			console.log('storeData', storeData);
+
 			try {
 				localStorage.setItem(storeName, JSON.stringify(storeData));
 
@@ -179,12 +181,12 @@ class RModel {
 	}
 	
 	// retornar todos os dados relacionados aa essa model da aventura atual
-	static getAllFromCurrentAdventure () {
+	static getAllFromCurrentAdventure (options = {}) {
 		let storeName = this.name;
 
 		let currentAdventureId = Adventure.getCurrentAdventureId();
 
-		let storeData = this.getAll();
+		let storeData = this.getAll(options);
 
 		return storeData.filter(function ( singleData ) { return singleData['currentAdventureId'] == currentAdventureId });
 

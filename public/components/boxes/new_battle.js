@@ -18,11 +18,19 @@ class NewBattle extends Box {
 
 	static get windowName () { return 'new_battle' };
 
-	boxContent () {
+	boxContent (options = {}) {
+
+		let allPlayers = [];
+
+		// se deve filtrar por aventura
+		if (options['filterAdventureId']) {
+			allPlayers = Player.getAllPlayersCurrentAdventure();
+		} else {
+			allPlayers = Player.getAllPlayers();
+		}
 
 		var randomId = Math.floor(Math.random() * 10000);
 
-		var allPlayers = Player.getAllPlayers();
 		var allPlayerIds = [];
 
 		var maxDextery = Player.getMax('dextery');

@@ -51,6 +51,14 @@ class Player extends RModel {
 		]
 	};
 
+	static get ALL_SECONDARY_ATTRIBUTES () {
+		return [
+			'fire_protection',
+			'cold_protection',
+			'defense'
+		]
+	};
+
 	static get ALL_ATTRIBUTES_NAMES () {
 		return {
 			'strength': 'Força',
@@ -95,11 +103,10 @@ class Player extends RModel {
 		return t(Player.ALL_ATTRIBUTES_NAMES[attribute])
 	}
 
-	// adicionar um novo jogador aa aventura
-	static addPlayer (newPlayer) {
-		
-		return this.saveItem(newPlayer);
+	// salvar um player (editar ou criar um novo)
+	static savePlayer (player) {
 
+		return this.saveItem(player);
 	}
 
 	// retorna todos os players num array
@@ -188,5 +195,35 @@ class Player extends RModel {
 		}
 
 		return parseInt(basePoints) + parseInt(temporaryModifier) + parseInt(permanentModifier);
+	}
+
+	// apagar os modificadores permanentes
+	static clearPermanentModifiers (playerId) {
+
+		let player = Player.getPlayer(playerId);
+
+		// apagar todos os modificadores permanentes antes de calcular tudo de volta
+		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+			let basePoints = player[attribute]['basePoints'] || 0;
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
+
+			player[attribute]['permanentModifier'] = 0;
+			player[attribute]['points'] = 0;
+		});
+
+		// apagar todos os modificadores secundarios também antes de calcular tudo de volta
+		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
+			if (player[attribute] == undefined) {
+				player[attribute] = {}
+			}
+
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+
+			player[attribute]['permanentModifier'] = 0;
+			player[attribute]['points'] = 0;
+		});
+
+		this.saveItem(player);
 	}
 }

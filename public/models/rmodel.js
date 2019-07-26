@@ -7,8 +7,6 @@ class RModel {
 
 		let validations = this.validations();
 
-		console.log('validations', validations);
-
 		if (typeof validations == 'object') {
 			for (var fieldValidate in validations) {
 				let whichValidations = validations[fieldValidate];
@@ -61,8 +59,6 @@ class RModel {
 			}
 		}
 
-		console.log('errorMessages', errorMessages);
-
 		return errorMessages;
 	}
 
@@ -73,8 +69,6 @@ class RModel {
 		let randomId = Math.floor(Math.random() * 100000);
 
 		item['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
-
-		console.log('item', item);
 
 		let errorMessages = [];
 
@@ -87,12 +81,9 @@ class RModel {
 		if (errorMessages.length == 0) {
 			let storeData = this.getAll();
 
-			console.log('storeData antes', storeData);
-
 			// se nao tiver id: criar um para depois adicionar o novo item
 			if (! item['id']) {
 				item['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
-				console.log('criando novo');
 
 			// se ja tiver id, procurar na store local e apagar para depois re-adicionar o item
 			} else {
@@ -106,14 +97,10 @@ class RModel {
 
 					return true;
 				});
-				console.log('editando');
 			}
-			console.log('storeData depois', storeData);
 
 			// adicionar item na store local
 			storeData.push(item);
-
-			console.log('storeData adicionado novo', storeData);
 
 			try {
 				localStorage.setItem(storeName, JSON.stringify(storeData));

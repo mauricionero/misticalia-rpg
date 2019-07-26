@@ -58,6 +58,36 @@ class Modifier extends RModel {
 		}
 	};
 
+	static get ALL_TYPES () {
+		return {
+			1: 'strength',
+			2: 'dextery',
+			3: 'constitution',
+			4: 'inteligence',
+			5: 'wisdom',
+			6: 'charisma',
+			7: 'sanity',
+			8: 'fire_protection',
+			9: 'cold_protection',
+			10: 'defense'
+		}
+	};
+
+	static get ALL_TYPE_IDS () {
+		return {
+			'strength': 1,
+			'dextery': 2,
+			'constitution': 3,
+			'inteligence': 4,
+			'wisdom': 5,
+			'charisma': 6,
+			'sanity': 7,
+			'fire_protection': 8,
+			'cold_protection': 9,
+			'defense': 10
+		}
+	};
+
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
 		return t(Modifier.ALL_TYPE_NAMES[typeId])

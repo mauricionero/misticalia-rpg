@@ -196,7 +196,7 @@ class AddPlayer extends Box {
 			}
 		});
 
-		let resultSaved = Player.addPlayer(newPlayer);
+		let resultSaved = Player.savePlayer(newPlayer);
 
 		let saveButton = $('#' + AddPlayer.windowName + '_save_' + randomId);
 

@@ -33,6 +33,9 @@ class AddPlayerEquipament extends Box {
 				),
 				$("<th>", { title: t('Adicionar ao jogador') }).append(
 					Equipament.EMOJI_ADD
+				),
+				$("<th>", { title: t('Detalhes') }).append(
+					Equipament.EMOJI_VISUALIZE
 				)
 			)
 		);
@@ -83,6 +86,14 @@ class AddPlayerEquipament extends Box {
 							value: Equipament.EMOJI_ADD
 						})
 					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: AddPlayerEquipament.windowName + '_visualize_' + equipament['id'] + '_' + randomId,
+							onclick: 'ListEquipaments.visualizeEquipament("' + equipament['id'] + '", ' + randomId + ')',
+							value: Equipament.EMOJI_VISUALIZE
+						})
+					)
 				)
 			);
 		});

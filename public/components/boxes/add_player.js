@@ -12,7 +12,7 @@ class AddPlayer extends Box {
 
 		var randomId = Math.floor(Math.random() * 10000);
 
-		let inputWidthBig = 110;
+		let inputWidthBig = 120;
 		let inputWidth = 36;
 		let inputWidthSmall = 24;
 		let inputHeight = 12;
@@ -232,7 +232,12 @@ class AddPlayer extends Box {
 			'isNPC': isNPC
 		}
 
-		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+		let allAttributes = Player.ALL_ATTRIBUTES;
+		if (isNPC) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		allAttributes.forEach(function (attribute) {
 			let basePoints = parseInt($('#' + AddPlayer.windowName + '_base_points_' + attribute + '_' + randomId).val());
 			let permanentModifier = 0;
 			let points = parseInt($('#' + AddPlayer.windowName + '_points_' + attribute + '_' + randomId).val());

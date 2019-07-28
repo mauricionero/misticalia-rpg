@@ -8,10 +8,17 @@ class VisualizePlayer extends Box {
 
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);
-		this.randomId = randomId
+		this.randomId = randomId;
 
 		let playerId = options['playerId'];
-		this.playerId = playerId
+		this.playerId = playerId;
+
+		// se eh NPC
+		let isNPC = false;
+		if (options['isNPC']) {
+			isNPC = true;
+		}
+		this.isNPC = isNPC;
 
 		let listPlayerDiv = $('<div>');
 
@@ -28,7 +35,12 @@ class VisualizePlayer extends Box {
 
 		let playerEquipamentTable = $('<table>').append(
 			$('<tr>').append(
-				$('<td>').html(
+				$('<td>').append(
+					$('<input>', {
+						type: 'hidden',
+						id: VisualizePlayer.windowName + '_is_npc_' + randomId,
+						value: isNPC
+					}),
 					$('<label>', { title: t('Sem filtro') } ).append(
 						$('<input>', {
 							type: 'radio',
@@ -190,9 +202,10 @@ class VisualizePlayer extends Box {
 	callBackRender () {
 		let randomId = this.randomId;
 		let playerId = this.playerId;
+		let isNPC = this.isNPC;
 
-		VisualizePlayer.listPlayerAttributes(playerId, randomId);
-		VisualizePlayer.listEquipaments(playerId, randomId);
+		VisualizePlayer.listPlayerAttributes(playerId, randomId, isNPC);
+		VisualizePlayer.listEquipaments(playerId, randomId, isNPC);
 
 		// verificar quando eh alterado o equipamento clicado
 		$("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']").change(function() {
@@ -203,7 +216,7 @@ class VisualizePlayer extends Box {
 	}
 
 	// listar os atributos do jogador
-	static listPlayerAttributes (playerId, randomId) {
+	static listPlayerAttributes (playerId, randomId, isNPC = false) {
 		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_list_player_table_div_' + playerId + '_' + randomId);
 
 		let player = Player.getPlayer(playerId);
@@ -247,7 +260,12 @@ class VisualizePlayer extends Box {
 			)
 		);
 
-		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+		let allAttributes = Player.ALL_ATTRIBUTES;
+		if (isNPC) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		allAttributes.forEach(function (attribute) {
 			let basePoints = player[attribute]['basePoints'] || 0;
 			let permanentModifier = player[attribute]['permanentModifier'] || 0;
 			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
@@ -378,7 +396,7 @@ class VisualizePlayer extends Box {
 	}
 
 	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
-	static listEquipaments (playerId, randomId) {
+	static listEquipaments (playerId, randomId, isNPC = false) {
 		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId);
 
 		let selectedEquipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
@@ -422,8 +440,6 @@ class VisualizePlayer extends Box {
 
 			let equipamentTypeId = equipament['typeId'];
 
-			//TODO: recalcular os modificadores, caso alguma informação esteja desatualizada... salvar apos o loop
-
 			playerEquipamentListTable.append(
 				$("<tr>", {
 					id: VisualizePlayer.windowName + '_player_equipament_item_' + playerEquipamentId + '_' + randomId,
@@ -466,6 +482,12 @@ class VisualizePlayer extends Box {
 
 		let equipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
 
+		let isNPC = $('#' + VisualizePlayer.windowName + '_is_npc_' + randomId).val();
+		
+		isNPC = (isNPC == 'true') ? true : false;
+
+		console.log("isNPC", isNPC);
+
 		let resultSaved = false;
 
 		// se estiver equipando
@@ -492,8 +514,8 @@ class VisualizePlayer extends Box {
 			EquipedEquipament.recalculateEquipedModifiers(playerId);
 
 			// recarregar listagem
-			VisualizePlayer.listEquipaments(playerId, randomId);
-			VisualizePlayer.listPlayerAttributes(playerId, randomId);
+			VisualizePlayer.listEquipaments(playerId, randomId, isNPC);
+			VisualizePlayer.listPlayerAttributes(playerId, randomId, isNPC);
 
 		} else {
 			itemClicked.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300);
@@ -519,7 +541,7 @@ class VisualizePlayer extends Box {
 	}
 
 	// abrir dialog de visualização do player
-	static visualize_player (playerId) {
+	static visualize_player (playerId, isNPC) {
 
 		let player = Player.getPlayer(playerId);
 
@@ -534,6 +556,7 @@ class VisualizePlayer extends Box {
 		let options = {
 			playerId: playerId,
 			singleTon: true,
+			isNPC: isNPC,
 			windowId: VisualizePlayer.windowName + '_' + playerId
 		};
 

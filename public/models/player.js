@@ -216,7 +216,7 @@ class Player extends RModel {
 			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
 
 			player[attribute]['permanentModifier'] = 0;
-			player[attribute]['points'] = 0;
+			player[attribute]['points'] = basePoints;
 		});
 
 		// apagar todos os modificadores secundarios também antes de calcular tudo de volta
@@ -225,10 +225,11 @@ class Player extends RModel {
 				player[attribute] = {}
 			}
 
+			let basePoints = player[attribute]['basePoints'] || 0;
 			let permanentModifier = player[attribute]['permanentModifier'] || 0;
 
 			player[attribute]['permanentModifier'] = 0;
-			player[attribute]['points'] = 0;
+			player[attribute]['points'] = basePoints;
 		});
 
 		this.saveItem(player);

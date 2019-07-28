@@ -160,7 +160,7 @@ class ListPlayers extends Box {
 						$("<input>", {
 							type: 'button',
 							id: ListPlayers.windowName + '_visualize_' + player['id'] + '_' + randomId,
-							onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
+							onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '", ' + isNPC + ')',
 							value: Player.EMOJI_VISUALIZE
 						})
 					),

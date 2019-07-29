@@ -163,12 +163,31 @@ class RModel {
 				for (var filterField in options['filters']) {
 					let filterValue = options['filters'][filterField];
 
-					// soh remove do filtro se algum dos valores nao estiver no filtro
-					if (singleData[filterField] != filterValue) {
-						onFilter = false;
+					// se for um array
+					if (Array.isArray(filterValue)) {
 
-						// se ja achou o que precisava, sai do loop
-						break;
+						let inArray = false;
+
+						filterValue.forEach(function (filterSingleValue) {
+							if (singleData[filterField] == filterSingleValue) {
+								inArray = true;
+							}
+						});
+						
+						// se nao achou no array, marcar para remover do filtro
+						if (! inArray) {
+							onFilter = false;
+						}
+
+					} else {
+
+						// soh remove do filtro se algum dos valores nao estiver no filtro
+						if (singleData[filterField] != filterValue) {
+							onFilter = false;
+
+							// se ja achou o que precisava, sai do loop
+							break;
+						}
 					}
 				}
 

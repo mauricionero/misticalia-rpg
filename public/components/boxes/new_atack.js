@@ -4,12 +4,28 @@ class NewAtack extends Box {
 
 	boxContent (options) {
 
-		var playerId = options['playerId'];
+		let playerId = options['playerId'];
 
-		var randomId = Math.floor(Math.random() * 10000);
+		let fighterIds = options['fighterIds'];
 
-		var allPlayers = Player.getAllPlayers();
-		var player = Player.getPlayer(playerId);
+		let randomId = Math.floor(Math.random() * 10000);
+		let player = Player.getPlayer(playerId);
+
+		let orderNPC = 'DESC';
+		// se o jogador atacante for um NPC
+		if (player['isNPC']) {
+			orderNPC = 'ASC';
+		}
+
+		let allPlayerOptions = {
+			'filters': { 'id': fighterIds },
+			'order': {
+				'isNPC': orderNPC,
+				'name': 'ASC'
+			}
+		}
+
+		let allPlayers = Player.getAllPlayers(allPlayerOptions);
 
 		let newAtackDiv = $("<div>");
 
@@ -75,13 +91,28 @@ class NewAtack extends Box {
 			});
 		}
 
+		let icon;
+		let playerTitle;
+
+		let isNPC = player['isNPC'];
+		let playerGenderId = player['gender'];
+		let playerName = player['name'];
+
+		if (isNPC) {
+			icon = Player.EMOJI_IS_NPC;
+			playerTitle = t('NPC') + ' ' + playerName;
+		} else {
+			icon = Player.EMOJI_GENDERS[playerGenderId];
+			playerTitle = t('Jogador') + ' ' + playerName;
+		}
+
 		newAtackTable.append(
 			$("<tr>").append(
 				$("<td>").append(
 					inputAtackCheck
 				),
-				$("<td>").append(
-					Player.getPlayerShort(player['id']),
+				$("<td>", { title: playerTitle } ).append(
+					icon + ' ' + Player.getPlayerShort(player['id']),
 					$("<input>", {
 						type: 'hidden',
 						id: NewAtack.windowName + '_name_' + player['id'] + '_' + randomId,

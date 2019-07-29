@@ -4,12 +4,28 @@ class NewAtack extends Box {
 
 	boxContent (options) {
 
-		var playerId = options['playerId'];
+		let playerId = options['playerId'];
 
-		var randomId = Math.floor(Math.random() * 10000);
+		let fighterIds = options['fighterIds'];
 
-		var allPlayers = Player.getAllPlayers();
-		var player = Player.getPlayer(playerId);
+		let randomId = Math.floor(Math.random() * 10000);
+		let player = Player.getPlayer(playerId);
+
+		let orderNPC = 'DESC';
+		// se o jogador atacante for um NPC
+		if (player['isNPC']) {
+			orderNPC = 'ASC';
+		}
+
+		let allPlayerOptions = {
+			'filters': { 'id': fighterIds },
+			'order': {
+				'isNPC': orderNPC,
+				'name': 'ASC'
+			}
+		}
+
+		let allPlayers = Player.getAllPlayers(allPlayerOptions);
 
 		let newAtackDiv = $("<div>");
 
@@ -27,16 +43,22 @@ class NewAtack extends Box {
 					Player.EMOJI_NAME
 				),
 				$("<th>", { title: t('Força') }).append(
-					Player.EMOJI_STRENGTH
+					Modifier.EMOJI_STRENGTH
 				),
 				$("<th>", { title: t('Destreza') }).append(
-					Player.EMOJI_DEXTERY
+					Modifier.EMOJI_DEXTERY
 				),
 				$("<th>", { title: t('Constituição') }).append(
-					Player.EMOJI_CONSTITUTION
+					Modifier.EMOJI_CONSTITUTION
+				),
+				$("<th>", { title: t('Defesa') }).append(
+					Modifier.EMOJI_DEFENSE
 				),
 				$("<th>", { title: t('Visualizar jogador') }).append(
 					Player.EMOJI_VISUALIZE
+				),
+				$("<th>", { title: t('Modificadores') }).append(
+					Modifier.EMOJI_VISUALIZE
 				)
 			)
 		);
@@ -53,7 +75,14 @@ class NewAtack extends Box {
 		});
 
 		newAtackDiv.append(
-			newAtackTable
+			newAtackTable,
+			$("<input>", {
+				type: 'button',
+				id: NewAtack.windowName + '_simple_atack_' + randomId,
+				title: t('Atacar'),
+				onclick: 'NewAtack.simpleAtack("' + playerId + '", ' + randomId + ')',
+				value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
+			}),
 		);
 
 		return newAtackDiv;
@@ -70,9 +99,63 @@ class NewAtack extends Box {
 			inputAtackCheck = $("<input>", {
 				type: 'checkbox',
 				id: NewAtack.windowName + '_target_' + player['id'] + '_' + randomId,
-				class: 'target',
-				value: 1
+				class: 'new_atack_target_' + randomId,
+				value: player['id']
 			});
+		}
+
+		let icon;
+		let playerTitle;
+
+		let isNPC = player['isNPC'];
+		let playerGenderId = player['gender'];
+		let playerName = player['name'];
+
+		if (isNPC) {
+			icon = Player.EMOJI_IS_NPC;
+			playerTitle = t('NPC') + ' ' + playerName;
+		} else {
+			icon = Player.EMOJI_GENDERS[playerGenderId];
+			playerTitle = t('Jogador') + ' ' + playerName;
+		}
+
+		let secondaryAttributes = [];
+
+		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			// defesa ja foi exibido
+			if (typeId == Modifier.DEFENSE) {
+				return true;
+			}
+
+			if (player[attribute] == undefined) {
+				player[attribute] = {};
+			}
+
+			let basePoints = player[attribute]['basePoints'] || 0;
+			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+
+			let points = Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier);
+
+			// se for zero, nem exibir
+			if (points == 0) {
+				return true;
+			}
+
+			let modifierName = Modifier.ALL_TYPE_NAMES[typeId];
+
+			secondaryAttributes.push(
+				$('<span>', { title: modifierName } ).append(
+					Modifier.EMOJI_TYPES[typeId] + points + ' '
+				)
+			);
+		});
+
+		if (secondaryAttributes.length == 0) {
+			secondaryAttributes = '--';
 		}
 
 		newAtackTable.append(
@@ -80,8 +163,8 @@ class NewAtack extends Box {
 				$("<td>").append(
 					inputAtackCheck
 				),
-				$("<td>").append(
-					Player.getPlayerShort(player['id']),
+				$("<td>", { title: playerTitle } ).append(
+					icon + ' ' + Player.getPlayerShort(player['id']),
 					$("<input>", {
 						type: 'hidden',
 						id: NewAtack.windowName + '_name_' + player['id'] + '_' + randomId,
@@ -107,7 +190,7 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_strength_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
-						value: player['strength']['basePoints']
+						value: player['strength']['points']
 					})
 				),
 				$("<td>").append(
@@ -116,7 +199,7 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_dextery_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
-						value: player['dextery']['basePoints']
+						value: player['dextery']['points']
 					})
 				),
 				$("<td>").append(
@@ -125,7 +208,16 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_constitution_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
-						value: player['constitution']['basePoints']
+						value: player['constitution']['points']
+					})
+				),
+				$("<td>").append(
+					$("<input>", {
+						type: 'text',
+						id: NewAtack.windowName + '_defense_' + player['id'] + '_' + randomId,
+						width: 32,
+						readonly: 'readonly',
+						value: (player['defense']) ? player['defense']['points'] : 0
 					})
 				),
 				$("<td>").append(
@@ -135,9 +227,52 @@ class NewAtack extends Box {
 						onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
 						value: Player.EMOJI_VISUALIZE
 					})
+				),
+				$("<td>").append(
+					secondaryAttributes
 				)
 			)
 		)
+	}
+
+	// retornar num array todos os ids dos players selecionados
+	static getAllCheckedPlayers (randomId) {
+
+		var fighterIds = [];
+
+		let allFightersIdInputs = $('.new_atack_target_' + randomId);
+
+		// pegar todos os ids de players, apenas os checkados
+		allFightersIdInputs.each(function (index) {
+			let fighterInput = this;
+
+			let fighterId = fighterInput.value;
+
+			// verificar se esta checkado
+			let enabledPlayer = $('#' + NewAtack.windowName + '_target_' + fighterId + '_' + randomId).is(':checked');
+
+			if (enabledPlayer) {
+				fighterIds.push(fighterId);
+			}
+			
+		});
+
+		return fighterIds;
+	}
+
+	// realizar um ataque simples
+	static simpleAtack (playerId, randomId) {
+		let fighterIds = NewAtack.getAllCheckedPlayers(randomId);
+
+		let player = Player.getPlayer(playerId);
+
+		let defenderOptions = {
+			'filters': {'id': fighterIds}
+		}
+
+		let defenders = Player.getAllPlayers(defenderOptions);
+
+		
 	}
 }
 

@@ -7,8 +7,6 @@ class RModel {
 
 		let validations = this.validations();
 
-		console.log('validations', validations);
-
 		if (typeof validations == 'object') {
 			for (var fieldValidate in validations) {
 				let whichValidations = validations[fieldValidate];
@@ -61,8 +59,6 @@ class RModel {
 			}
 		}
 
-		console.log('errorMessages', errorMessages);
-
 		return errorMessages;
 	}
 
@@ -73,8 +69,6 @@ class RModel {
 		let randomId = Math.floor(Math.random() * 100000);
 
 		item['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
-
-		console.log('item', item);
 
 		let errorMessages = [];
 
@@ -87,12 +81,9 @@ class RModel {
 		if (errorMessages.length == 0) {
 			let storeData = this.getAll();
 
-			console.log('storeData antes', storeData);
-
 			// se nao tiver id: criar um para depois adicionar o novo item
 			if (! item['id']) {
 				item['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
-				console.log('criando novo');
 
 			// se ja tiver id, procurar na store local e apagar para depois re-adicionar o item
 			} else {
@@ -106,14 +97,12 @@ class RModel {
 
 					return true;
 				});
-				console.log('editando');
 			}
-			console.log('storeData depois', storeData);
 
 			// adicionar item na store local
 			storeData.push(item);
 
-			console.log('storeData adicionado novo', storeData);
+			console.log('storeData', storeData);
 
 			try {
 				localStorage.setItem(storeName, JSON.stringify(storeData));
@@ -174,12 +163,31 @@ class RModel {
 				for (var filterField in options['filters']) {
 					let filterValue = options['filters'][filterField];
 
-					// soh remove do filtro se algum dos valores nao estiver no filtro
-					if (singleData[filterField] != filterValue) {
-						onFilter = false;
+					// se for um array
+					if (Array.isArray(filterValue)) {
 
-						// se ja achou o que precisava, sai do loop
-						break;
+						let inArray = false;
+
+						filterValue.forEach(function (filterSingleValue) {
+							if (singleData[filterField] == filterSingleValue) {
+								inArray = true;
+							}
+						});
+						
+						// se nao achou no array, marcar para remover do filtro
+						if (! inArray) {
+							onFilter = false;
+						}
+
+					} else {
+
+						// soh remove do filtro se algum dos valores nao estiver no filtro
+						if (singleData[filterField] != filterValue) {
+							onFilter = false;
+
+							// se ja achou o que precisava, sai do loop
+							break;
+						}
 					}
 				}
 
@@ -188,16 +196,60 @@ class RModel {
 			});
 		}
 
+		// verificar se tem alguma ordenação dos dados
+		if (typeof options['order'] == 'object') {
+
+			// ordenação com logica manual
+			storeData.sort(function(obj1, obj2) {
+
+				let compResult = 0;
+
+				for (var orderField in options['order']) {
+					let thisResult = 0;
+					let orderDirection = options['order'][orderField]; // asc ou desc
+
+					let value1 = obj1[orderField];
+					let value2 = obj2[orderField];
+
+					if (typeof value1 == 'string') {
+						value1 = value1.toLowerCase();
+					}
+
+					if (typeof value2 == 'string') {
+						value2 = value2.toLowerCase();
+					}
+
+					// se for menor
+					if (value1 < value2) {
+						thisResult = -1;
+
+					// se for maior
+					} else if (value1 > value2) {
+						thisResult = 1;
+					}
+
+					// se tiver que inverter a ordem
+					if (orderDirection.toLowerCase() == 'desc') {
+						thisResult = thisResult * -1;
+					}
+
+					compResult = compResult || thisResult;
+				}
+
+				return compResult;
+			})
+		}
+
 		return storeData;
 	}
 	
 	// retornar todos os dados relacionados aa essa model da aventura atual
-	static getAllFromCurrentAdventure () {
+	static getAllFromCurrentAdventure (options = {}) {
 		let storeName = this.name;
 
 		let currentAdventureId = Adventure.getCurrentAdventureId();
 
-		let storeData = this.getAll();
+		let storeData = this.getAll(options);
 
 		return storeData.filter(function ( singleData ) { return singleData['currentAdventureId'] == currentAdventureId });
 

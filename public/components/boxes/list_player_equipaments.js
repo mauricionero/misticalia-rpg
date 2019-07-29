@@ -28,11 +28,11 @@ class ListPlayerEquipaments extends Box {
 	// atualizar lista de equipamentos quando precisar
 	static listEquipaments (playerId, randomId) {
 
+		let listEquipamentDiv = $('#' + ListPlayerEquipaments.windowName + '_list_equipaments_' + playerId + '_' + randomId);
+
 		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
 
 		let currentAdventureRoleId = Adventure.getCurrentAdventureRole();
-
-		let listEquipamentDiv = $('#' + ListPlayerEquipaments.windowName + '_list_equipaments_' + playerId + '_' + randomId);
 
 		// apagar conteudo antes de inserir
 		listEquipamentDiv.html('');

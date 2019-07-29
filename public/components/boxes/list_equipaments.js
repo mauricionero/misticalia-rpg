@@ -91,6 +91,14 @@ class ListEquipaments extends Box {
 		let equipamentName = $('#' + ListEquipaments.windowName + '_name_' + equipamentId + '_' + randomId).val();
 		let equipamentTypeId = $('#' + ListEquipaments.windowName + '_type_' + equipamentId + '_' + randomId).val();
 
+		// se nao estiver preenchido, eh pq provavelmente nao veio dessa dialog, buscar da localStorage
+		if (equipamentName == undefined) {
+			let equipament = Equipament.getEquipament(equipamentId);
+
+			equipamentName = equipament['name'];
+			equipamentTypeId = equipament['typeId'];
+		}
+
 		let windowTitle = Equipament.EMOJI_TYPES[equipamentTypeId] + ' ' + equipamentName;
 
 		let options = {

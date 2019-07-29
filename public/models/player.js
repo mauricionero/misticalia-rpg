@@ -1,7 +1,9 @@
 class Player extends RModel {
 
+	static get NO_GENDER_ID () { return 0 };
 	static get MALE_ID () { return 1 };
 	static get FEMALE_ID () { return 2 };
+	static get TRANS_GENDER_ID () { return 3 };
 
 	static get EMOJI_VISUALIZE () { return '👁️' };
 
@@ -10,6 +12,7 @@ class Player extends RModel {
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
 	static get EMOJI_GENDER_FEMALE () { return '👩' };
+	static get EMOJI_TRANS_GENDER () { return '⚧️' };
 
 	static get EMOJI_STRENGTH () { return '💪' };
 	static get EMOJI_DEXTERY () { return '🏃' };
@@ -31,11 +34,15 @@ class Player extends RModel {
 	static get EMOJI_DIFFICULTY () { return '䷂' };
 	static get EMOJI_RESULT () { return '=' };
 
+	static get EMOJI_IS_NPC () { return '♚️' };
+	static get EMOJI_IS_NOT_NPC () { return '♟️' };
+
 	static get EMOJI_GENDERS () {
 		return {
 			0: Player.EMOJI_GENDER,
 			1: Player.EMOJI_GENDER_MALE,
-			2: Player.EMOJI_GENDER_FEMALE
+			2: Player.EMOJI_GENDER_FEMALE,
+			3: Player.EMOJI_TRANS_GENDER
 		}
 	};
 
@@ -51,6 +58,14 @@ class Player extends RModel {
 		]
 	};
 
+	static get ALL_SECONDARY_ATTRIBUTES () {
+		return [
+			'fire_protection',
+			'cold_protection',
+			'defense'
+		]
+	};
+
 	static get ALL_ATTRIBUTES_NAMES () {
 		return {
 			'strength': 'Força',
@@ -59,7 +74,10 @@ class Player extends RModel {
 			'inteligence': 'Inteligencia',
 			'wisdom': 'Sabedoria',
 			'charisma': 'Carisma',
-			'sanity': 'Sanidade'
+			'sanity': 'Sanidade',
+			'fire_protection': 'Proteção ao fogo',
+			'cold_protection': 'Proteção ao frio',
+			'defense': 'Defesa'
 		}
 	};
 
@@ -95,32 +113,31 @@ class Player extends RModel {
 		return t(Player.ALL_ATTRIBUTES_NAMES[attribute])
 	}
 
-	// adicionar um novo jogador aa aventura
-	static addPlayer (newPlayer) {
-		
-		return this.saveItem(newPlayer);
+	// salvar um player (editar ou criar um novo)
+	static savePlayer (player) {
 
+		return this.saveItem(player);
 	}
 
 	// retorna todos os players num array
-	static getAllPlayers () {
+	static getAllPlayers (options = {}) {
 
-		let players = Player.getAll(); 
+		let players = this.getAll(options); 
 
 		return players;
 	}
 
 	// retorna todos os jogadores da aventura atual
-	static getAllPlayersCurrentAdventure () {
+	static getAllPlayersCurrentAdventure (options = {}) {
 
-		let allCurrentPlayers = Player.getAllFromCurrentAdventure();
+		let allCurrentPlayers = this.getAllFromCurrentAdventure(options);
 
 		return allCurrentPlayers;
 	}
 
 	// retorna algo para colocar num espaço pequeno sobre o player (html), tipo um avatar ou as iniciais
 	static getPlayerShort (playerId) {
-		let player = Player.getPlayer(playerId);
+		let player = this.getPlayer(playerId);
 
 		// pegar as primeiras letras do nome e deixar maiusculo
 		let playerShort = player['name'].match(/\b(\w)/g).join('').toUpperCase();
@@ -130,7 +147,7 @@ class Player extends RModel {
 
 	// retorna 1 player especifico pelo id
 	static getPlayer (playerId) {
-		let allplayers = Player.getAllPlayers();
+		let allplayers = this.getAllPlayers();
 
 		return allplayers.filter(function ( player ) { return player['id'] == playerId })[0];
 	}
@@ -138,7 +155,7 @@ class Player extends RModel {
 	// pegar o maior de um atributo entre os players
 	// TODO: receber os playersIds como parametro opcional para calcular somente entre os selecionados
 	static getMax (playerAttribute) {
-		let allPlayers = Player.getAllPlayers();
+		let allPlayers = this.getAllPlayers();
 
 		return Math.max.apply(Math, allPlayers.map(function(player) { return player[playerAttribute]['basePoints']; }))
 	}
@@ -146,7 +163,7 @@ class Player extends RModel {
 	// retorna maximo de pontuação de acordo com o nivel
 	// ja esta calculado na constante POINTS_TO_LEVEL para agilizar
 	static levelMaxPointsCalculator (level) {
-		return Player.POINTS_TO_LEVEL[level];
+		return this.POINTS_TO_LEVEL[level];
 	}
 
 	// retorna o nivel de acordo com a pontuação
@@ -154,7 +171,7 @@ class Player extends RModel {
 
 		var level = 0;
 
-		while (Player.POINTS_TO_LEVEL[level + 1] <= points) {
+		while (this.POINTS_TO_LEVEL[level + 1] <= points) {
 			level++;
 		} 
 
@@ -167,7 +184,7 @@ class Player extends RModel {
 
 		let rollPoints = diceRoll * (totalPoints / 100);
 
-		let level = Player.levelCalculator(totalPoints);
+		let level = this.levelCalculator(totalPoints);
 
 		let result = Math.round(rollPoints - difficulty) + level - 4;
 
@@ -188,5 +205,36 @@ class Player extends RModel {
 		}
 
 		return parseInt(basePoints) + parseInt(temporaryModifier) + parseInt(permanentModifier);
+	}
+
+	// apagar os modificadores permanentes
+	static clearPermanentModifiers (playerId) {
+
+		let player = this.getPlayer(playerId);
+
+		// apagar todos os modificadores permanentes antes de calcular tudo de volta
+		this.ALL_ATTRIBUTES.forEach(function (attribute) {
+			let basePoints = player[attribute]['basePoints'] || 0;
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
+
+			player[attribute]['permanentModifier'] = 0;
+			player[attribute]['points'] = basePoints;
+		});
+
+		// apagar todos os modificadores secundarios também antes de calcular tudo de volta
+		this.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
+			if (player[attribute] == undefined) {
+				player[attribute] = {}
+			}
+
+			let basePoints = player[attribute]['basePoints'] || 0;
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+
+			player[attribute]['permanentModifier'] = 0;
+			player[attribute]['points'] = basePoints;
+		});
+
+		this.saveItem(player);
 	}
 }

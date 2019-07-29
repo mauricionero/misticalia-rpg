@@ -2,153 +2,29 @@ class VisualizePlayer extends Box {
 
 	static get windowName () { return 'visualize_player' };
 
+	static get inputWidth () { return 36 };
+	static get inputWidthSmall () { return 24 };
+	static get inputHeight () { return 12 };
+
 	boxContent (options) {
 		var randomId = Math.floor(Math.random() * 10000);
-		this.randomId = randomId
+		this.randomId = randomId;
 
 		let playerId = options['playerId'];
-		this.playerId = playerId
+		this.playerId = playerId;
 
-		let player = Player.getPlayer(playerId);
-
-		let inputWidth = 36;
-		let inputWidthSmall = 24;
-		let inputHeight = 12;
+		// se eh NPC
+		let isNPC = false;
+		if (options['isNPC']) {
+			isNPC = true;
+		}
+		this.isNPC = isNPC;
 
 		let listPlayerDiv = $('<div>');
 
-		let listPlayerTable = $("<table>");
-
-		// titulo das colunas na tabela
-		listPlayerTable.append(
-			$("<tr>").append(
-				$("<th>", { title: t('Atributo') }).append(
-					Player.EMOJI_ATTRIBUTE
-				),
-				$("<th>", { title: t('Nivel') }).append(
-					Player.EMOJI_LEVEL
-				),
-				$("<th>", { title: t('Pontos') }).append(
-					Player.EMOJI_POINTS
-				),
-				$("<th>", { title: t('Modificador permanente') }).append(
-					Player.EMOJI_PERMANENT_MODIFICATOR
-				),
-				$("<th>", { title: t('Modificador temporario') }).append(
-					Player.EMOJI_TEMPORARY_MODIFICATOR
-				),
-				$("<th>", { title: t('Total de pontos') }).append(
-					Player.EMOJI_TOTAL_POINTS
-				),
-				$("<th>", { title: t('Rolagem de dados') }).append(
-					Player.EMOJI_ROLL_DICE
-				),
-				$("<th>", { title: t('Dificuldade') }).append(
-					Player.EMOJI_DIFFICULTY
-				),
-				$("<th>", { title: t('Resultado rolagem') }).append(
-					Player.EMOJI_RESULT
-				)
-			)
-		);
-
-		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
-			let basePoints = player[attribute]['basePoints'] || 0;
-			let permanentModifier = player[attribute]['permanentModifier'] || 0;
-			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
-
-			listPlayerTable.append(
-				$("<tr>").append(
-					$("<td>").append(
-						Player.getAttributeName(attribute)
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							readonly: 'readonly',
-							id: VisualizePlayer.windowName + '_level_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidthSmall,
-							height: inputHeight,
-							value: Player.levelCalculator(basePoints)
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
-							value: basePoints
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							readonly: 'readonly',
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
-							value: permanentModifier
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: VisualizePlayer.windowName + '_temporary_modifier_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
-							value: temporaryModifier
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							readonly: 'readonly',
-							id: VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							value: Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier)
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: VisualizePlayer.windowName + '_dice_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
-							value: 0
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: VisualizePlayer.windowName + '_difficulty_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
-							value: 0
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							readonly: 'readonly',
-							class: 'bold',
-							id: VisualizePlayer.windowName + '_result_' + playerId + '_' + attribute + '_' + randomId,
-							width: inputWidth,
-							height: inputHeight,
-							value: 0
-						})
-					)
-				)
-			);
+		let listPlayerTableDiv = $('<div>', {
+			id: VisualizePlayer.windowName + '_list_player_table_div_' + playerId + '_' + randomId
 		});
-
-		listPlayerDiv.html(listPlayerTable);
 
 		let visualizePlayerEquipamentDiv = $('<div>', {
 			class: 'visualize_player_equipament',
@@ -159,7 +35,12 @@ class VisualizePlayer extends Box {
 
 		let playerEquipamentTable = $('<table>').append(
 			$('<tr>').append(
-				$('<td>').html(
+				$('<td>').append(
+					$('<input>', {
+						type: 'hidden',
+						id: VisualizePlayer.windowName + '_is_npc_' + randomId,
+						value: isNPC
+					}),
 					$('<label>', { title: t('Sem filtro') } ).append(
 						$('<input>', {
 							type: 'radio',
@@ -302,6 +183,7 @@ class VisualizePlayer extends Box {
 		);
 
 		listPlayerDiv.append(
+			listPlayerTableDiv,
 			'<br />',
 			$('<a>',{
 				href: 'javascript: void(0)',
@@ -320,8 +202,10 @@ class VisualizePlayer extends Box {
 	callBackRender () {
 		let randomId = this.randomId;
 		let playerId = this.playerId;
+		let isNPC = this.isNPC;
 
-		VisualizePlayer.listEquipaments(playerId, randomId);
+		VisualizePlayer.listPlayerAttributes(playerId, randomId, isNPC);
+		VisualizePlayer.listEquipaments(playerId, randomId, isNPC);
 
 		// verificar quando eh alterado o equipamento clicado
 		$("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']").change(function() {
@@ -331,8 +215,190 @@ class VisualizePlayer extends Box {
 		});
 	}
 
+	// listar os atributos do jogador
+	static listPlayerAttributes (playerId, randomId, isNPC = false) {
+		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_list_player_table_div_' + playerId + '_' + randomId);
+
+		let player = Player.getPlayer(playerId);
+
+		let inputWidth = this.inputWidth;
+		let inputWidthSmall = this.inputWidthSmall;
+		let inputHeight = this.inputHeight;
+
+		let listPlayerTable = $("<table>");
+
+		// titulo das colunas na tabela
+		listPlayerTable.append(
+			$("<tr>").append(
+				$("<th>", { title: t('Atributo') }).append(
+					Player.EMOJI_ATTRIBUTE
+				),
+				$("<th>", { title: t('Nivel') }).append(
+					Player.EMOJI_LEVEL
+				),
+				$("<th>", { title: t('Pontos') }).append(
+					Player.EMOJI_POINTS
+				),
+				$("<th>", { title: t('Modificador permanente') }).append(
+					Player.EMOJI_PERMANENT_MODIFICATOR
+				),
+				$("<th>", { title: t('Modificador temporario') }).append(
+					Player.EMOJI_TEMPORARY_MODIFICATOR
+				),
+				$("<th>", { title: t('Total de pontos') }).append(
+					Player.EMOJI_TOTAL_POINTS
+				),
+				$("<th>", { title: t('Rolagem de dados') }).append(
+					Player.EMOJI_ROLL_DICE
+				),
+				$("<th>", { title: t('Dificuldade') }).append(
+					Player.EMOJI_DIFFICULTY
+				),
+				$("<th>", { title: t('Resultado rolagem') }).append(
+					Player.EMOJI_RESULT
+				)
+			)
+		);
+
+		let allAttributes = Player.ALL_ATTRIBUTES;
+		if (isNPC) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		allAttributes.forEach(function (attribute) {
+			let basePoints = player[attribute]['basePoints'] || 0;
+			let permanentModifier = player[attribute]['permanentModifier'] || 0;
+			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			listPlayerTable.append(
+				$("<tr>").append(
+					$("<td>").append(
+						Modifier.EMOJI_TYPES[typeId] + ' ' + Player.getAttributeName(attribute)
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							readonly: 'readonly',
+							id: VisualizePlayer.windowName + '_level_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidthSmall,
+							height: inputHeight,
+							value: Player.levelCalculator(basePoints)
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: basePoints
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							readonly: 'readonly',
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: permanentModifier
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_temporary_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: temporaryModifier
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							readonly: 'readonly',
+							id: VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							value: Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier)
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_dice_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: VisualizePlayer.windowName + '_difficulty_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							readonly: 'readonly',
+							class: 'bold',
+							id: VisualizePlayer.windowName + '_result_' + playerId + '_' + attribute + '_' + randomId,
+							width: inputWidth,
+							height: inputHeight,
+							value: 0
+						})
+					)
+				)
+			);
+		});
+
+		let secondaryAttributes = $('<div>');
+
+		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
+			if (player[attribute] == undefined) {
+				player[attribute] = {};
+			}
+
+			let points = parseInt(player[attribute]['points'] || 0);
+
+			// se for zero, nem exibir
+			if (points == 0) {
+				return true;
+			}
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			let modifierName = Modifier.ALL_TYPE_NAMES[typeId];
+
+			secondaryAttributes.append(
+				$('<span>', { title: modifierName } ).append(
+					Modifier.EMOJI_TYPES[typeId] + points + ' '
+				)
+			);
+		});
+
+		// limpar antes de adicionar novo conteudo
+		playerEquipamentListDiv.html('');
+
+		playerEquipamentListDiv.append(
+			listPlayerTable,
+			secondaryAttributes
+		);
+	}
+
 	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
-	static listEquipaments (playerId, randomId) {
+	static listEquipaments (playerId, randomId, isNPC = false) {
 		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId);
 
 		let selectedEquipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
@@ -342,6 +408,7 @@ class VisualizePlayer extends Box {
 		let playerEquipamentListTable = $("<table>", {
 			id: VisualizePlayer.windowName + '_table_equipament_list_' + playerId + '_' + randomId
 		});
+
 		playerEquipamentListTable.append(
 			$("<tr>").append(
 				$("<th>", { title: t('Tipo') }).append(
@@ -374,8 +441,6 @@ class VisualizePlayer extends Box {
 			}
 
 			let equipamentTypeId = equipament['typeId'];
-
-			//TODO: recalcular os modificadores, caso alguma informação esteja desatualizada... salvar apos o loop
 
 			playerEquipamentListTable.append(
 				$("<tr>", {
@@ -419,6 +484,12 @@ class VisualizePlayer extends Box {
 
 		let equipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
 
+		let isNPC = $('#' + VisualizePlayer.windowName + '_is_npc_' + randomId).val();
+		
+		isNPC = (isNPC == 'true') ? true : false;
+
+		console.log("isNPC", isNPC);
+
 		let resultSaved = false;
 
 		// se estiver equipando
@@ -441,10 +512,13 @@ class VisualizePlayer extends Box {
 		let itemClicked = $('#' + VisualizePlayer.windowName + '_player_equipament_item_' + playerEquipamentId + '_' + randomId);
 
 		if (resultSaved) {
-			itemClicked.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300);
+
+			EquipedEquipament.recalculateEquipedModifiers(playerId);
 
 			// recarregar listagem
-			VisualizePlayer.listEquipaments(playerId, randomId);
+			VisualizePlayer.listEquipaments(playerId, randomId, isNPC);
+			VisualizePlayer.listPlayerAttributes(playerId, randomId, isNPC);
+
 		} else {
 			itemClicked.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300);
 		}
@@ -469,7 +543,7 @@ class VisualizePlayer extends Box {
 	}
 
 	// abrir dialog de visualização do player
-	static visualize_player (playerId) {
+	static visualize_player (playerId, isNPC) {
 
 		let player = Player.getPlayer(playerId);
 
@@ -484,6 +558,7 @@ class VisualizePlayer extends Box {
 		let options = {
 			playerId: playerId,
 			singleTon: true,
+			isNPC: isNPC,
 			windowId: VisualizePlayer.windowName + '_' + playerId
 		};
 

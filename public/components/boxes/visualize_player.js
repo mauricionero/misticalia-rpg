@@ -270,10 +270,12 @@ class VisualizePlayer extends Box {
 			let permanentModifier = player[attribute]['permanentModifier'] || 0;
 			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
 
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
 			listPlayerTable.append(
 				$("<tr>").append(
 					$("<td>").append(
-						Player.getAttributeName(attribute)
+						Modifier.EMOJI_TYPES[typeId] + ' ' + Player.getAttributeName(attribute)
 					),
 					$("<td>").append(
 						$("<input>", {

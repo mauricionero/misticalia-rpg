@@ -66,6 +66,9 @@ class NewBattle extends Box {
 			),
 			$("<th>", { title: t('Visualizar jogador') }).append(
 				'👁️'
+			),
+			$("<th>", { title: t('Visualizar equipamentos do jogador') }).append(
+				PlayerEquipament.EMOJI_VISUALIZE
 			)
 		);
 
@@ -189,6 +192,14 @@ class NewBattle extends Box {
 						id: NewBattle.windowName + '_visualize_' + player['id'] + '_' + randomId,
 						onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
 						value: '👁️'
+					})
+				),
+				$("<td>").append(
+					$("<input>", {
+						type: 'button',
+						id: ListPlayers.windowName + '_visualize_equipaments_' + player['id'] + '_' + randomId,
+						onclick: 'ListPlayerEquipaments.visualize_player_equipaments("' + player['id'] + '")',
+						value: PlayerEquipament.EMOJI_VISUALIZE
 					})
 				)
 			);

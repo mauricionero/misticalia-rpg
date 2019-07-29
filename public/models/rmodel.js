@@ -177,6 +177,50 @@ class RModel {
 			});
 		}
 
+		// verificar se tem alguma ordenação dos dados
+		if (typeof options['order'] == 'object') {
+
+			// ordenação com logica manual
+			storeData.sort(function(obj1, obj2) {
+
+				let compResult = 0;
+
+				for (var orderField in options['order']) {
+					let thisResult = 0;
+					let orderDirection = options['order'][orderField]; // asc ou desc
+
+					let value1 = obj1[orderField];
+					let value2 = obj2[orderField];
+
+					if (typeof value1 == 'string') {
+						value1 = value1.toLowerCase();
+					}
+
+					if (typeof value2 == 'string') {
+						value2 = value2.toLowerCase();
+					}
+
+					// se for menor
+					if (value1 < value2) {
+						thisResult = -1;
+
+					// se for maior
+					} else if (value1 > value2) {
+						thisResult = 1;
+					}
+
+					// se tiver que inverter a ordem
+					if (orderDirection.toLowerCase() == 'desc') {
+						thisResult = thisResult * -1;
+					}
+
+					compResult = compResult || thisResult;
+				}
+
+				return compResult;
+			})
+		}
+
 		return storeData;
 	}
 	

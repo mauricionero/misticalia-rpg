@@ -22,11 +22,13 @@ class NewBattle extends Box {
 
 		let allPlayers = [];
 
+		let playerOptions = { 'order': { 'isNPC': 'ASC', 'name': 'ASC' } };
+
 		// se deve filtrar por aventura
 		if (options['filterAdventureId']) {
-			allPlayers = Player.getAllPlayersCurrentAdventure();
+			allPlayers = Player.getAllPlayersCurrentAdventure(playerOptions);
 		} else {
-			allPlayers = Player.getAllPlayers();
+			allPlayers = Player.getAllPlayers(playerOptions);
 		}
 
 		var randomId = Math.floor(Math.random() * 10000);
@@ -67,7 +69,30 @@ class NewBattle extends Box {
 			)
 		);
 
+		console.log('allPlayers', allPlayers);
+
 		allPlayers.forEach(function (player) {
+
+			let isNPC = player['isNPC'];
+			let playerGenderId = player['gender'];
+			let playerName = player['name'];
+
+			// se nao estiver definido se eh npc, ou se estiver definido de forma errada (nao boolean), pular
+			if (isNPC == undefined || typeof isNPC == 'string') {
+				return;
+			}
+
+			let icon;
+			let playerTitle;
+
+			if (isNPC) {
+				icon = Player.EMOJI_IS_NPC;
+				playerTitle = t('NPC') + ' ' + playerName;
+			} else {
+				icon = Player.EMOJI_GENDERS[playerGenderId];
+				playerTitle = t('Jogador') + ' ' + playerName;
+			}
+
 			allPlayerIds.push(player['id']);
 			newBattleTable.append(
 				$("<tr>").append(
@@ -80,8 +105,8 @@ class NewBattle extends Box {
 							value: 1
 						})
 					),
-					$("<td>").append(
-						Player.getPlayerShort(player['id']) + ':',
+					$("<td>", { title: playerTitle } ).append(
+						icon + ' ' + Player.getPlayerShort(player['id']) + ':',
 						$("<input>", {
 							type: 'hidden',
 							class: 'new_battle_player_ids_' + randomId,

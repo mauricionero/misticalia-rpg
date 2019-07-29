@@ -34,6 +34,9 @@ class Player extends RModel {
 	static get EMOJI_DIFFICULTY () { return '䷂' };
 	static get EMOJI_RESULT () { return '=' };
 
+	static get EMOJI_IS_NPC () { return '♚️' };
+	static get EMOJI_IS_NOT_NPC () { return '♟️' };
+
 	static get EMOJI_GENDERS () {
 		return {
 			0: Player.EMOJI_GENDER,

@@ -165,7 +165,7 @@ class Menu extends RModel {
 								name: t('Listar NPCs'),
 								emoji: '👥',
 								action_id: 'list_players',
-								options: { filterAdventureId: true, isNPC: true },
+								options: { filterAdventureId: true, isNPC: true, windowId: 'list_npcs' },
 								single_ton: true,
 								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',

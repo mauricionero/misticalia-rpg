@@ -20,7 +20,7 @@ class AddDice extends Box {
 				type: 'number',
 				min: "1",
 				max: "100",
-				placeholder: t('6')
+				placeholder: t('100')
 			}),
 
 			' ',
@@ -48,7 +48,7 @@ class AddDice extends Box {
 			faceValue,
 			output = '',
 			diceCount = $('#add_dice_number_' + random_id).val() || 1,
-			diceSides = $('#add_dice_sides_' + random_id).val() || 6;
+			diceSides = $('#add_dice_sides_' + random_id).val() || 100;
 
 		for (i = 0; i < diceCount; i++) {
 			faceValue = Dice.rollDice(diceSides);

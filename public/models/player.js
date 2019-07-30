@@ -248,4 +248,14 @@ class Player extends RModel {
 
 		this.saveItem(player);
 	}
+
+	// calcular mira do ataque
+	static atackAim (dieResult, dextery) {
+		return parseInt((dieResult * dextery) / 100);
+	}
+
+	// calcular o resultado da mira no defensor
+	static defenderAimResult (dieResult, dextery, atackAim) {
+		return parseInt((dieResult * dextery) / 100) - atackAim;
+	}
 }

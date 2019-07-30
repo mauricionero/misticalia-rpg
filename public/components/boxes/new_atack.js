@@ -39,17 +39,17 @@ class NewAtack extends Box {
 				$("<th>", { title: t('Alvo do ataque') }).append(
 					Battle.EMOJI_TARGET
 				),
+				$("<th>", { title: t('Rolar dados') }).append(
+					Dice.EMOJI_DICE
+				),
 				$("<th>", { title: t('Nome') }).append(
 					Player.EMOJI_NAME
 				),
+				$("<th>", { title: t('Destreza / Acerto') }).append(
+					Modifier.EMOJI_DEXTERY + ' ' + Battle.EMOJI_TARGET
+				),
 				$("<th>", { title: t('Força') }).append(
 					Modifier.EMOJI_STRENGTH
-				),
-				$("<th>", { title: t('Destreza') }).append(
-					Modifier.EMOJI_DEXTERY
-				),
-				$("<th>", { title: t('Agilidade') }).append(
-					Modifier.EMOJI_AGILITY
 				),
 				$("<th>", { title: t('Constituição') }).append(
 					Modifier.EMOJI_CONSTITUTION
@@ -99,17 +99,25 @@ class NewAtack extends Box {
 	// inserir linha do player atual
 	static insertPlayerLine (newAtackTable, player, randomId, currentPlayer) {
 
+		let playerId = player['id'];
+
+		let diceSides = 100;
+
 		let inputAtackCheck = '';
 
+		let playerIdClass;
+
 		if (currentPlayer) {
-			inputAtackCheck = ''; // TODO: colocar radiobuttons do tipo de ataque
+			inputAtackCheck = '';
+			playerIdClass = 'new_atack_atacker_' + randomId;
 		} else {
 			inputAtackCheck = $("<input>", {
 				type: 'checkbox',
-				id: NewAtack.windowName + '_target_' + player['id'] + '_' + randomId,
+				id: NewAtack.windowName + '_target_' + playerId + '_' + randomId,
 				class: 'new_atack_target_' + randomId,
-				value: player['id']
+				value: playerId
 			});
+			playerIdClass = 'new_atack_defender_' + randomId;
 		}
 
 		let icon;
@@ -171,23 +179,38 @@ class NewAtack extends Box {
 				$("<td>").append(
 					inputAtackCheck
 				),
+				$("<td>").append(
+					$("<input>", {
+						id: NewAtack.windowName + '_atack_aim_' + playerId + '_' + randomId,
+						type: 'text',
+						width: 36,
+						onkeyup: 'NewAtack.reCalculateAimResult(' + randomId + ')'
+					})
+				),
 				$("<td>", { title: playerTitle } ).append(
-					icon + ' ' + Player.getPlayerShort(player['id']),
+					icon + ' ' + Player.getPlayerShort(playerId),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_name_' + player['id'] + '_' + randomId,
+						id: NewAtack.windowName + '_player_id_' + playerId + '_' + randomId,
+						readonly: 'readonly',
+						class: playerIdClass,
+						value: playerId
+					}),
+					$("<input>", {
+						type: 'hidden',
+						id: NewAtack.windowName + '_name_' + playerId + '_' + randomId,
 						readonly: 'readonly',
 						value: player['name']
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_shortname_' + player['id'] + '_' + randomId,
+						id: NewAtack.windowName + '_shortname_' + playerId + '_' + randomId,
 						readonly: 'readonly',
 						value: player['shortname']
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_gender_' + player['id'] + '_' + randomId,
+						id: NewAtack.windowName + '_gender_' + playerId + '_' + randomId,
 						readonly: 'readonly',
 						value: player['gender']
 					})
@@ -195,7 +218,23 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_strength_' + player['id'] + '_' + randomId,
+						id: NewAtack.windowName + '_dextery_' + playerId + '_' + randomId,
+						width: 32,
+						readonly: 'readonly',
+						value: player['dextery']['points']
+					}),
+					$("<input>", {
+						type: 'text',
+						id: NewAtack.windowName + '_aim_result_' + playerId + '_' + randomId,
+						width: 26,
+						readonly: 'readonly',
+						value: 0
+					})
+				),
+				$("<td>").append(
+					$("<input>", {
+						type: 'text',
+						id: NewAtack.windowName + '_strength_' + playerId + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
 						value: player['strength']['points']
@@ -204,25 +243,7 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_dextery_' + player['id'] + '_' + randomId,
-						width: 32,
-						readonly: 'readonly',
-						value: player['dextery']['points']
-					})
-				),
-				$("<td>").append(
-					$("<input>", {
-						type: 'text',
-						id: NewAtack.windowName + '_agility_' + player['id'] + '_' + randomId,
-						width: 32,
-						readonly: 'readonly',
-						value: (player['agility']) ? player['agility']['points'] : 0
-					})
-				),
-				$("<td>").append(
-					$("<input>", {
-						type: 'text',
-						id: NewAtack.windowName + '_constitution_' + player['id'] + '_' + randomId,
+						id: NewAtack.windowName + '_constitution_' + playerId + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
 						value: player['constitution']['points']
@@ -231,7 +252,7 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_defense_' + player['id'] + '_' + randomId,
+						id: NewAtack.windowName + '_defense_' + playerId + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
 						value: (player['defense']) ? player['defense']['points'] : 0
@@ -240,8 +261,8 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: NewAtack.windowName + '_visualize_' + player['id'] + '_' + randomId,
-						onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
+						id: NewAtack.windowName + '_visualize_' + playerId + '_' + randomId,
+						onclick: 'VisualizePlayer.visualize_player("' + playerId + '")',
 						value: Player.EMOJI_VISUALIZE
 					})
 				),
@@ -250,6 +271,40 @@ class NewAtack extends Box {
 				)
 			)
 		)
+	}
+
+	// calcular se acertou de acordo com as rolagens de dados
+	static reCalculateAimResult (randomId) {
+		let atackerId = $('.new_atack_atacker_' + randomId)[0].value;
+
+		let atackerDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + atackerId + '_' + randomId).val() || 0);
+		let atackerDextery = parseInt($('#' + NewAtack.windowName + '_dextery_' + atackerId + '_' + randomId).val() || 0);
+
+		// colocar o resultado da rolagem da mira do atacante aqui
+		let atackerAimInput = $('#' + NewAtack.windowName + '_aim_result_' + atackerId + '_' + randomId);
+
+		let defenderIdInputs = $('.new_atack_defender_' + randomId);
+
+		// calcular o resultado da mira do ataque
+		let aimResult = Player.atackAim(atackerDie, atackerDextery);
+
+		// insere o resultado no input e processa visualmente
+		processVisualResultInput(atackerAimInput, aimResult);
+
+		defenderIdInputs.each(function() {
+			let defenderId = $(this).val();
+			let defenderDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + defenderId + '_' + randomId).val() || 0);
+			let defenderDextery = parseInt($('#' + NewAtack.windowName + '_dextery_' + defenderId + '_' + randomId).val() || 0);
+
+			let defenderAimResult = Player.defenderAimResult(defenderDie, defenderDextery, aimResult);
+
+			let defenderAimInput = $('#' + NewAtack.windowName + '_aim_result_' + defenderId + '_' + randomId);
+
+			// insere o resultado no input e processa visualmente
+			processVisualResultInput(defenderAimInput, defenderAimResult);
+		});
+
+
 	}
 
 	// retornar num array todos os ids dos players selecionados
@@ -287,8 +342,6 @@ class NewAtack extends Box {
 			return false;
 		}
 
-		let diceSides = 100;
-
 		let player = Player.getPlayer(playerId);
 
 		let defenderOptions = {
@@ -300,30 +353,6 @@ class NewAtack extends Box {
 		let atackIterationDiv = $('#' + NewAtack.windowName + '_atack_iteration_' + randomId);
 
 		let meleeAtackDice1Id = NewAtack.windowName + '_melee_atack_1_' + randomId;
-
-		atackIterationDiv.append(
-			$("<input>", {
-				id: meleeAtackDice1Id,
-				type: 'number',
-				width: 42,
-				min: 1,
-				max: diceSides
-			}),
-			$("<input>", {
-				type: 'button',
-				title: t('Rolar o dado'),
-				onclick: 'Dice.rollDice(' + diceSides + ', "' + meleeAtackDice1Id + '")',
-				value: Dice.EMOJI_DICE
-			}),
-			' ',
-			$("<input>", {
-				type: 'button',
-				title: t('Resolver acerto'),
-				onclick: 'Dice.rollDice(' + diceSides + ', "' + meleeAtackDice1Id + '")',
-				value: Battle.EMOJI_TARGET
-			})
-
-		);
 
 		atackIterationDiv.append(atackIterationDiv);
 	}

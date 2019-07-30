@@ -12,3 +12,15 @@ input:read-only {
 th {
 	font-size: 16px;
 }
+
+.negative_result {
+	color: #e00;
+}
+
+.positive_result {
+	color: #090;
+}
+
+.neutral_result {
+	color: #320;
+}

@@ -31,31 +31,64 @@ class NewAtack extends Box {
 
 		let newAtackTable = $("<table>");
 
-		NewAtack.insertPlayerLine(newAtackTable, player, randomId, true);
-
-		// titulo das colunas na tabela
+		// titulo das colunas na tabela do atacante
 		newAtackTable.append(
 			$("<tr>").append(
-				$("<th>", { title: t('Alvo do ataque') }).append(
-					Battle.EMOJI_TARGET
+				$("<th>").append(
+					' '
 				),
-				$("<th>", { title: t('Rolar dados') }).append(
+				$("<th>", { title: t('Rolar dados de forma geral, substitui todas as outras rolagens') }).append(
 					Dice.EMOJI_DICE
 				),
 				$("<th>", { title: t('Nome') }).append(
 					Player.EMOJI_NAME
 				),
-				$("<th>", { title: t('Destreza / Acerto') }).append(
-					Modifier.EMOJI_DEXTERY + ' ' + Battle.EMOJI_TARGET
+				$("<th>", { title: t('Destreza') }).append(
+					Dice.EMOJI_DICE + ' ' + Modifier.EMOJI_DEXTERY + ' ='
 				),
 				$("<th>", { title: t('Força') }).append(
-					Modifier.EMOJI_STRENGTH
+					Dice.EMOJI_DICE + ' ' + Modifier.EMOJI_STRENGTH + ' ='
+				),
+				$("<th>", { title: t('Defesa') }).append(
+					Modifier.EMOJI_DEFENSE
 				),
 				$("<th>", { title: t('Constituição') }).append(
 					Modifier.EMOJI_CONSTITUTION
 				),
+				$("<th>", { title: t('Visualizar jogador') }).append(
+					Player.EMOJI_VISUALIZE
+				),
+				$("<th>", { title: t('Modificadores') }).append(
+					Modifier.EMOJI_VISUALIZE
+				)
+			)
+		);
+
+		NewAtack.insertPlayerLine(newAtackTable, player, randomId, true);
+
+		// titulo das colunas na tabela do defensor
+		newAtackTable.append(
+			$("<tr>").append(
+				$("<th>", { title: t('Alvo do ataque') }).append(
+					Battle.EMOJI_TARGET
+				),
+				$("<th>", { title: t('Rolar dados de forma geral, substitui todas as outras rolagens') }).append(
+					Dice.EMOJI_DICE
+				),
+				$("<th>", { title: t('Nome') }).append(
+					Player.EMOJI_NAME
+				),
+				$("<th>", { title: t('Acerto') }).append(
+					Dice.EMOJI_DICE + ' ' + Battle.EMOJI_TARGET + ' ='
+				),
+				$("<th>", { title: t('Impacto') }).append(
+					Dice.EMOJI_DICE + ' ' + Battle.EMOJI_IMPACT + ' ='
+				),
 				$("<th>", { title: t('Defesa') }).append(
 					Modifier.EMOJI_DEFENSE
+				),
+				$("<th>", { title: t('Constituição') }).append(
+					Modifier.EMOJI_CONSTITUTION
 				),
 				$("<th>", { title: t('Visualizar jogador') }).append(
 					Player.EMOJI_VISUALIZE
@@ -181,7 +214,7 @@ class NewAtack extends Box {
 				),
 				$("<td>").append(
 					$("<input>", {
-						id: NewAtack.windowName + '_atack_aim_' + playerId + '_' + randomId,
+						id: NewAtack.windowName + '_atack_general_' + playerId + '_' + randomId,
 						type: 'text',
 						width: 36,
 						onkeyup: 'NewAtack.reCalculateAimResult(' + randomId + ')'
@@ -217,6 +250,12 @@ class NewAtack extends Box {
 				),
 				$("<td>").append(
 					$("<input>", {
+						id: NewAtack.windowName + '_atack_aim_' + playerId + '_' + randomId,
+						type: 'text',
+						width: 32,
+						onkeyup: 'NewAtack.reCalculateAimResult(' + randomId + ')'
+					}),
+					$("<input>", {
 						type: 'text',
 						id: NewAtack.windowName + '_dextery_' + playerId + '_' + randomId,
 						width: 32,
@@ -233,20 +272,24 @@ class NewAtack extends Box {
 				),
 				$("<td>").append(
 					$("<input>", {
+						id: NewAtack.windowName + '_atack_strength_' + playerId + '_' + randomId,
+						type: 'text',
+						width: 32,
+						onkeyup: 'NewAtack.reCalculateAimResult(' + randomId + ')'
+					}),
+					$("<input>", {
 						type: 'text',
 						id: NewAtack.windowName + '_strength_' + playerId + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
 						value: player['strength']['points']
-					})
-				),
-				$("<td>").append(
+					}),
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_constitution_' + playerId + '_' + randomId,
-						width: 32,
+						id: NewAtack.windowName + '_strength_result_' + playerId + '_' + randomId,
+						width: 26,
 						readonly: 'readonly',
-						value: player['constitution']['points']
+						value: 0
 					})
 				),
 				$("<td>").append(
@@ -256,6 +299,15 @@ class NewAtack extends Box {
 						width: 32,
 						readonly: 'readonly',
 						value: (player['defense']) ? player['defense']['points'] : 0
+					})
+				),
+				$("<td>").append(
+					$("<input>", {
+						type: 'text',
+						id: NewAtack.windowName + '_constitution_' + playerId + '_' + randomId,
+						width: 32,
+						readonly: 'readonly',
+						value: player['constitution']['points']
 					})
 				),
 				$("<td>").append(
@@ -277,31 +329,71 @@ class NewAtack extends Box {
 	static reCalculateAimResult (randomId) {
 		let atackerId = $('.new_atack_atacker_' + randomId)[0].value;
 
-		let atackerDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + atackerId + '_' + randomId).val() || 0);
+		let atackerDie = parseInt($('#' + NewAtack.windowName + '_atack_general_' + atackerId + '_' + randomId).val() || 0);
 		let atackerDextery = parseInt($('#' + NewAtack.windowName + '_dextery_' + atackerId + '_' + randomId).val() || 0);
+		let atackerStrength = parseInt($('#' + NewAtack.windowName + '_strength_' + atackerId + '_' + randomId).val() || 0);
 
-		// colocar o resultado da rolagem da mira do atacante aqui
+		// colocar o resultado da rolagem do atacante aqui
 		let atackerAimInput = $('#' + NewAtack.windowName + '_aim_result_' + atackerId + '_' + randomId);
+		let atackerStrengthInput = $('#' + NewAtack.windowName + '_strength_result_' + atackerId + '_' + randomId);
 
-		let defenderIdInputs = $('.new_atack_defender_' + randomId);
+		let atackerAimDie = atackerDie;
+		let atackerStrengthDie = atackerDie;
+
+		// verificar valores individuais dos dados caso o dado geral nao esteja preenchido
+		if (! atackerDie) {
+			atackerAimDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + atackerId + '_' + randomId).val() || 0);
+			atackerStrengthDie = parseInt($('#' + NewAtack.windowName + '_atack_strength_' + atackerId + '_' + randomId).val() || 0);
+		}
 
 		// calcular o resultado da mira do ataque
-		let aimResult = Player.atackAim(atackerDie, atackerDextery);
-
-		// insere o resultado no input e processa visualmente
+		let aimResult = Player.atackAim(atackerAimDie, atackerDextery);
 		processVisualResultInput(atackerAimInput, aimResult);
 
+		// calcular o resultado da força do ataque
+		let strengthResult = Player.atackStrength(atackerStrengthDie, atackerStrength);
+		processVisualResultInput(atackerStrengthInput, strengthResult);
+
+
+		// verificar defensores
+		let defenderIdInputs = $('.new_atack_defender_' + randomId);
+
 		defenderIdInputs.each(function() {
+
 			let defenderId = $(this).val();
-			let defenderDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + defenderId + '_' + randomId).val() || 0);
+
+			let enabledDefender = $('#' + NewAtack.windowName + '_target_' + defenderId + '_' + randomId).is(':checked');
+
+			// continua apenas se estiver checkado
+			if (! enabledDefender) {
+				return true;
+			}
+
+			let defenderDie = parseInt($('#' + NewAtack.windowName + '_atack_general_' + defenderId + '_' + randomId).val() || 0);
 			let defenderDextery = parseInt($('#' + NewAtack.windowName + '_dextery_' + defenderId + '_' + randomId).val() || 0);
+			let defenderStrength = parseInt($('#' + NewAtack.windowName + '_strength_' + defenderId + '_' + randomId).val() || 0);
+			let defenderDefense = parseInt($('#' + NewAtack.windowName + '_defense_' + defenderId + '_' + randomId).val() || 0);
 
-			let defenderAimResult = Player.defenderAimResult(defenderDie, defenderDextery, aimResult);
-
+			// colocar o resultado da rolagem do defensor aqui
 			let defenderAimInput = $('#' + NewAtack.windowName + '_aim_result_' + defenderId + '_' + randomId);
+			let defenderStrengthInput = $('#' + NewAtack.windowName + '_strength_result_' + defenderId + '_' + randomId);
 
-			// insere o resultado no input e processa visualmente
+			let defenderAimDie = defenderDie;
+			let defenderStrengthDie = defenderDie;
+
+			// verificar valores individuais dos dados caso o dado geral nao esteja preenchido
+			if (! defenderDie) {
+				defenderAimDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + defenderId + '_' + randomId).val() || 0);
+				defenderStrengthDie = parseInt($('#' + NewAtack.windowName + '_atack_strength_' + defenderId + '_' + randomId).val() || 0);
+			}
+
+			// calcular o resultado da mira do ataque no defensor
+			let defenderAimResult = Player.defendAimResult(defenderAimDie, defenderDextery, aimResult);
 			processVisualResultInput(defenderAimInput, defenderAimResult);
+
+			// calcular o resultado da força do ataque no defensor
+			let defenderStrengthResult = Player.defendStrength(defenderStrengthDie, defenderStrength, defenderDefense, strengthResult);
+			processVisualResultInput(defenderStrengthInput, defenderStrengthResult);
 		});
 
 

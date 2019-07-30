@@ -249,13 +249,31 @@ class Player extends RModel {
 		this.saveItem(player);
 	}
 
+
 	// calcular mira do ataque
-	static atackAim (dieResult, dextery) {
-		return parseInt((dieResult * dextery) / 100);
+	static atackAim (dieAim, dextery) {
+		return parseInt((dieAim * dextery) / 100);
 	}
 
 	// calcular o resultado da mira no defensor
-	static defenderAimResult (dieResult, dextery, atackAim) {
-		return parseInt((dieResult * dextery) / 100) - atackAim;
+	static defendAimResult (dieAim, dextery, atackAim) {
+		return parseInt((dieAim * dextery) / 100) - atackAim;
+	}
+
+
+	// calcular o resultado da força do ataque
+	static atackStrength(dieStrength, strength) {
+		return parseInt((dieStrength * strength) / 100);
+	}
+
+	// calcular o resultado da força do ataque no defensor
+	static defendStrength(dieStrength, strength, defense, atackStrength) {
+		console.log('dieStrength', dieStrength);
+		console.log('strength', strength);
+		console.log('defense', defense);
+		console.log('atackStrength', atackStrength);
+		console.log('parseInt((dieStrength * strength) / 100) - atackStrength + defense', parseInt((dieStrength * strength) / 100) - atackStrength + defense);
+		
+		return parseInt((dieStrength * strength) / 100) - atackStrength + defense;
 	}
 }

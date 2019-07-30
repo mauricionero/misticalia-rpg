@@ -15,7 +15,8 @@ class Player extends RModel {
 	static get EMOJI_TRANS_GENDER () { return '⚧️' };
 
 	static get EMOJI_STRENGTH () { return '💪' };
-	static get EMOJI_DEXTERY () { return '🏃' };
+	static get EMOJI_DEXTERY () { return '✍️' };
+	static get EMOJI_AGILITY () { return '🏃' };
 	static get EMOJI_CONSTITUTION () { return '✚' };
 	static get EMOJI_INTELIGENCE () { return '💡' };
 	static get EMOJI_WISDOM () { return '📚' };
@@ -50,6 +51,7 @@ class Player extends RModel {
 		return [
 			'strength',
 			'dextery',
+			'agility',
 			'constitution',
 			'inteligence',
 			'wisdom',
@@ -70,6 +72,7 @@ class Player extends RModel {
 		return {
 			'strength': 'Força',
 			'dextery': 'Destreza',
+			'agility': 'Agilidade',
 			'constitution': 'Constituição',
 			'inteligence': 'Inteligencia',
 			'wisdom': 'Sabedoria',
@@ -106,6 +109,14 @@ class Player extends RModel {
 			1130,
 			1280 // 20
 		]
+	}
+
+	static getAttribute (player, attribute, subAttribute) {
+		if (player[attribute]) {
+			return player[attribute][subAttribute] || 0;
+		}
+
+		return 0;
 	}
 
 	// pegar a tradução do atributo

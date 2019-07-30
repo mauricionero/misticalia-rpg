@@ -51,7 +51,7 @@ class AddDice extends Box {
 			diceSides = $('#add_dice_sides_' + random_id).val() || 6;
 
 		for (i = 0; i < diceCount; i++) {
-			faceValue = Math.floor(Math.random() * diceSides) + 1;
+			faceValue = Dice.rollDice(diceSides);
 
 			output = $("<div class='die_style'>", {
 				id: 'add_dice_container_'+random_id

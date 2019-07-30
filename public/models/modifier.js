@@ -7,18 +7,20 @@ class Modifier extends RModel {
 
 	static get STRENGTH () { return 1 };
 	static get DEXTERY () { return 2 };
-	static get CONSTITUTION () { return 3 };
-	static get INTELIGENCE () { return 4 };
-	static get WISDOM () { return 5 };
-	static get CHARISMA () { return 6 };
-	static get SANITY () { return 7 };
+	static get AGILITY () { return 3 };
+	static get CONSTITUTION () { return 4 };
+	static get INTELIGENCE () { return 5 };
+	static get WISDOM () { return 6 };
+	static get CHARISMA () { return 7 };
+	static get SANITY () { return 8 };
 
-	static get FIRE_PROTECTION () { return 8 };
-	static get COLD_PROTECTION () { return 9 };
-	static get DEFENSE () { return 10 };
+	static get FIRE_PROTECTION () { return 9 };
+	static get COLD_PROTECTION () { return 10 };
+	static get DEFENSE () { return 11 };
 
 	static get EMOJI_STRENGTH () { return Player.EMOJI_STRENGTH };
 	static get EMOJI_DEXTERY () { return Player.EMOJI_DEXTERY };
+	static get EMOJI_AGILITY () { return Player.EMOJI_AGILITY };
 	static get EMOJI_CONSTITUTION () { return Player.EMOJI_CONSTITUTION };
 	static get EMOJI_INTELIGENCE () { return Player.EMOJI_INTELIGENCE };
 	static get EMOJI_WISDOM () { return Player.EMOJI_WISDOM };
@@ -32,14 +34,15 @@ class Modifier extends RModel {
 		return {
 			1: Modifier.EMOJI_STRENGTH,
 			2: Modifier.EMOJI_DEXTERY,
-			3: Modifier.EMOJI_CONSTITUTION,
-			4: Modifier.EMOJI_INTELIGENCE,
-			5: Modifier.EMOJI_WISDOM,
-			6: Modifier.EMOJI_CHARISMA,
-			7: Modifier.EMOJI_SANITY,
-			8: Modifier.EMOJI_FIRE_PROTECTION,
-			9: Modifier.EMOJI_COLD_PROTECTION,
-			10: Modifier.EMOJI_DEFENSE
+			3: Modifier.EMOJI_AGILITY,
+			4: Modifier.EMOJI_CONSTITUTION,
+			5: Modifier.EMOJI_INTELIGENCE,
+			6: Modifier.EMOJI_WISDOM,
+			7: Modifier.EMOJI_CHARISMA,
+			8: Modifier.EMOJI_SANITY,
+			9: Modifier.EMOJI_FIRE_PROTECTION,
+			10: Modifier.EMOJI_COLD_PROTECTION,
+			11: Modifier.EMOJI_DEFENSE
 		}
 	}
 
@@ -47,14 +50,15 @@ class Modifier extends RModel {
 		return {
 			1: 'Força',
 			2: 'Destreza',
-			3: 'Constituição',
-			4: 'Inteligencia',
-			5: 'Sabedoria',
-			6: 'Carisma',
-			7: 'Sanidade',
-			8: 'Proteção contra fogo',
-			9: 'Proteção contra frio',
-			10: 'Defesa'
+			3: 'Agilidade',
+			4: 'Constituição',
+			5: 'Inteligencia',
+			6: 'Sabedoria',
+			7: 'Carisma',
+			8: 'Sanidade',
+			9: 'Proteção contra fogo',
+			10: 'Proteção contra frio',
+			11: 'Defesa'
 		}
 	};
 
@@ -62,14 +66,15 @@ class Modifier extends RModel {
 		return {
 			1: 'strength',
 			2: 'dextery',
-			3: 'constitution',
-			4: 'inteligence',
-			5: 'wisdom',
-			6: 'charisma',
-			7: 'sanity',
-			8: 'fire_protection',
-			9: 'cold_protection',
-			10: 'defense'
+			3: 'agility',
+			4: 'constitution',
+			5: 'inteligence',
+			6: 'wisdom',
+			7: 'charisma',
+			8: 'sanity',
+			9: 'fire_protection',
+			10: 'cold_protection',
+			11: 'defense'
 		}
 	};
 
@@ -77,14 +82,15 @@ class Modifier extends RModel {
 		return {
 			'strength': 1,
 			'dextery': 2,
-			'constitution': 3,
-			'inteligence': 4,
-			'wisdom': 5,
-			'charisma': 6,
-			'sanity': 7,
-			'fire_protection': 8,
-			'cold_protection': 9,
-			'defense': 10
+			'agility': 3,
+			'constitution': 4,
+			'inteligence': 5,
+			'wisdom': 6,
+			'charisma': 7,
+			'sanity': 8,
+			'fire_protection': 9,
+			'cold_protection': 10,
+			'defense': 11
 		}
 	};
 

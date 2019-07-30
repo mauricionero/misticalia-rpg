@@ -48,6 +48,9 @@ class NewAtack extends Box {
 				$("<th>", { title: t('Destreza') }).append(
 					Modifier.EMOJI_DEXTERY
 				),
+				$("<th>", { title: t('Agilidade') }).append(
+					Modifier.EMOJI_AGILITY
+				),
 				$("<th>", { title: t('Constituição') }).append(
 					Modifier.EMOJI_CONSTITUTION
 				),
@@ -74,15 +77,20 @@ class NewAtack extends Box {
 			
 		});
 
+		let atackIterationDiv = $('<div>', { id: NewAtack.windowName + '_atack_iteration_' + randomId } );
+
 		newAtackDiv.append(
 			newAtackTable,
 			$("<input>", {
 				type: 'button',
 				id: NewAtack.windowName + '_simple_atack_' + randomId,
-				title: t('Atacar'),
-				onclick: 'NewAtack.simpleAtack("' + playerId + '", ' + randomId + ')',
+				title: t('Atacar corpo a corpo'),
+				onclick: 'NewAtack.meleeAtack("' + playerId + '", ' + randomId + ')',
 				value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
 			}),
+			'<br />',
+			'<br />',
+			atackIterationDiv
 		);
 
 		return newAtackDiv;
@@ -205,6 +213,15 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'text',
+						id: NewAtack.windowName + '_agility_' + player['id'] + '_' + randomId,
+						width: 32,
+						readonly: 'readonly',
+						value: (player['agility']) ? player['agility']['points'] : 0
+					})
+				),
+				$("<td>").append(
+					$("<input>", {
+						type: 'text',
 						id: NewAtack.windowName + '_constitution_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: 'readonly',
@@ -260,9 +277,17 @@ class NewAtack extends Box {
 		return fighterIds;
 	}
 
-	// realizar um ataque simples
-	static simpleAtack (playerId, randomId) {
+	// realizar um ataque corpo a corpo
+	static meleeAtack (playerId, randomId) {
 		let fighterIds = NewAtack.getAllCheckedPlayers(randomId);
+
+		if (fighterIds.length <= 0) {
+			alert(t('Selecione ao menos 1 jogador para receber o ataque'));
+
+			return false;
+		}
+
+		let diceSides = 100;
 
 		let player = Player.getPlayer(playerId);
 
@@ -272,7 +297,35 @@ class NewAtack extends Box {
 
 		let defenders = Player.getAllPlayers(defenderOptions);
 
-		
+		let atackIterationDiv = $('#' + NewAtack.windowName + '_atack_iteration_' + randomId);
+
+		let meleeAtackDice1Id = NewAtack.windowName + '_melee_atack_1_' + randomId;
+
+		atackIterationDiv.append(
+			$("<input>", {
+				id: meleeAtackDice1Id,
+				type: 'number',
+				width: 42,
+				min: 1,
+				max: diceSides
+			}),
+			$("<input>", {
+				type: 'button',
+				title: t('Rolar o dado'),
+				onclick: 'Dice.rollDice(' + diceSides + ', "' + meleeAtackDice1Id + '")',
+				value: Dice.EMOJI_DICE
+			}),
+			' ',
+			$("<input>", {
+				type: 'button',
+				title: t('Resolver acerto'),
+				onclick: 'Dice.rollDice(' + diceSides + ', "' + meleeAtackDice1Id + '")',
+				value: Battle.EMOJI_TARGET
+			})
+
+		);
+
+		atackIterationDiv.append(atackIterationDiv);
 	}
 }
 

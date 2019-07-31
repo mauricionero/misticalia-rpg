@@ -102,8 +102,6 @@ class RModel {
 			// adicionar item na store local
 			storeData.push(item);
 
-			console.log('storeData', storeData);
-
 			try {
 				localStorage.setItem(storeName, JSON.stringify(storeData));
 
@@ -173,7 +171,7 @@ class RModel {
 								inArray = true;
 							}
 						});
-						
+
 						// se nao achou no array, marcar para remover do filtro
 						if (! inArray) {
 							onFilter = false;

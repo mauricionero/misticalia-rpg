@@ -42,6 +42,9 @@ class ListPlayers extends Box {
 				$("<th>", { title: t('Destreza') }).append(
 					Player.EMOJI_DEXTERY
 				),
+				$("<th>", { title: t('Agilidade') }).append(
+					Player.EMOJI_AGILITY
+				),
 				$("<th>", { title: t('Constituição') }).append(
 					Player.EMOJI_CONSTITUTION
 				),
@@ -109,6 +112,15 @@ class ListPlayers extends Box {
 							width: 32,
 							readonly: 'readonly',
 							value: player['dextery']['basePoints']
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: ListPlayers.windowName + '_dextery_' + player['id'] + '_' + randomId,
+							width: 32,
+							readonly: 'readonly',
+							value: (player['agility']) ? player['agility']['basePoints'] : 0
 						})
 					),
 					$("<td>").append(

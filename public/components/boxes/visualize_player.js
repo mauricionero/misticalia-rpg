@@ -184,13 +184,20 @@ class VisualizePlayer extends Box {
 
 		listPlayerDiv.append(
 			listPlayerTableDiv,
-			'<br />',
-			$('<a>',{
-				href: 'javascript: void(0)',
-				onclick: 'VisualizePlayer.toggleViewEquipaments("' + playerId + '", ' + randomId + ')'
-			}).html(
-				t('Ver equipamentos e itens')
-			),
+			$("<input>", {
+				type: 'button',
+				title: t('Salvar'),
+				onclick: 'VisualizePlayer.toggleViewEquipaments("' + playerId + '", ' + randomId + ')',
+				value: t('Ver equipamentos e itens')
+			}),
+			' ',
+			$("<input>", {
+				type: 'button',
+				id: VisualizePlayer.windowName + '_save_' + randomId,
+				title: t('Salvar'),
+				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", ' + randomId + ')',
+				value: t('Salvar')
+			}),
 			'<br />',
 			visualizePlayerEquipamentDiv
 		);
@@ -266,9 +273,9 @@ class VisualizePlayer extends Box {
 		}
 
 		allAttributes.forEach(function (attribute) {
-			let basePoints = player[attribute]['basePoints'] || 0;
-			let permanentModifier = player[attribute]['permanentModifier'] || 0;
-			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
+			let basePoints = Player.getAttribute(player, attribute, 'basePoints');
+			let permanentModifier = Player.getAttribute(player, attribute, 'permanentModifier');
+			let temporaryModifier = Player.getAttribute(player, attribute, 'temporaryModifier');
 
 			let typeId = Modifier.ALL_TYPE_IDS[attribute];
 
@@ -619,6 +626,53 @@ class VisualizePlayer extends Box {
 		}
 	}
 
+	// salvar modificações do jogador
+	static updatePlayer (playerId, randomId) {
+
+		let isNPC = $('#' + VisualizePlayer.windowName + '_is_npc_' + randomId).val();
+
+		isNPC = (isNPC == 'true') ? true : false;
+
+		let editPlayer = Player.getPlayer(playerId);
+
+		let allAttributes = Player.ALL_ATTRIBUTES;
+		if (isNPC) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		allAttributes.forEach(function (attribute) {
+			let basePoints = parseInt($('#' + VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId).val());
+			let points = parseInt($('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId).val());
+
+			if (editPlayer[attribute]) {
+				editPlayer[attribute]['basePoints'] = basePoints;
+				editPlayer[attribute]['points'] = points;
+			} else {
+				editPlayer[attribute] = {
+					'basePoints': basePoints,
+					'points': points
+				}
+			}
+		});
+
+		let resultSaved = Player.savePlayer(editPlayer);
+
+		let saveButton = $('#' + VisualizePlayer.windowName + '_save_' + randomId);
+
+		if (resultSaved) {
+
+			saveButton.val(t('Salvo!'));
+			saveButton.attr('disabled', 'disabled');
+			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+
+		} else {
+
+			saveButton.val('😟'); // :(
+			saveButton.attr('disabled', 'disabled');
+			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+			saveButton.val(Equipament.EMOJI_ADD);
+		}
+	}
 }
 
 boxes[VisualizePlayer.windowName] = VisualizePlayer;

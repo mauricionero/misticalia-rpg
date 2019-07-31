@@ -49,8 +49,11 @@ class NewBattle extends Box {
 			$("<th>", { title: t('Combatente') }).append(
 				Player.EMOJI_NAME
 			),
-			$("<th>", { title: t('Destreza') + ' / ' + t('modificador') }).append(
-				Player.EMOJI_DEXTERY
+			$("<th>", { title: t('Agilidade') + ' / ' + t('modificador') }).append(
+				Player.EMOJI_AGILITY
+			),
+			$("<th>", { title: t('Vida') }).append(
+				Player.EMOJI_LIFE
 			),
 			$("<th>", { title: t('% para atacar') }).append(
 				Battle.EMOJI_ACTION_WAIT
@@ -80,6 +83,9 @@ class NewBattle extends Box {
 			let isNPC = player['isNPC'];
 			let playerGenderId = player['gender'];
 			let playerName = player['name'];
+			let playerLife = Player.getAttribute(player, 'life') || 100;
+
+			let playerAgility = (player['agility']) ? player['agility']['basePoints'] : 0;
 
 			// se nao estiver definido se eh npc, ou se estiver definido de forma errada (nao boolean), pular
 			if (isNPC == undefined || typeof isNPC == 'string') {
@@ -98,6 +104,23 @@ class NewBattle extends Box {
 				icon = Player.EMOJI_GENDERS[playerGenderId];
 				playerTitle = t('Jogador') + ' ' + playerName;
 			}
+
+			let lifeProgressbar = $("<div>", {
+				id: NewAtack.windowName + '_life_display_' + player['id'] + '_' + randomId,
+				width: 38,
+				height: 20,
+				title: playerLife + '%'
+			}).progressbar({ value: playerLife })
+
+			lifeProgressbar.children().css({ 'background': 'Red' });
+
+			let atackProgressbar = $("<div>", {
+				id: NewBattle.windowName + '_current_display_' + player['id'] + '_' + randomId,
+				width: 38,
+				height: 20
+			}).progressbar({ value: 0 })
+
+			atackProgressbar.children().css({ 'background': 'Green' });
 
 			allPlayerIds.push(player['id']);
 			let newLine = $("<tr>", { id: NewBattle.windowName + '_player_line_' + player['id'] + '_' + randomId } ).append(
@@ -138,8 +161,8 @@ class NewBattle extends Box {
 						id: NewBattle.windowName + '_original_' + player['id'] + '_' + randomId,
 						width: 32,
 						readonly: true,
-						title: t('Original: ') + player['dextery']['basePoints'],
-						value: player['dextery']['basePoints']
+						title: t('Original: ') + playerAgility,
+						value: playerAgility
 					}),
 					$("<input>", {
 						type: 'text',
@@ -149,12 +172,11 @@ class NewBattle extends Box {
 					})
 				),
 				$("<td>").append(
-					$("<div>", {
-						id: NewBattle.windowName + '_current_display_' + player['id'] + '_' + randomId,
-						width: 38,
-						height: 20,
-						class: 'new_battle_progressbar'
-					}).progressbar({ value: 0 }),
+
+					lifeProgressbar
+				),
+				$("<td>").append(
+					atackProgressbar,
 					$("<input>", {
 						type: 'hidden',
 						id: 'new_battle_current_' + player['id'] + '_' + randomId,
@@ -305,16 +327,18 @@ class NewBattle extends Box {
 		var fighterNextAttacks = {};
 		let fighterIds = NewBattle.getAllEnabledPlayers(randomId);
 
+		console.log('fighterIds', fighterIds);
+
 		// calcular o maximo usando ateh mesmo os jogadores pauxados para manter a normalizacao do maximo de agilidade
 		fighterIds.forEach(function (fighterId) {
 
-			let dextery = $('#' + NewBattle.windowName + '_original_' + fighterId + '_' + randomId).val();
+			let agility = $('#' + NewBattle.windowName + '_original_' + fighterId + '_' + randomId).val();
 			let modifier = $('#' + NewBattle.windowName + '_modifier_' + fighterId + '_' + randomId).val();
 
-			let totalDextery = parseInt(dextery) + parseInt(modifier);
+			let totalAgility = parseInt(agility) + parseInt(modifier);
 
-			if (totalDextery > maxDextery) {
-				maxDextery = totalDextery;
+			if (totalAgility > maxDextery) {
+				maxDextery = totalAgility;
 			}
 			
 		});
@@ -326,17 +350,17 @@ class NewBattle extends Box {
 		fighterIds.forEach(function (fighterId) {
 			let fighterMultiplier = 0;
 
-			let dextery = $('#' + NewBattle.windowName + '_original_' + fighterId + '_' + randomId).val();
+			let agility = $('#' + NewBattle.windowName + '_original_' + fighterId + '_' + randomId).val();
 			let modifier = $('#' + NewBattle.windowName + '_modifier_' + fighterId + '_' + randomId).val();
 
 			let current = $('#' + NewBattle.windowName + '_current_' + fighterId + '_' + randomId).val();
 
-			let totalDextery = parseInt(dextery) + parseInt(modifier);
+			let totalAgility = parseInt(agility) + parseInt(modifier);
 
-			let fighterToNextAttack = totalDextery;
+			let fighterToNextAttack = totalAgility;
 
 			if (maxDextery != 0) {
-				fighterMultiplier = parseFloat(maxDextery) / parseFloat(totalDextery);
+				fighterMultiplier = parseFloat(maxDextery) / parseFloat(totalAgility);
 			}
 
 			let fighterNextAttack = Math.round(maxDextery * fighterMultiplier);
@@ -399,16 +423,6 @@ class NewBattle extends Box {
 
 		$('#' + NewBattle.windowName + '_current_' + fighterId + '_' + randomId).val(currentNow);
 		inputDisplayCurrent.progressbar( "value", displayCurrent );
-
-		if (displayCurrent >= 100) {
-			inputDisplayCurrent.animate({
-				backgroundColor: '#3c3'
-			});
-		} else {
-			inputDisplayCurrent.animate({
-				backgroundColor: '#fff'
-			});
-		}
 	}
 
 }

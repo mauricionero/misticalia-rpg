@@ -9,6 +9,8 @@ class Player extends RModel {
 
 	static get EMOJI_NAME () { return '웃' };
 	static get EMOJI_SHORT_NAME () { return '…' };
+	static get EMOJI_LIFE () { return '❤️' };
+
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
 	static get EMOJI_GENDER_FEMALE () { return '👩' };
@@ -38,6 +40,8 @@ class Player extends RModel {
 	static get EMOJI_IS_NPC () { return '♚️' };
 	static get EMOJI_IS_NOT_NPC () { return '♟️' };
 
+	static get EMOJI_SAVE () { return '💾' };
+
 	static get EMOJI_GENDERS () {
 		return {
 			0: Player.EMOJI_GENDER,
@@ -64,7 +68,8 @@ class Player extends RModel {
 		return [
 			'fire_protection',
 			'cold_protection',
-			'defense'
+			'defense',
+			'atack'
 		]
 	};
 
@@ -80,7 +85,8 @@ class Player extends RModel {
 			'sanity': 'Sanidade',
 			'fire_protection': 'Proteção ao fogo',
 			'cold_protection': 'Proteção ao frio',
-			'defense': 'Defesa'
+			'defense': 'Defesa',
+			'atack': 'Ataque'
 		}
 	};
 
@@ -111,12 +117,30 @@ class Player extends RModel {
 		]
 	}
 
-	static getAttribute (player, attribute, subAttribute) {
-		if (player[attribute]) {
-			return player[attribute][subAttribute] || 0;
+	// pegar o valor de um atributo
+	static getAttribute (player, attribute, subAttribute = '') {
+
+		// se tiver subatributo
+		if (subAttribute) {
+			if (player[attribute]) {
+				return player[attribute][subAttribute] || 0;
+			}
+
+		// se for um atributo de 1 nivel soh (sem subatributo)
+		} else {
+			return player[attribute]
 		}
 
 		return 0;
+	}
+
+	// salvar um valor de um atributo com o id do jogador
+	static saveAttribute (playerId, attribute, value) {
+		let player = this.getPlayer(playerId);
+
+		player[attribute] = value;
+
+		return this.savePlayer(player);
 	}
 
 	// pegar a tradução do atributo
@@ -252,28 +276,82 @@ class Player extends RModel {
 
 	// calcular mira do ataque
 	static atackAim (dieAim, dextery) {
-		return parseInt((dieAim * dextery) / 100);
+		let level = this.levelCalculator(dextery);
+
+		// verificar a habilidade de mirar
+		let aimPoints = parseInt((dieAim * dextery) / 100) + level;
+
+		return aimPoints;
 	}
 
-	// calcular o resultado da mira no defensor
-	static defendAimResult (dieAim, dextery, atackAim) {
-		return parseInt((dieAim * dextery) / 100) - atackAim;
+	// calcular o resultado do quanto acertou o defensor
+	static defendAimResult (dieAim, dextery, aimPoints) {
+		let level = this.levelCalculator(dextery);
+
+		let minNormalAim = -100;
+
+		// verificar a habilidade de desviar
+		let dodgePoints = parseInt((dieAim * dextery) / 100) + level;
+
+		let totalDodge = (parseInt((aimPoints / dodgePoints) * 100) - 100) * -1;
+
+		// a partir de 100% de acerto (negativo), amortecer o acerto critico
+		if (totalDodge < minNormalAim) {
+			// pegar 10% do que esta passando de 100% como critico
+			let criticalHit = (totalDodge - minNormalAim) * 0.1;
+			console.log('criticalHit', criticalHit);
+
+			totalDodge = parseInt(minNormalAim + criticalHit);
+		}
+		return totalDodge;
 	}
 
 
 	// calcular o resultado da força do ataque
-	static atackStrength(dieStrength, strength) {
-		return parseInt((dieStrength * strength) / 100);
+	static atackStrength(dieStrength, strength, atack) {
+		let level = this.levelCalculator(strength);
+
+		let atackStrength = parseInt((dieStrength * strength) / 100) + level + atack;
+
+		return atackStrength;
 	}
 
 	// calcular o resultado da força do ataque no defensor
-	static defendStrength(dieStrength, strength, defense, atackStrength) {
-		console.log('dieStrength', dieStrength);
-		console.log('strength', strength);
-		console.log('defense', defense);
-		console.log('atackStrength', atackStrength);
-		console.log('parseInt((dieStrength * strength) / 100) - atackStrength + defense', parseInt((dieStrength * strength) / 100) - atackStrength + defense);
-		
-		return parseInt((dieStrength * strength) / 100) - atackStrength + defense;
+	static defendStrength(dieStrength, strength, defense, totalDodge, atackStrength) {
+		let level = this.levelCalculator(strength);
+
+		// quantos % do ataque levou?
+		let hitModifier = totalDodge / 100 * -1;
+
+		// verificar quanto de hit (força do ataque * multiplicador do acerto)
+		let totalHit = parseInt(atackStrength * hitModifier);
+
+		// verificar primeiro se passou da defesa total
+		let totalDefense = parseInt((dieStrength * strength) / 100) + level + defense;
+
+		return totalDefense - totalHit;
+	}
+
+	// calcular o quanto de vida perdeu de acordo com o ataque recebido
+	static defendLifeResult(constitution, totalDefense) {
+
+		let level = this.levelCalculator(constitution);
+
+		let constitutionModifier = 100 / constitution;
+
+		console.log('constitutionModifier', constitutionModifier);
+		console.log('totalDefense', totalDefense);
+		console.log('level', level);
+
+		let lifeDifference = parseInt(totalDefense * constitutionModifier) + level;
+
+		console.log('lifeDifference', lifeDifference);
+
+		// positivo eh pq nao levou dano
+		if (lifeDifference > 0) {
+			lifeDifference = 0;
+		}
+
+		return lifeDifference;
 	}
 }

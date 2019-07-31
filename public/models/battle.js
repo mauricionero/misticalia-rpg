@@ -9,4 +9,6 @@ class Battle extends RModel {
 	static get EMOJI_TARGET () { return '🎯' };
 	static get EMOJI_IMPACT () { return '💥' };
 
+	static get EMOJI_HURT () { return '🤕' };
+
 }

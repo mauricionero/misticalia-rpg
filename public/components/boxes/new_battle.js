@@ -52,6 +52,9 @@ class NewBattle extends Box {
 			$("<th>", { title: t('Agilidade') + ' / ' + t('modificador') }).append(
 				Player.EMOJI_AGILITY
 			),
+			$("<th>", { title: t('Vida') }).append(
+				Player.EMOJI_LIFE
+			),
 			$("<th>", { title: t('% para atacar') }).append(
 				Battle.EMOJI_ACTION_WAIT
 			),
@@ -80,6 +83,7 @@ class NewBattle extends Box {
 			let isNPC = player['isNPC'];
 			let playerGenderId = player['gender'];
 			let playerName = player['name'];
+			let playerLife = Player.getAttribute(player, 'life') || 100;
 
 			let playerAgility = (player['agility']) ? player['agility']['basePoints'] : 0;
 
@@ -100,6 +104,23 @@ class NewBattle extends Box {
 				icon = Player.EMOJI_GENDERS[playerGenderId];
 				playerTitle = t('Jogador') + ' ' + playerName;
 			}
+
+			let lifeProgressbar = $("<div>", {
+				id: NewAtack.windowName + '_life_display_' + player['id'] + '_' + randomId,
+				width: 38,
+				height: 20,
+				title: playerLife + '%'
+			}).progressbar({ value: playerLife })
+
+			lifeProgressbar.children().css({ 'background': 'Red' });
+
+			let atackProgressbar = $("<div>", {
+				id: NewBattle.windowName + '_current_display_' + player['id'] + '_' + randomId,
+				width: 38,
+				height: 20
+			}).progressbar({ value: 0 })
+
+			atackProgressbar.children().css({ 'background': 'Green' });
 
 			allPlayerIds.push(player['id']);
 			let newLine = $("<tr>", { id: NewBattle.windowName + '_player_line_' + player['id'] + '_' + randomId } ).append(
@@ -151,12 +172,11 @@ class NewBattle extends Box {
 					})
 				),
 				$("<td>").append(
-					$("<div>", {
-						id: NewBattle.windowName + '_current_display_' + player['id'] + '_' + randomId,
-						width: 38,
-						height: 20,
-						class: 'new_battle_progressbar'
-					}).progressbar({ value: 0 }),
+
+					lifeProgressbar
+				),
+				$("<td>").append(
+					atackProgressbar,
 					$("<input>", {
 						type: 'hidden',
 						id: 'new_battle_current_' + player['id'] + '_' + randomId,
@@ -403,16 +423,6 @@ class NewBattle extends Box {
 
 		$('#' + NewBattle.windowName + '_current_' + fighterId + '_' + randomId).val(currentNow);
 		inputDisplayCurrent.progressbar( "value", displayCurrent );
-
-		if (displayCurrent >= 100) {
-			inputDisplayCurrent.animate({
-				backgroundColor: '#3c3'
-			});
-		} else {
-			inputDisplayCurrent.animate({
-				backgroundColor: '#fff'
-			});
-		}
 	}
 
 }

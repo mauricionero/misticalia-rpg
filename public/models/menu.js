@@ -6,8 +6,8 @@ class Menu extends RModel {
 		return [
 			{
 				id: 1,
-				name: 'Sistema',
-				emoji: '⚙️',
+				name: 'Aventuras',
+				emoji: '🌎',
 				action_id: '',
 				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
@@ -56,7 +56,7 @@ class Menu extends RModel {
 					}
 				]
 			},
-			{ // role de mestre da aventura atual
+			{ // papel de mestre da aventura atual
 				id: 6,
 				name: '%ADVENTURE_NAME%',
 				emoji: '♚️',
@@ -89,6 +89,40 @@ class Menu extends RModel {
 								emoji: '📝',
 								action_id: 'list_players',
 								options: { filterAdventureId: true },
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							}
+						]
+					},
+					{
+						id: 16,
+						name: t('NPCs'),
+						emoji: '😐',
+						action_id: '',
+						single_ton: true,
+						roles: [ Adventure.ROLE_MASTER ],
+						class: '',
+						items: [
+							{
+								id: 17,
+								name: t('NPC'),
+								emoji: '➕',
+								action_id: 'add_player',
+								options: { isNPC: true },
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							},
+							{
+								id: 18,
+								name: t('Listar NPCs'),
+								emoji: '👥',
+								action_id: 'list_players',
+								options: { filterAdventureId: true, isNPC: true, windowId: 'list_npcs' },
+								single_ton: true,
 								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',
 								items: [
@@ -138,40 +172,6 @@ class Menu extends RModel {
 						roles: [ Adventure.ROLE_MASTER ],
 						class: 'open_box',
 						items: [
-						]
-					},
-					{
-						id: 16,
-						name: t('NPCs'),
-						emoji: '😐',
-						action_id: '',
-						single_ton: true,
-						roles: [ Adventure.ROLE_MASTER ],
-						class: '',
-						items: [
-							{
-								id: 17,
-								name: t('NPC'),
-								emoji: '➕',
-								action_id: 'add_player',
-								options: { isNPC: true },
-								roles: [ Adventure.ROLE_MASTER ],
-								class: 'open_box',
-								items: [
-								]
-							},
-							{
-								id: 18,
-								name: t('Listar NPCs'),
-								emoji: '👥',
-								action_id: 'list_players',
-								options: { filterAdventureId: true, isNPC: true, windowId: 'list_npcs' },
-								single_ton: true,
-								roles: [ Adventure.ROLE_MASTER ],
-								class: 'open_box',
-								items: [
-								]
-							}
 						]
 					}
 				]

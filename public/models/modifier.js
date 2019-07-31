@@ -17,6 +17,7 @@ class Modifier extends RModel {
 	static get FIRE_PROTECTION () { return 9 };
 	static get COLD_PROTECTION () { return 10 };
 	static get DEFENSE () { return 11 };
+	static get ATACK () { return 12 };
 
 	static get EMOJI_STRENGTH () { return Player.EMOJI_STRENGTH };
 	static get EMOJI_DEXTERY () { return Player.EMOJI_DEXTERY };
@@ -26,9 +27,10 @@ class Modifier extends RModel {
 	static get EMOJI_WISDOM () { return Player.EMOJI_WISDOM };
 	static get EMOJI_CHARISMA () { return Player.EMOJI_CHARISMA };
 	static get EMOJI_SANITY () { return Player.EMOJI_SANITY };
-	static get EMOJI_FIRE_PROTECTION () { return '🔥' };
-	static get EMOJI_COLD_PROTECTION () { return '❄️' };
+	static get EMOJI_FIRE_PROTECTION () { return '🛡️🔥' };
+	static get EMOJI_COLD_PROTECTION () { return '🛡️❄️' };
 	static get EMOJI_DEFENSE () { return '🛡️' };
+	static get EMOJI_ATACK () { return '🗡️' };
 
 	static get EMOJI_TYPES () {
 		return {
@@ -42,7 +44,8 @@ class Modifier extends RModel {
 			8: Modifier.EMOJI_SANITY,
 			9: Modifier.EMOJI_FIRE_PROTECTION,
 			10: Modifier.EMOJI_COLD_PROTECTION,
-			11: Modifier.EMOJI_DEFENSE
+			11: Modifier.EMOJI_DEFENSE,
+			12: Modifier.EMOJI_ATACK
 		}
 	}
 
@@ -58,7 +61,8 @@ class Modifier extends RModel {
 			8: 'Sanidade',
 			9: 'Proteção contra fogo',
 			10: 'Proteção contra frio',
-			11: 'Defesa'
+			11: 'Defesa',
+			12: 'Ataque'
 		}
 	};
 
@@ -74,7 +78,8 @@ class Modifier extends RModel {
 			8: 'sanity',
 			9: 'fire_protection',
 			10: 'cold_protection',
-			11: 'defense'
+			11: 'defense',
+			12: 'atack'
 		}
 	};
 
@@ -90,7 +95,8 @@ class Modifier extends RModel {
 			'sanity': 8,
 			'fire_protection': 9,
 			'cold_protection': 10,
-			'defense': 11
+			'defense': 11,
+			'atack': 12
 		}
 	};
 

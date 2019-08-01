@@ -4,14 +4,13 @@ class ListPlayerEquipaments extends Box {
 
 	boxContent (options = {}) {
 
-		let randomId = Math.floor(Math.random() * 10000);
-		this.randomId = randomId;
+		let me = this;
 
 		let playerId = options['playerId'];
 		this.playerId = playerId;
 
 		let listEquipamentDiv = $('<div>', {
-			id: ListPlayerEquipaments.windowName + '_list_equipaments_' + playerId + '_' + randomId
+			id: me.createId('list_equipaments_' + playerId)
 		});
 
 		return listEquipamentDiv;
@@ -19,16 +18,19 @@ class ListPlayerEquipaments extends Box {
 
 	// executa após printar a janela
 	callBackRender () {
-		let randomId = this.randomId;
 		let playerId = this.playerId;
-
-		ListPlayerEquipaments.listEquipaments(playerId, randomId);
+		
+		this.listEquipaments(playerId);
 	}
 
 	// atualizar lista de equipamentos quando precisar
-	static listEquipaments (playerId, randomId) {
+	listEquipaments (playerId) {
 
-		let listEquipamentDiv = $('#' + ListPlayerEquipaments.windowName + '_list_equipaments_' + playerId + '_' + randomId);
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let listEquipamentDiv = $('#' + me.createId('list_equipaments_' + playerId));
 
 		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
 
@@ -68,7 +70,7 @@ class ListPlayerEquipaments extends Box {
 						Equipament.EMOJI_TYPES[equipament['typeId']],
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayerEquipaments.windowName + '_type_' + equipament['id'] + '_' + randomId,
+							id: me.createId('type_' + equipament['id']),
 							readonly: 'readonly',
 							value: equipament['typeId']
 						})
@@ -77,7 +79,7 @@ class ListPlayerEquipaments extends Box {
 						equipament['name'],
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayerEquipaments.windowName + '_name_' + equipament['id'] + '_' + randomId,
+							id: me.createId('name_' + equipament['id']),
 							readonly: 'readonly',
 							value: equipament['name']
 						})
@@ -86,7 +88,7 @@ class ListPlayerEquipaments extends Box {
 						Equipament.weightHuman(equipament['weight']),
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayerEquipaments.windowName + '_weight_' + equipament['id'] + '_' + randomId,
+							id: me.createId('weight_' + equipament['id']),
 							readonly: 'readonly',
 							value: equipament['weight']
 						})
@@ -103,9 +105,9 @@ class ListPlayerEquipaments extends Box {
 					$("<th>", { colspan: 3 } ).append(
 						$("<input>", {
 							type: 'button',
-							id: ListPlayerEquipaments.windowName + '_manage_equipament_' + playerId + '_' + randomId,
+							id: me.createId('manage_equipament_' + playerId),
 							title: t('Adicionar equipamento'),
-							onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", ' + randomId + ')',
+							onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", "' + boxId + '")',
 							value: Equipament.EMOJI_ADD
 						})
 					)
@@ -119,7 +121,7 @@ class ListPlayerEquipaments extends Box {
 	}
 
 	// abrir visualização dos equipamentos do player
-	static visualize_player_equipaments (playerId) {
+	static visualizePlayerEquipaments (playerId) {
 
 		let player = Player.getPlayer(playerId);
 
@@ -138,4 +140,4 @@ class ListPlayerEquipaments extends Box {
 
 }
 
-boxes[ListPlayerEquipaments.windowName] = ListPlayerEquipaments;
+Box.boxes[ListPlayerEquipaments.windowName] = ListPlayerEquipaments;

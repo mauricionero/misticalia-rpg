@@ -7,8 +7,10 @@ class VisualizePlayer extends Box {
 	static get inputHeight () { return 12 };
 
 	boxContent (options) {
-		var randomId = Math.floor(Math.random() * 10000);
-		this.randomId = randomId;
+
+		let me = this;
+		
+		let boxId = me.boxId;
 
 		let playerId = options['playerId'];
 		this.playerId = playerId;
@@ -23,12 +25,12 @@ class VisualizePlayer extends Box {
 		let listPlayerDiv = $('<div>');
 
 		let listPlayerTableDiv = $('<div>', {
-			id: VisualizePlayer.windowName + '_list_player_table_div_' + playerId + '_' + randomId
+			id: me.createId('list_player_table_div_' + playerId)
 		});
 
 		let visualizePlayerEquipamentDiv = $('<div>', {
 			class: 'visualize_player_equipament',
-			id: VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId,
+			id: me.createId('equipaments_' + playerId),
 			style: 'display: none',
 		});
 
@@ -38,14 +40,14 @@ class VisualizePlayer extends Box {
 				$('<td>').append(
 					$('<input>', {
 						type: 'hidden',
-						id: VisualizePlayer.windowName + '_is_npc_' + randomId,
+						id: me.createId('is_npc'),
 						value: isNPC
 					}),
 					$('<label>', { title: t('Sem filtro') } ).append(
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							checked: true,
 							value: 0
 						}),
@@ -59,7 +61,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_HELMET
 						}),
 						$('<span>').append(
@@ -72,7 +74,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_AMULET
 						}),
 						$('<span>').append(
@@ -87,7 +89,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_ATACK
 						}),
 						$('<span>').append(
@@ -100,7 +102,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_CHESTPLATE
 						}),
 						$('<span>').append(
@@ -113,7 +115,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_SHIELD
 						}),
 						$('<span>').append(
@@ -131,7 +133,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_LEGGING
 						}),
 						$('<span>').append(
@@ -152,7 +154,7 @@ class VisualizePlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_equipament_type',
-							name: VisualizePlayer.windowName + '_equipament_type_' + randomId,
+							name: me.createId('equipament_type'),
 							value: Equipament.TYPE_BOOTS
 						}),
 						$('<span>').append(
@@ -167,12 +169,12 @@ class VisualizePlayer extends Box {
 		);
 
 		let playerEquipamentListDiv = $('<div>', {
-			id: VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId,
+			id: me.createId('equipament_list_' + playerId),
 			class: 'visualize_player_equipament_item_list'
 		});
 
 		let itemListDiv = $('<div>', {
-			id: VisualizePlayer.windowName + '_item_list_' + playerId + '_' + randomId,
+			id: me.createId('item_list_' + playerId),
 			class: 'visualize_player_equipament_item_list'
 		});
 
@@ -187,15 +189,15 @@ class VisualizePlayer extends Box {
 			$("<input>", {
 				type: 'button',
 				title: t('Salvar'),
-				onclick: 'VisualizePlayer.toggleViewEquipaments("' + playerId + '", ' + randomId + ')',
+				onclick: 'VisualizePlayer.toggleViewEquipaments("' + playerId + '", "' + boxId + '")',
 				value: t('Ver equipamentos e itens')
 			}),
 			' ',
 			$("<input>", {
 				type: 'button',
-				id: VisualizePlayer.windowName + '_save_' + randomId,
+				id: me.createId('save'),
 				title: t('Salvar'),
-				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", ' + randomId + ')',
+				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '")',
 				value: t('Salvar')
 			}),
 			'<br />',
@@ -207,30 +209,37 @@ class VisualizePlayer extends Box {
 
 	// executa após printar a janela
 	callBackRender () {
-		let randomId = this.randomId;
-		let playerId = this.playerId;
-		let isNPC = this.isNPC;
 
-		VisualizePlayer.listPlayerAttributes(playerId, randomId, isNPC);
-		VisualizePlayer.listEquipaments(playerId, randomId, isNPC);
+		let me = this;
+
+		let playerId = me.playerId;
+		let isNPC = me.isNPC;
+
+		me.listPlayerAttributes(playerId, isNPC);
+		me.listEquipaments(playerId, isNPC);
 
 		// verificar quando eh alterado o equipamento clicado
-		$("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']").change(function() {
+		$("input[name='" + me.createId('equipament_type') + "']").change(function() {
 			let equipamentTypeId = $(this).val();
 
-			VisualizePlayer.filterListEquipaments (playerId, randomId, equipamentTypeId);
+			me.filterListEquipaments(playerId, equipamentTypeId);
 		});
 	}
 
 	// listar os atributos do jogador
-	static listPlayerAttributes (playerId, randomId, isNPC = false) {
-		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_list_player_table_div_' + playerId + '_' + randomId);
+	listPlayerAttributes (playerId, isNPC = false) {
+
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let playerEquipamentListDiv = $('#' + me.createId('list_player_table_div_' + playerId));
 
 		let player = Player.getPlayer(playerId);
 
-		let inputWidth = this.inputWidth;
-		let inputWidthSmall = this.inputWidthSmall;
-		let inputHeight = this.inputHeight;
+		let inputWidth = VisualizePlayer.inputWidth;
+		let inputWidthSmall = VisualizePlayer.inputWidthSmall;
+		let inputHeight = VisualizePlayer.inputHeight;
 
 		let listPlayerTable = $("<table>");
 
@@ -288,7 +297,7 @@ class VisualizePlayer extends Box {
 						$("<input>", {
 							type: 'text',
 							readonly: 'readonly',
-							id: VisualizePlayer.windowName + '_level_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('level_' + playerId + '_' + attribute),
 							width: inputWidthSmall,
 							height: inputHeight,
 							value: Player.levelCalculator(basePoints)
@@ -297,31 +306,31 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('base_points_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
 							value: basePoints
 						})
 					),
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('permanent_modifier_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
 							readonly: 'readonly',
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
 							value: permanentModifier
 						})
 					),
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_temporary_modifier_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('temporary_modifier_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
 							value: temporaryModifier
 						})
 					),
@@ -329,7 +338,7 @@ class VisualizePlayer extends Box {
 						$("<input>", {
 							type: 'text',
 							readonly: 'readonly',
-							id: VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('points_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
 							value: Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier)
@@ -338,20 +347,20 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_dice_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('dice_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
 							value: 0
 						})
 					),
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizePlayer.windowName + '_difficulty_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('difficulty_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult(' + randomId + ', "' + playerId + '", "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
 							value: 0
 						})
 					),
@@ -360,7 +369,7 @@ class VisualizePlayer extends Box {
 							type: 'text',
 							readonly: 'readonly',
 							class: 'bold',
-							id: VisualizePlayer.windowName + '_result_' + playerId + '_' + attribute + '_' + randomId,
+							id: me.createId('result_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
 							value: 0
@@ -405,15 +414,20 @@ class VisualizePlayer extends Box {
 	}
 
 	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
-	static listEquipaments (playerId, randomId, isNPC = false) {
-		let playerEquipamentListDiv = $('#' + VisualizePlayer.windowName + '_equipament_list_' + playerId + '_' + randomId);
+	listEquipaments (playerId, isNPC = false) {
 
-		let selectedEquipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let playerEquipamentListDiv = $('#' + me.createId('equipament_list_' + playerId));
+
+		let selectedEquipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
 
 		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
 
 		let playerEquipamentListTable = $("<table>", {
-			id: VisualizePlayer.windowName + '_table_equipament_list_' + playerId + '_' + randomId
+			id: me.createId('table_equipament_list_' + playerId)
 		});
 
 		playerEquipamentListTable.append(
@@ -451,15 +465,15 @@ class VisualizePlayer extends Box {
 
 			playerEquipamentListTable.append(
 				$("<tr>", {
-					id: VisualizePlayer.windowName + '_player_equipament_item_' + playerEquipamentId + '_' + randomId,
+					id: me.createId('_player_equipament_item_' + playerEquipamentId),
 					class: 'visualize_player_select_item ' + extraClass,
-					onclick: 'VisualizePlayer.equipEquipament("' + playerId + '", "' + playerEquipamentId + '", "' + equipamentId + '", ' + randomId + ', ' + (hasEquipedEquipament != true) + ')'
+					onclick: 'VisualizePlayer.equipEquipament("' + playerId + '", "' + playerEquipamentId + '", "' + equipamentId + '", "' + boxId + '", ' + (hasEquipedEquipament != true) + ')'
 				}).append(
 					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipamentTypeId] } ).append(
 						Equipament.EMOJI_TYPES[equipamentTypeId],
 						$("<input>", {
 							type: 'hidden',
-							id: VisualizePlayer.windowName + '_player_equipament_type_' + equipamentId + '_' + randomId,
+							id: me.createId('player_equipament_type_' + equipamentId),
 							readonly: 'readonly',
 							value: equipamentTypeId
 						})
@@ -468,7 +482,7 @@ class VisualizePlayer extends Box {
 						equipament['name'],
 						$("<input>", {
 							type: 'hidden',
-							id: VisualizePlayer.windowName + '_player_equipament_name_' + equipamentId + '_' + randomId,
+							id: me.createId('player_equipament_name_' + equipamentId),
 							readonly: 'readonly',
 							value: equipament['name']
 						})
@@ -483,15 +497,17 @@ class VisualizePlayer extends Box {
 
 		playerEquipamentListDiv.append(playerEquipamentListTable);
 
-		VisualizePlayer.filterListEquipaments (playerId, randomId, selectedEquipamentTypeId);
+		me.filterListEquipaments (playerId, selectedEquipamentTypeId);
 	}
 
 	// equipar o item selecionado do jogador
-	static equipEquipament (playerId, playerEquipamentId, equipamentId, randomId, inserting = true) {
+	static equipEquipament (playerId, playerEquipamentId, equipamentId, boxId, inserting = true) {
 
-		let equipamentTypeId = $("input[name='" + VisualizePlayer.windowName + '_equipament_type_' + randomId + "']:checked").val();
+		let me = Box.getBox(boxId);
 
-		let isNPC = $('#' + VisualizePlayer.windowName + '_is_npc_' + randomId).val();
+		let equipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
+
+		let isNPC = $('#' + me.createId('is_npc')).val();
 		
 		isNPC = (isNPC == 'true') ? true : false;
 
@@ -516,15 +532,15 @@ class VisualizePlayer extends Box {
 			resultSaved = EquipedEquipament.unequipEquipament(playerId, playerEquipamentId);
 		}
 
-		let itemClicked = $('#' + VisualizePlayer.windowName + '_player_equipament_item_' + playerEquipamentId + '_' + randomId);
+		let itemClicked = $('#' + me.createId('player_equipament_item_' + playerEquipamentId));
 
 		if (resultSaved) {
 
 			EquipedEquipament.recalculateEquipedModifiers(playerId);
 
 			// recarregar listagem
-			VisualizePlayer.listEquipaments(playerId, randomId, isNPC);
-			VisualizePlayer.listPlayerAttributes(playerId, randomId, isNPC);
+			me.listEquipaments(playerId, isNPC);
+			me.listPlayerAttributes(playerId, isNPC);
 
 		} else {
 			itemClicked.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300);
@@ -532,8 +548,11 @@ class VisualizePlayer extends Box {
 	}
 
 	// filtrar tabela contendo os equipamentos do jogador
-	static filterListEquipaments (playerId, randomId, equipamentTypeId) {
-		let playerEquipamentListTable = $('#' + VisualizePlayer.windowName + '_table_equipament_list_' + playerId + '_' + randomId + ' tr');
+	filterListEquipaments (playerId, equipamentTypeId) {
+
+		let me = this;
+
+		let playerEquipamentListTable = $('#' + me.createId('table_equipament_list_' + playerId) + ' tr');
 
 		let filterValue = '';
 
@@ -550,14 +569,12 @@ class VisualizePlayer extends Box {
 	}
 
 	// abrir dialog de visualização do player
-	static visualize_player (playerId, isNPC) {
+	static visualizePlayer (playerId, isNPC) {
 
 		let player = Player.getPlayer(playerId);
 
 		let playerName = player['name'];
 		let playerGenderId = player['gender'] || 0;
-
-		console.log('playerGenderId', playerGenderId);
 
 		let genderTitle = (playerGenderId == Player.FEMALE_ID) ? 'Jogadora' : 'Jogador';
 		let windowTitle = Player.EMOJI_GENDERS[playerGenderId] + ' ' + t(genderTitle) + ' ' + playerName;
@@ -573,18 +590,24 @@ class VisualizePlayer extends Box {
 	}
 
 	// mostrar e esconder os equipamentos do player
-	static toggleViewEquipaments (playerId, randomId) {
-		$('#' + VisualizePlayer.windowName + '_equipaments_' + playerId + '_' + randomId).slideToggle();
+	static toggleViewEquipaments (playerId, boxId) {
+
+		let me = Box.getBox(boxId);
+
+		$('#' + me.createId('equipaments_' + playerId)).slideToggle();
 	}
 
 	// recalcula o nivel e total de pontos
-	static reCalculateTotalPoints (randomId, playerId, attribute) {
-		let basePoints = $('#' + VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
-		let temporaryModifier = $('#' + VisualizePlayer.windowName + '_temporary_modifier_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
-		let permanentModifier = $('#' + VisualizePlayer.windowName + '_permanent_modifier_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
+	static reCalculateTotalPoints (boxId, playerId, attribute) {
 
-		let levelInput = $('#' + VisualizePlayer.windowName + '_level_' + playerId + '_' + attribute + '_' + randomId);
-		let totalPointsInput = $('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId)
+		let me = Box.getBox(boxId);
+
+		let basePoints = $('#' + me.createId('base_points_' + playerId + '_' + attribute)).val() || 0;
+		let temporaryModifier = $('#' + me.createId('_temporary_modifier_' + playerId + '_' + attribute)).val() || 0;
+		let permanentModifier = $('#' + me.createId('_permanent_modifier_' + playerId + '_' + attribute)).val() || 0;
+
+		let levelInput = $('#' + me.createId('level_' + playerId + '_' + attribute));
+		let totalPointsInput = $('#' + me.createId('points_' + playerId + '_' + attribute));
 
 		let level = Player.levelCalculator(basePoints);
 		let totalPoints = Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier);
@@ -594,12 +617,15 @@ class VisualizePlayer extends Box {
 	}
 
 	// recalcula o resultado da rolagem de dados
-	static reCalculateDiceResult (randomId, playerId, attribute) {
-		let totalPoints = $('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
-		let diceRoll = $('#' + VisualizePlayer.windowName + '_dice_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
-		let difficulty = $('#' + VisualizePlayer.windowName + '_difficulty_' + playerId + '_' + attribute + '_' + randomId).val() || 0;
+	static reCalculateDiceResult (boxId, playerId, attribute) {
 
-		let inputResult = $('#' + VisualizePlayer.windowName + '_result_' + playerId + '_' + attribute + '_' + randomId);
+		let me = Box.getBox(boxId);
+
+		let totalPoints = $('#' + me.createId('points_' + playerId + '_' + attribute)).val() || 0;
+		let diceRoll = $('#' + me.createId('dice_' + playerId + '_' + attribute)).val() || 0;
+		let difficulty = $('#' + me.createId('difficulty_' + playerId + '_' + attribute)).val() || 0;
+
+		let inputResult = $('#' + me.createId('result_' + playerId + '_' + attribute));
 
 		let result = Player.calculateDiceResult(diceRoll, totalPoints, difficulty);
 
@@ -627,10 +653,11 @@ class VisualizePlayer extends Box {
 	}
 
 	// salvar modificações do jogador
-	static updatePlayer (playerId, randomId) {
+	static updatePlayer (playerId, boxId) {
 
-		let isNPC = $('#' + VisualizePlayer.windowName + '_is_npc_' + randomId).val();
+		let me = Box.getBox(boxId);
 
+		let isNPC = $('#' + me.createId('is_npc')).val();
 		isNPC = (isNPC == 'true') ? true : false;
 
 		let editPlayer = Player.getPlayer(playerId);
@@ -641,8 +668,8 @@ class VisualizePlayer extends Box {
 		}
 
 		allAttributes.forEach(function (attribute) {
-			let basePoints = parseInt($('#' + VisualizePlayer.windowName + '_base_points_' + playerId + '_' + attribute + '_' + randomId).val());
-			let points = parseInt($('#' + VisualizePlayer.windowName + '_points_' + playerId + '_' + attribute + '_' + randomId).val());
+			let basePoints = parseInt($('#' + me.createId('base_points_' + playerId + '_' + attribute)).val());
+			let points = parseInt($('#' + me.createId('points_' + playerId + '_' + attribute)).val());
 
 			if (editPlayer[attribute]) {
 				editPlayer[attribute]['basePoints'] = basePoints;
@@ -657,7 +684,7 @@ class VisualizePlayer extends Box {
 
 		let resultSaved = Player.savePlayer(editPlayer);
 
-		let saveButton = $('#' + VisualizePlayer.windowName + '_save_' + randomId);
+		let saveButton = $('#' + me.createId('save'));
 
 		if (resultSaved) {
 
@@ -675,4 +702,4 @@ class VisualizePlayer extends Box {
 	}
 }
 
-boxes[VisualizePlayer.windowName] = VisualizePlayer;
+Box.boxes[VisualizePlayer.windowName] = VisualizePlayer;

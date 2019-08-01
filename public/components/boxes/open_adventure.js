@@ -4,6 +4,10 @@ class OpenAdventure extends Box {
 
 	boxContent () {
 
+		let me = this;
+		
+		let boxId = me.boxId;
+
 		var randomId = Math.floor(Math.random() * 10000);
 
 		var allAdventures = Adventure.getUserAdventures();
@@ -34,7 +38,7 @@ class OpenAdventure extends Box {
 						adventure['name'],
 						$("<input>", {
 							type: 'hidden',
-							id: OpenAdventure.windowName + '_name_' + adventure['id'] + '_' + randomId,
+							id: me.createId('name_' + adventure['id']),
 							readonly: 'readonly',
 							value: adventure['name']
 						})
@@ -43,7 +47,7 @@ class OpenAdventure extends Box {
 						Adventure.EMOJI_ROLE[adventure['role']],
 						$("<input>", {
 							type: 'hidden',
-							id: OpenAdventure.windowName + '_role_' + adventure['id'] + '_' + randomId,
+							id: me.createId('role_' + adventure['id']),
 							readonly: 'readonly',
 							value: adventure['role']
 						})
@@ -51,10 +55,10 @@ class OpenAdventure extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'button',
-							id: OpenAdventure.windowName + '_open_' + adventure['id'] + '_' + randomId,
+							id: me.createId('open_' + adventure['id']),
 							onclick: 'OpenAdventure.open_adventure("' + adventure['id'] + '")',
 							value: Adventure.EMOJI_OPEN
-						}),
+						})
 					)
 				)
 			)
@@ -63,6 +67,7 @@ class OpenAdventure extends Box {
 		return listAdventuresTable;
 	}
 
+	// abrir aventura atual e refazer o menu
 	static open_adventure (adventureId) {
 		Adventure.setCurrentAdventureId(adventureId);
 
@@ -71,4 +76,4 @@ class OpenAdventure extends Box {
 
 }
 
-boxes[OpenAdventure.windowName] = OpenAdventure;
+Box.boxes[OpenAdventure.windowName] = OpenAdventure;

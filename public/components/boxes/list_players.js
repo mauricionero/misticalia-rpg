@@ -4,6 +4,10 @@ class ListPlayers extends Box {
 
 	boxContent (options = {}) {
 
+		let me = this;
+
+		let boxId = me.boxId;
+
 		// se eh NPC
 		let isNPC = false;
 		if (options['isNPC']) {
@@ -21,8 +25,6 @@ class ListPlayers extends Box {
 		} else {
 			allPlayers = Player.getAllPlayers(optionFilter);
 		}
-
-		var randomId = Math.floor(Math.random() * 10000);
 
 		let listPlayersDiv = $("<div>");
 
@@ -79,19 +81,19 @@ class ListPlayers extends Box {
 						Player.getPlayerShort(player['id']),
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayers.windowName + '_name_' + player['id'] + '_' + randomId,
+							id: me.createId('name_' + player['id']),
 							readonly: 'readonly',
 							value: player['name']
 						}),
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayers.windowName + '_shortname_' + player['id'] + '_' + randomId,
+							id: me.createId('shortname_' + player['id']),
 							readonly: 'readonly',
 							value: Player.getPlayerShort(player['id'])
 						}),
 						$("<input>", {
 							type: 'hidden',
-							id: ListPlayers.windowName + '_gender_' + player['id'] + '_' + randomId,
+							id: me.createId('gender_' + player['id']),
 							readonly: 'readonly',
 							value: player['gender']
 						})
@@ -99,7 +101,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_strength_' + player['id'] + '_' + randomId,
+							id: me.createId('strength_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['strength']['basePoints']
@@ -108,7 +110,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_dextery_' + player['id'] + '_' + randomId,
+							id: me.createId('dextery_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['dextery']['basePoints']
@@ -117,7 +119,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_dextery_' + player['id'] + '_' + randomId,
+							id: me.createId('agility_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: (player['agility']) ? player['agility']['basePoints'] : 0
@@ -126,7 +128,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_constitution_' + player['id'] + '_' + randomId,
+							id: me.createId('constitution_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['constitution']['basePoints']
@@ -135,7 +137,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_inteligence_' + player['id'] + '_' + randomId,
+							id: me.createId('inteligence_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['inteligence']['basePoints']
@@ -144,7 +146,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_wisdom_' + player['id'] + '_' + randomId,
+							id: me.createId('wisdom_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['wisdom']['basePoints']
@@ -153,7 +155,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_charisma_' + player['id'] + '_' + randomId,
+							id: me.createId('charisma_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['charisma']['basePoints']
@@ -162,7 +164,7 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: ListPlayers.windowName + '_sanity_' + player['id'] + '_' + randomId,
+							id: me.createId('sanity_' + player['id']),
 							width: 32,
 							readonly: 'readonly',
 							value: player['sanity']['basePoints']
@@ -171,16 +173,16 @@ class ListPlayers extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'button',
-							id: ListPlayers.windowName + '_visualize_' + player['id'] + '_' + randomId,
-							onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '", ' + isNPC + ')',
+							id: me.createId('visualize_' + player['id']),
+							onclick: 'VisualizePlayer.visualizePlayer("' + player['id'] + '", ' + isNPC + ')',
 							value: Player.EMOJI_VISUALIZE
 						})
 					),
 					$("<td>").append(
 						$("<input>", {
 							type: 'button',
-							id: ListPlayers.windowName + '_visualize_equipaments_' + player['id'] + '_' + randomId,
-							onclick: 'ListPlayerEquipaments.visualize_player_equipaments("' + player['id'] + '")',
+							id: me.createId('visualize_equipaments_' + player['id']),
+							onclick: 'ListPlayerEquipaments.visualizePlayerEquipaments("' + player['id'] + '")',
 							value: PlayerEquipament.EMOJI_VISUALIZE
 						})
 					)
@@ -197,4 +199,4 @@ class ListPlayers extends Box {
 
 }
 
-boxes[ListPlayers.windowName] = ListPlayers;
+Box.boxes[ListPlayers.windowName] = ListPlayers;

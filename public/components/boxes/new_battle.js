@@ -20,6 +20,10 @@ class NewBattle extends Box {
 
 	boxContent (options = {}) {
 
+		let me = this;
+		
+		let boxId = me.boxId;
+
 		let allPlayers = [];
 
 		// let playerOptions = { 'filters': { 'isNPC': false } };
@@ -32,15 +36,13 @@ class NewBattle extends Box {
 			allPlayers = Player.getAllPlayers();
 		}
 
-		var randomId = Math.floor(Math.random() * 10000);
-
 		var allPlayerIds = [];
 
 		var maxDextery = Player.getMax('dextery');
 
 		let newBattleDiv = $("<div>");
-		let newBattleTable = $('<table>', { id: NewBattle.windowName + '_players_' + randomId } );
-		let newBattleNPCTable = $('<table>', { id: NewBattle.windowName + '_npc_players_' + randomId } );
+		let newBattleTable = $('<table>', { id: me.createId('players') } );
+		let newBattleNPCTable = $('<table>', { id: me.createId('npc_players') } );
 
 		let playerTableHead = $("<tr>").append(
 			$("<th>", { title: t('Habilita e desabilita o atacante') }).append(
@@ -85,7 +87,7 @@ class NewBattle extends Box {
 			let playerName = player['name'];
 			let playerLife = Player.getAttribute(player, 'life') || 100;
 
-			let playerAgility = (player['agility']) ? player['agility']['basePoints'] : 0;
+			let playerAgility = Player.getAttribute(player, 'agility', 'basePoints') || 0;
 
 			// se nao estiver definido se eh npc, ou se estiver definido de forma errada (nao boolean), pular
 			if (isNPC == undefined || typeof isNPC == 'string') {
@@ -99,14 +101,14 @@ class NewBattle extends Box {
 			if (isNPC) {
 				icon = Player.EMOJI_IS_NPC;
 				playerTitle = t('NPC') + ' ' + playerName;
-				addRemovePlayerAction = 'NewBattle.addRemoveNPCPlayer("' + player['id'] + '", ' + randomId + ', this)';
+				addRemovePlayerAction = 'NewBattle.addRemoveNPCPlayer("' + player['id'] + '", "' + boxId + '", this)';
 			} else {
 				icon = Player.EMOJI_GENDERS[playerGenderId];
 				playerTitle = t('Jogador') + ' ' + playerName;
 			}
 
 			let lifeProgressbar = $("<div>", {
-				id: NewBattle.windowName + '_life_display_' + player['id'] + '_' + randomId,
+				id: me.createId('life_display_' + player['id']),
 				width: 38,
 				height: 20,
 				title: playerLife + '%'
@@ -115,7 +117,7 @@ class NewBattle extends Box {
 			lifeProgressbar.children().css({ 'background': 'Red' });
 
 			let atackProgressbar = $("<div>", {
-				id: NewBattle.windowName + '_current_display_' + player['id'] + '_' + randomId,
+				id: me.createId('current_display_' + player['id']),
 				width: 38,
 				height: 20
 			}).progressbar({ value: 0 })
@@ -123,11 +125,11 @@ class NewBattle extends Box {
 			atackProgressbar.children().css({ 'background': 'Green' });
 
 			allPlayerIds.push(player['id']);
-			let newLine = $("<tr>", { id: NewBattle.windowName + '_player_line_' + player['id'] + '_' + randomId } ).append(
+			let newLine = $("<tr>", { id: me.createId('player_line_' + player['id']) } ).append(
 				$("<td>").append(
 					$("<input>", {
 						type: 'checkbox',
-						id: NewBattle.windowName + '_wait_' + player['id'] + '_' + randomId,
+						id: me.createId('wait_' + player['id']),
 						class: 'check_wait',
 						checked: (isNPC != true),
 						onchange: addRemovePlayerAction,
@@ -138,19 +140,19 @@ class NewBattle extends Box {
 					icon + ' ' + Player.getPlayerShort(player['id']) + ':',
 					$("<input>", {
 						type: 'hidden',
-						class: 'new_battle_player_ids_' + randomId,
+						class: me.createId('new_battle_player_ids'),
 						readonly: 'readonly',
 						value: player['id']
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewBattle.windowName + '_player_name_' + player['id'] + '_' + randomId,
+						id: me.createId('player_name_' + player['id']),
 						readonly: 'readonly',
 						value: player['name']
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewBattle.windowName + '_player_shortname_' + player['id'] + '_' + randomId,
+						id: me.createId('player_shortname_' + player['id']),
 						readonly: 'readonly',
 						value: Player.getPlayerShort(player['id'])
 					})
@@ -158,7 +160,7 @@ class NewBattle extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'text',
-						id: NewBattle.windowName + '_original_' + player['id'] + '_' + randomId,
+						id: me.createId('original_' + player['id']),
 						width: 32,
 						readonly: true,
 						title: t('Original: ') + playerAgility,
@@ -166,7 +168,7 @@ class NewBattle extends Box {
 					}),
 					$("<input>", {
 						type: 'text',
-						id: NewBattle.windowName + '_modifier_' + player['id'] + '_' + randomId,
+						id: me.createId('modifier_' + player['id']),
 						width: 26,
 						value: 0
 					})
@@ -179,7 +181,7 @@ class NewBattle extends Box {
 					atackProgressbar,
 					$("<input>", {
 						type: 'hidden',
-						id: 'new_battle_current_' + player['id'] + '_' + randomId,
+						id: me.createId('current_' + player['id']),
 						readonly: 'readonly',
 						value: 0
 					})
@@ -187,40 +189,40 @@ class NewBattle extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: NewBattle.windowName + '_action_' + player['id'] + '_' + NewBattle.ACTION + '_' + randomId,
-						onclick: 'NewBattle.playerAction(' + randomId + ', "' + player['id'] + '", ' + NewBattle.ACTION + ')',
+						id: me.createId('action_' + player['id'] + '_' + NewBattle.ACTION),
+						onclick: 'NewBattle.playerAction("' + boxId + '", "' + player['id'] + '", ' + NewBattle.ACTION + ')',
 						value: NewBattle.ACTION_EMOJIS[NewBattle.ACTION]
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: NewBattle.windowName + '_action_' + player['id'] + '_' + NewBattle.FIGHT + '_' + randomId,
-						onclick: 'NewBattle.playerAction(' + randomId + ', "' + player['id'] + '", ' + NewBattle.FIGHT + ')',
+						id: me.createId('action_' + player['id'] + '_' + NewBattle.FIGHT),
+						onclick: 'NewBattle.playerAction("' + boxId + '", "' + player['id'] + '", ' + NewBattle.FIGHT + ')',
 						value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: NewBattle.windowName + '_action_' + player['id'] + '_' + NewBattle.ITEM + '_' + randomId,
-						onclick: 'NewBattle.playerAction(' + randomId + ', "' + player['id'] + '", ' + NewBattle.ITEM + ')',
+						id: me.createId('action_' + player['id'] + '_' + NewBattle.ITEM),
+						onclick: 'NewBattle.playerAction("' + boxId + '", "' + player['id'] + '", ' + NewBattle.ITEM + ')',
 						value: NewBattle.ACTION_EMOJIS[NewBattle.ITEM]
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: NewBattle.windowName + '_visualize_' + player['id'] + '_' + randomId,
-						onclick: 'VisualizePlayer.visualize_player("' + player['id'] + '")',
+						id: me.createId('visualize_' + player['id']),
+						onclick: 'VisualizePlayer.visualizePlayer("' + player['id'] + '")',
 						value: '👁️'
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: ListPlayers.windowName + '_visualize_equipaments_' + player['id'] + '_' + randomId,
-						onclick: 'ListPlayerEquipaments.visualize_player_equipaments("' + player['id'] + '")',
+						id: me.createId('visualize_equipaments_' + player['id']),
+						onclick: 'ListPlayerEquipaments.visualizePlayerEquipaments("' + player['id'] + '")',
 						value: PlayerEquipament.EMOJI_VISUALIZE
 					})
 				)
@@ -238,7 +240,7 @@ class NewBattle extends Box {
 
 		let newBattleNPCsDiv = $('<div>', {
 			class: 'new_battle_npcs',
-			id: NewBattle.windowName + '_npcs_' + randomId
+			id: me.createId('npcs')
 		});
 
 		newBattleNPCsDiv.append(newBattleNPCTable);
@@ -248,21 +250,21 @@ class NewBattle extends Box {
 			newBattleTable,
 			$("<input>", {
 				type: 'button',
-				id: NewBattle.windowName + '_add_npc_' + randomId,
-				onclick: 'NewBattle.addNPCs(' + randomId + ')',
+				id: me.createId('add_npc'),
+				onclick: 'NewBattle.addNPCs("' + boxId + '")',
 				value: 'NPCs'
 			}),
 			' ',
 			$("<input>", {
 				type: 'button',
-				id: NewBattle.windowName + '_next_' + randomId,
-				onclick: 'NewBattle.nextToAtack(' + randomId + ')',
+				id: me.createId('next'),
+				onclick: 'NewBattle.nextToAtack("' + boxId + '")',
 				value: '⏭️'
 			}),
 			'<br />',
 			'<br />',
 			$("<div>", {
-				id: NewBattle.windowName + '_attackers_log_' + randomId,
+				id: me.createId('attackers_log'),
 			}),
 			'<br />',
 			newBattleNPCsDiv
@@ -272,33 +274,41 @@ class NewBattle extends Box {
 	}
 
 	// adicionar e remover os NPCs da listagem de atacantes
-	static addRemoveNPCPlayer (playerId, randomId, checkbox) {
-		let tablePlayers = $('#' + NewBattle.windowName + '_players_' + randomId);
-		let tableNPCPlayers = $('#' + NewBattle.windowName + '_npc_players_' + randomId);
+	static addRemoveNPCPlayer (playerId, boxId, checkbox) {
+
+		let me = Box.getBox(boxId);
+
+		let tablePlayers = $('#' + me.createId('players'));
+		let tableNPCPlayers = $('#' + me.createId('npc_players'));
 
 		// se estiver selecionado
 		if (checkbox.checked) {
-			tableNPCPlayers.find('#' + NewBattle.windowName + '_player_line_' + playerId + '_' + randomId).each(function(){
+			tableNPCPlayers.find('#' + me.createId('player_line_' + playerId)).each(function(){
 				tablePlayers.append(this);
 			});
 		} else {
-			tablePlayers.find('#' + NewBattle.windowName + '_player_line_' + playerId + '_' + randomId).each(function(){
+			tablePlayers.find('#' + me.createId('player_line_' + playerId)).each(function(){
 				tableNPCPlayers.append(this);
 			});
 		}
 	}
 
 	// adicionar NPCs na batalha
-	static addNPCs (randomId) {
-		let result = $('#' + NewBattle.windowName + '_npcs_' + randomId).slideToggle();
+	static addNPCs (boxId) {
+
+		let me = Box.getBox(boxId);
+
+		let result = $('#' + me.createId('npcs')).slideToggle();
 	}
 
 	// retornar num array todos os ids dos players selecionados
-	static getAllEnabledPlayers (randomId) {
+	getAllEnabledPlayers () {
+
+		let me = this;
 
 		var fighterIds = [];
 
-		let allFightersIdInputs = $('.new_battle_player_ids_' + randomId);
+		let allFightersIdInputs = $('.' + me.createId('new_battle_player_ids'));
 
 		// pegar todos os ids de players, apenas os habilitados
 		allFightersIdInputs.each(function (index) {
@@ -306,7 +316,7 @@ class NewBattle extends Box {
 
 			let fighterId = fighterInput.value;
 
-			let enabledPlayer = $('#' + NewBattle.windowName + '_wait_' + fighterId + '_' + randomId).is(':checked');
+			let enabledPlayer = $('#' + me.createId('wait_' + fighterId)).is(':checked');
 
 			if (enabledPlayer) {
 				fighterIds.push(fighterId);
@@ -318,22 +328,22 @@ class NewBattle extends Box {
 	}
 
 	// calcular o proximo a atacar
-	static nextToAtack (randomId) {
+	static nextToAtack (boxId) {
 
-		var maxDextery = 0;
-		var maxCurrent = 0;
-		var nextIdToAttack = 0;
-		var minToNextAttack = 0;
-		var fighterNextAttacks = {};
-		let fighterIds = NewBattle.getAllEnabledPlayers(randomId);
+		let me = Box.getBox(boxId);
 
-		console.log('fighterIds', fighterIds);
+		let maxDextery = 0;
+		let maxCurrent = 0;
+		let nextIdToAttack = 0;
+		let minToNextAttack = 0;
+		let fighterNextAttacks = {};
+		let fighterIds = me.getAllEnabledPlayers();
 
 		// calcular o maximo usando ateh mesmo os jogadores pauxados para manter a normalizacao do maximo de agilidade
 		fighterIds.forEach(function (fighterId) {
 
-			let agility = $('#' + NewBattle.windowName + '_original_' + fighterId + '_' + randomId).val();
-			let modifier = $('#' + NewBattle.windowName + '_modifier_' + fighterId + '_' + randomId).val();
+			let agility = $('#' + me.createId('original_' + fighterId)).val();
+			let modifier = $('#' + me.createId('modifier_' + fighterId)).val();
 
 			let totalAgility = parseInt(agility) + parseInt(modifier);
 
@@ -350,10 +360,10 @@ class NewBattle extends Box {
 		fighterIds.forEach(function (fighterId) {
 			let fighterMultiplier = 0;
 
-			let agility = $('#' + NewBattle.windowName + '_original_' + fighterId + '_' + randomId).val();
-			let modifier = $('#' + NewBattle.windowName + '_modifier_' + fighterId + '_' + randomId).val();
+			let agility = $('#' + me.createId('original_' + fighterId)).val();
+			let modifier = $('#' + me.createId('modifier_' + fighterId)).val();
 
-			let current = $('#' + NewBattle.windowName + '_current_' + fighterId + '_' + randomId).val();
+			let current = $('#' + me.createId('current_' + fighterId)).val();
 
 			let totalAgility = parseInt(agility) + parseInt(modifier);
 
@@ -378,29 +388,32 @@ class NewBattle extends Box {
 		// agora sabendo quem ataca e quanto somar a todos, somar
 		fighterIds.forEach(function (fighterId) {
 
-			let current = $('#' + NewBattle.windowName + '_current_' + fighterId + '_' + randomId).val();
+			let current = $('#' + me.createId('current_' + fighterId)).val();
 
 			let currentNow = parseInt(current) + parseInt(minToNextAttack);
 
-			NewBattle.changeProgress (randomId, fighterId, currentNow, fighterNextAttacks[fighterId]);
+			me.changeProgress (fighterId, currentNow, fighterNextAttacks[fighterId]);
 
 		});
 
 	}
 
 	// ação ou ataque de um jogador
-	static playerAction (randomId, playerId, actionId) {
+	static playerAction (boxId, playerId, actionId) {
+
+		let me = Box.getBox(boxId);
+
 		let emoji = NewBattle.ACTION_EMOJIS[actionId];
 
 		// se for ataque, abrir janela de ataque
 		if (actionId == NewBattle.FIGHT) {
-			let fighterIds = NewBattle.getAllEnabledPlayers(randomId);
+			let fighterIds = me.getAllEnabledPlayers();
 
 			let options = {
 				playerId: playerId,
 				singleTon: true,
 				fighterIds: fighterIds,
-				randomId: randomId,
+				boxId: boxId,
 				windowId: NewAtack.windowName + '_' + playerId
 			};
 
@@ -410,22 +423,25 @@ class NewBattle extends Box {
 			Box.openDialog(NewAtack.windowName, windowTitle, options);
 		}
 
-		NewBattle.changeProgress (randomId, playerId, 0);
+		me.changeProgress(playerId, 0);
 
 		// exibir no log de ataques
-		let playerName = $('#' + NewBattle.windowName + '_player_shortname_' + playerId + '_' + randomId).val();
-		$('#' + NewBattle.windowName + '_attackers_log_' + randomId).append(playerName + emoji + ', ');
+		let playerName = $('#' + me.createId('player_shortname_' + playerId)).val();
+		$('#' + me.createId('attackers_log')).append(playerName + emoji + ', ');
 	}
 
 	// inserir valor no input de progresso do ataque
-	static changeProgress (randomId, fighterId, currentNow, fighterNextAttacks = 1) {
-		let displayCurrent = Math.round(currentNow * 100 / fighterNextAttacks);
-		let inputDisplayCurrent = $('#' + NewBattle.windowName + '_current_display_' + fighterId + '_' + randomId);
+	changeProgress (fighterId, currentNow, fighterNextAttacks = 1) {
 
-		$('#' + NewBattle.windowName + '_current_' + fighterId + '_' + randomId).val(currentNow);
+		let me = this;
+
+		let displayCurrent = Math.round(currentNow * 100 / fighterNextAttacks);
+		let inputDisplayCurrent = $('#' + me.createId('current_display_' + fighterId));
+
+		$('#' + me.createId('current_' + fighterId)).val(currentNow);
 		inputDisplayCurrent.progressbar( "value", displayCurrent );
 	}
 
 }
 
-boxes[NewBattle.windowName] = NewBattle;
+Box.boxes[NewBattle.windowName] = NewBattle;

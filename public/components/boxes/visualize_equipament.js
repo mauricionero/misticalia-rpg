@@ -3,8 +3,10 @@ class VisualizeEquipament extends Box {
 	static get windowName () { return 'visualize_equipament' };
 
 	boxContent (options) {
-		var randomId = Math.floor(Math.random() * 10000);
-		this.randomId = randomId;
+
+		let me = this;
+		
+		let boxId = me.boxId;
 
 		let equipamentId = options['equipamentId'];
 		this.equipamentId = equipamentId;
@@ -17,7 +19,7 @@ class VisualizeEquipament extends Box {
 
 		let divEditEquipament = $('<div>');
 
-		let formEditEquipament = $('<form>', { id: VisualizeEquipament.windowName + '_form_' + randomId });
+		let formEditEquipament = $('<form>', { id: me.createId('form') });
 		
 		let radioButtonTypes = [];
 
@@ -28,7 +30,7 @@ class VisualizeEquipament extends Box {
 					$('<input>', {
 						type: 'radio',
 						class: 'radio_equipament_type',
-						name: VisualizeEquipament.windowName + '_equipament_type_' + randomId,
+						name: me.createId('equipament_type'),
 						value: key,
 						checked: (key == equipamentTypeId)
 					}),
@@ -58,7 +60,7 @@ class VisualizeEquipament extends Box {
 					$('<td>').append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizeEquipament.windowName + '_name_' + randomId,
+							id: me.createId('name'),
 							placeholder: t('Nome do equipamento'),
 							value: equipamentName
 						})
@@ -72,7 +74,7 @@ class VisualizeEquipament extends Box {
 					$('<td>').append(
 						$("<input>", {
 							type: 'number',
-							id: VisualizeEquipament.windowName + '_weight_' + randomId,
+							id: me.createId('weight'),
 							placeholder: t('Peso em gramas'),
 							value: equipamentWeight
 						})
@@ -83,18 +85,18 @@ class VisualizeEquipament extends Box {
 					$('<th>' ).append(
 						$("<input>", {
 							type: 'button',
-							id: VisualizeEquipament.windowName + '_modifier_form_button_' + randomId,
+							id: me.createId('modifier_form_button'),
 							title: t('Adicionar modificador'),
-							onclick: 'VisualizeEquipament.newFormModifier("' + equipamentId + '", ' + randomId + ')',
+							onclick: 'VisualizeEquipament.newFormModifier("' + equipamentId + '", "' + boxId + '")',
 							value: '+ ' + t('Modificador')
 						})
 					),
 					$('<th>' ).append(
 						$("<input>", {
 							type: 'button',
-							id: VisualizeEquipament.windowName + '_save_' + randomId,
+							id: me.createId('save'),
 							title: t('Salvar modificações'),
-							onclick: 'VisualizeEquipament.updateEquipament("' + equipamentId + '", ' + randomId + ')',
+							onclick: 'VisualizeEquipament.updateEquipament("' + equipamentId + '", "' + boxId + '")',
 							value: t('Salvar')
 						})
 					)
@@ -111,7 +113,7 @@ class VisualizeEquipament extends Box {
 					$('<input>', {
 						type: 'radio',
 						class: 'radio_modifier_type',
-						name: VisualizeEquipament.windowName + '_modifier_type_' + randomId,
+						name: me.createId('modifier_type'),
 						value: key,
 						checked: (key == 1) // selecionar o primeiro
 					}),
@@ -125,7 +127,7 @@ class VisualizeEquipament extends Box {
 
 		let addEquipamentModifiersDiv = $('<div>', {
 			class: 'visualize_equipament_modifiers',
-			id: VisualizeEquipament.windowName + '_equipament_modifiers_' + equipamentId + '_' + randomId,
+			id: me.createId('equipament_modifiers_' + equipamentId),
 			style: 'display: none',
 		});
 
@@ -147,7 +149,7 @@ class VisualizeEquipament extends Box {
 					$('<td>').append(
 						$("<input>", {
 							type: 'number',
-							id: VisualizeEquipament.windowName + '_modifier_value_' + randomId
+							id: me.createId('modifier_value')
 						})
 					)
 				),
@@ -159,7 +161,7 @@ class VisualizeEquipament extends Box {
 					$('<td>').append(
 						$("<input>", {
 							type: 'text',
-							id: VisualizeEquipament.windowName + '_modifier_observations_' + randomId
+							id: me.createId('modifier_observations')
 						})
 					)
 				),
@@ -168,8 +170,8 @@ class VisualizeEquipament extends Box {
 					$('<th>', { colspan: 2 } ).append(
 						$("<input>", {
 							type: 'button',
-							id: VisualizeEquipament.windowName + '_modifier_save_' + randomId,
-							onclick: 'VisualizeEquipament.addModifier("' + equipamentId + '", ' + randomId + ')',
+							id: me.createId('modifier_save'),
+							onclick: 'VisualizeEquipament.addModifier("' + equipamentId + '", "' + boxId + '")',
 							value: t('Adicionar')
 						})
 					)
@@ -178,7 +180,7 @@ class VisualizeEquipament extends Box {
 		);
 
 		let listEquipamentModifierDiv = $('<div>', {
-			id: VisualizeEquipament.windowName + '_equipament_modifiers_list_' + equipamentId + '_' + randomId
+			id: me.createId('equipament_modifiers_list_' + equipamentId)
 		});
 
 		divEditEquipament.append(
@@ -193,18 +195,22 @@ class VisualizeEquipament extends Box {
 
 	// executa após printar a janela
 	callBackRender () {
-		let randomId = this.randomId;
+		
+		let boxId = this.boxId;
+
 		let equipamentId = this.equipamentId;
 
-		VisualizeEquipament.listModifiers(equipamentId, randomId);
+		this.listModifiers(equipamentId);
 	}
 
 	// salvar modificações do equipamento
-	static updateEquipament (equipamentId, randomId) {
+	static updateEquipament (equipamentId, boxId) {
 
-		let equipamentType = $("input[name='" + VisualizeEquipament.windowName + '_equipament_type_' + randomId + "']:checked").val();
-		let equipamentName = $('#' + VisualizeEquipament.windowName + '_name_' + randomId).val();
-		let equipamentWeight = $('#' + VisualizeEquipament.windowName + '_weight_' + randomId).val();
+		let me = Box.getBox(boxId);
+
+		let equipamentType = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
+		let equipamentName = $('#' + me.createId('name')).val();
+		let equipamentWeight = $('#' + me.createId('weight')).val();
 
 		let editEquipament = {
 			'id': equipamentId, // identificar o registro a ser editado
@@ -215,7 +221,7 @@ class VisualizeEquipament extends Box {
 
 		let resultSaved = Equipament.saveEquipament(editEquipament);
 
-		let saveButton = $('#' + VisualizeEquipament.windowName + '_save_' + randomId);
+		let saveButton = $('#' + me.createId('save'));
 
 		if (resultSaved) {
 
@@ -235,18 +241,21 @@ class VisualizeEquipament extends Box {
 	}
 
 	// abrir formulario de novo modificador no equipamento
-	static newFormModifier (equipamentId, randomId) {
-		console.log('equipamentId', equipamentId);
-		console.log('randomId', randomId);
-		$('#' + VisualizeEquipament.windowName + '_equipament_modifiers_' + equipamentId + '_' + randomId).slideToggle();
+	static newFormModifier (equipamentId, boxId) {
+
+		let me = Box.getBox(boxId);
+
+		$('#' + me.createId('equipament_modifiers_' + equipamentId)).slideToggle();
 	}
 
 	// adicionar modificador ao equipamento
-	static addModifier (equipamentId, randomId) {
+	static addModifier (equipamentId, boxId) {
 
-		let modifierType = $("input[name='" + VisualizeEquipament.windowName + '_modifier_type_' + randomId + "']:checked").val();
-		let modifierValue = $('#' + VisualizeEquipament.windowName + '_modifier_value_' + randomId).val();
-		let modifierObservations = $('#' + VisualizeEquipament.windowName + '_modifier_observations_' + randomId).val();
+		let me = Box.getBox(boxId);
+
+		let modifierType = $("input[name='" + me.createId('modifier_type') + "']:checked").val();
+		let modifierValue = $('#' + me.createId('modifier_value')).val();
+		let modifierObservations = $('#' + me.createId('modifier_observations')).val();
 
 		let newModifier = {
 			'equipamentId': equipamentId,
@@ -257,9 +266,9 @@ class VisualizeEquipament extends Box {
 
 		let resultSaved = Modifier.saveModifier(newModifier);
 
-		let saveButton = $('#' + VisualizeEquipament.windowName + '_modifier_save_' + randomId);
+		let saveButton = $('#' + me.createId('modifier_save'));
 
-		//TODO: adicionar modificadores
+		//TODO: atualizar os players que estiverem usando esse equipamento com os modificadores...
 
 		if (resultSaved) {
 
@@ -267,7 +276,7 @@ class VisualizeEquipament extends Box {
 			saveButton.attr('disabled', 'disabled');
 			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 
-			VisualizeEquipament.listModifiers(equipamentId, randomId);
+			me.listModifiers(equipamentId);
 
 		} else {
 
@@ -279,11 +288,13 @@ class VisualizeEquipament extends Box {
 	}
 
 	// atualizar lista de modificadores quando precisar
-	static listModifiers (equipamentId, randomId) {
+	listModifiers (equipamentId) {
+
+		let me = this;
 		
 		let allModifiers = Modifier.getAllModifiers(equipamentId);
 
-		let listEquipamentModifiersDiv = $('#' + VisualizeEquipament.windowName + '_equipament_modifiers_list_' + equipamentId + '_' + randomId);
+		let listEquipamentModifiersDiv = $('#' + me.createId('equipament_modifiers_list_' + equipamentId));
 
 		// apagar o conteudo antes de inserir um novo
 		listEquipamentModifiersDiv.html('');
@@ -309,4 +320,4 @@ class VisualizeEquipament extends Box {
 	}
 }
 
-boxes[VisualizeEquipament.windowName] = VisualizeEquipament;
+Box.boxes[VisualizeEquipament.windowName] = VisualizeEquipament;

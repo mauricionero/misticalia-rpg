@@ -4,11 +4,15 @@ class AddEquipament extends Box {
 
 	boxContent () {
 
-		var randomId = Math.floor(Math.random() * 10000);
+		let me = this;
+		
+		let boxId = me.boxId;
 
 		let divAddEquipament = $('<div>');
 
-		let formAddEquipament = $('<form>', { id: AddEquipament.windowName + '_form_' + randomId });
+		let formAddEquipament = $('<form>', {
+			id: me.createId('form')
+		});
 
 		let radioButtonTypes = [];
 
@@ -18,7 +22,7 @@ class AddEquipament extends Box {
 					$('<input>', {
 						type: 'radio',
 						class: 'radio_equipament_type',
-						name: AddEquipament.windowName + '_equipament_type_' + randomId,
+						name: me.createId('equipament_type'),
 						value: key
 					}),
 					$('<span>').append(
@@ -48,7 +52,7 @@ class AddEquipament extends Box {
 					$('<td>').append(
 						$("<input>", {
 							type: 'text',
-							id: AddEquipament.windowName + '_name_' + randomId,
+							id: me.createId('name'),
 							placeholder: t('Nome do equipamento')
 						})
 					)
@@ -61,7 +65,7 @@ class AddEquipament extends Box {
 					$('<td>').append(
 						$("<input>", {
 							type: 'text',
-							id: AddEquipament.windowName + '_weight_' + randomId,
+							id: me.createId('weight'),
 							placeholder: t('Peso em gramas')
 						})
 					)
@@ -71,8 +75,8 @@ class AddEquipament extends Box {
 					$('<th>', { colspan: 2 } ).append(
 						$("<input>", {
 							type: 'button',
-							id: AddEquipament.windowName + '_save_' + randomId,
-							onclick: 'AddEquipament.addEquipament(' + randomId + ')',
+							id: me.createId('save'),
+							onclick: 'AddEquipament.addEquipament("' + boxId + '")',
 							value: t('Adicionar equipamento')
 						})
 					)
@@ -86,11 +90,13 @@ class AddEquipament extends Box {
 	}
 
 	// adicionar equipamento à aventura
-	static addEquipament (randomId) {
+	static addEquipament (boxId) {
 
-		let equipamentType = $("input[name='" + AddEquipament.windowName + '_equipament_type_' + randomId + "']:checked").val();
-		let equipamentName = $('#' + AddEquipament.windowName + '_name_' + randomId).val();
-		let equipamentWeight = $('#' + AddEquipament.windowName + '_weight_' + randomId).val();
+		let me = Box.getBox(boxId);
+
+		let equipamentType = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
+		let equipamentName = $('#' + me.createId('name')).val();
+		let equipamentWeight = $('#' + me.createId('weight')).val();
 
 		let newEquipament = {
 			'typeId': equipamentType,
@@ -100,7 +106,7 @@ class AddEquipament extends Box {
 
 		let resultSaved = Equipament.saveEquipament(newEquipament);
 
-		let saveButton = $('#' + AddEquipament.windowName + '_save_' + randomId);
+		let saveButton = $('#' + me.createId('save'));
 
 		if (resultSaved) {
 
@@ -115,4 +121,4 @@ class AddEquipament extends Box {
 
 }
 
-boxes[AddEquipament.windowName] = AddEquipament;
+Box.boxes[AddEquipament.windowName] = AddEquipament;

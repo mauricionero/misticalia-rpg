@@ -106,7 +106,7 @@ class NewBattle extends Box {
 			}
 
 			let lifeProgressbar = $("<div>", {
-				id: NewAtack.windowName + '_life_display_' + player['id'] + '_' + randomId,
+				id: NewBattle.windowName + '_life_display_' + player['id'] + '_' + randomId,
 				width: 38,
 				height: 20,
 				title: playerLife + '%'
@@ -400,6 +400,7 @@ class NewBattle extends Box {
 				playerId: playerId,
 				singleTon: true,
 				fighterIds: fighterIds,
+				randomId: randomId,
 				windowId: NewAtack.windowName + '_' + playerId
 			};
 

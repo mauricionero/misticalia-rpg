@@ -9,6 +9,7 @@ class NewAtack extends Box {
 		let fighterIds = options['fighterIds'];
 
 		let randomId = Math.floor(Math.random() * 10000);
+		let originalRandomId = options['randomId'];
 		let player = Player.getPlayer(playerId);
 
 		let orderNPC = 'DESC';
@@ -24,6 +25,8 @@ class NewAtack extends Box {
 				'name': 'ASC'
 			}
 		}
+
+		let count = 1;
 
 		let allPlayers = Player.getAllPlayers(allPlayerOptions);
 
@@ -67,7 +70,12 @@ class NewAtack extends Box {
 			)
 		);
 
-		NewAtack.insertPlayerLine(newAtackTable, player, randomId, true);
+		let insertPlayerLineOptions = {
+			count: count,
+			howManyPlayers: allPlayers.length
+		}
+
+		NewAtack.insertPlayerLine(newAtackTable, player, randomId, true, insertPlayerLineOptions);
 
 		// titulo das colunas na tabela do defensor
 		newAtackTable.append(
@@ -112,7 +120,13 @@ class NewAtack extends Box {
 				return;
 			}
 
-			NewAtack.insertPlayerLine(newAtackTable, player, randomId, false);
+			count += 1;
+
+			let options = {
+				count: count,
+				howManyPlayers: allPlayers.length
+			}
+			NewAtack.insertPlayerLine(newAtackTable, player, randomId, false, options);
 			
 		});
 
@@ -124,7 +138,7 @@ class NewAtack extends Box {
 				type: 'button',
 				id: NewAtack.windowName + '_save_button_' + randomId,
 				title: t('Salvar'),
-				onclick: 'NewAtack.saveResults(' + randomId + ')',
+				onclick: 'NewAtack.saveResults(' + randomId + ', ' + originalRandomId + ')',
 				value: Player.EMOJI_SAVE
 			}),
 			'<br />',
@@ -136,7 +150,10 @@ class NewAtack extends Box {
 	}
 
 	// inserir linha do player atual
-	static insertPlayerLine (newAtackTable, player, randomId, currentPlayer) {
+	static insertPlayerLine (newAtackTable, player, randomId, currentPlayer, options) {
+
+		let count = options['count'];
+		let howManyPlayers = options['howManyPlayers'];
 
 		let playerId = player['id'];
 
@@ -160,7 +177,6 @@ class NewAtack extends Box {
 				type: 'text',
 				id: NewAtack.windowName + '_atack_' + playerId + '_' + randomId,
 				width: inputWidth,
-				readonly: 'readonly',
 				value: Player.getAttribute(player, 'atack', 'points')
 			});
 		} else {
@@ -175,7 +191,6 @@ class NewAtack extends Box {
 				type: 'text',
 				id: NewAtack.windowName + '_defense_' + playerId + '_' + randomId,
 				width: inputWidth,
-				readonly: 'readonly',
 				value: Player.getAttribute(player, 'defense', 'points')
 			});
 		}
@@ -253,7 +268,8 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_atack_general_' + playerId + '_' + randomId,
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')'
+						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')',
+						tabindex: (howManyPlayers * 0 + count)
 					})
 				),
 				$("<td>", { title: playerTitle } ).append(
@@ -289,13 +305,13 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_atack_aim_' + playerId + '_' + randomId,
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')'
+						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')',
+						tabindex: (howManyPlayers * 1 + count)
 					}),
 					$("<input>", {
 						type: 'text',
 						id: NewAtack.windowName + '_dextery_' + playerId + '_' + randomId,
 						width: inputWidth,
-						readonly: 'readonly',
 						value: player['dextery']['points']
 					}),
 					$("<input>", {
@@ -311,13 +327,13 @@ class NewAtack extends Box {
 						id: NewAtack.windowName + '_atack_strength_' + playerId + '_' + randomId,
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')'
+						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')',
+						tabindex: (howManyPlayers * 2 + count)
 					}),
 					$("<input>", {
 						type: 'text',
 						id: NewAtack.windowName + '_strength_' + playerId + '_' + randomId,
 						width: inputWidth,
-						readonly: 'readonly',
 						value: Player.getAttribute(player, 'strength', 'points')
 					})
 				),
@@ -338,14 +354,14 @@ class NewAtack extends Box {
 						type: 'text',
 						id: NewAtack.windowName + '_constitution_' + playerId + '_' + randomId,
 						width: inputWidth,
-						readonly: 'readonly',
 						value: Player.getAttribute(player, 'constitution', 'points')
 					}),
 					$("<input>", {
 						type: 'text',
 						id: NewAtack.windowName + '_life_result_' + playerId + '_' + randomId,
 						width: inputWidth,
-						value: 0
+						value: 0,
+						tabindex: (howManyPlayers * 3 + count)
 					}),
 				),
 				$("<td>").append(
@@ -465,27 +481,13 @@ class NewAtack extends Box {
 	static changeLife (playerId, lifeDiference, randomId) {
 		let totalLife = parseInt($('#' + NewAtack.windowName + '_life_' + playerId + '_' + randomId).val() || 0);
 		let currentLifeInput = $('#' + NewAtack.windowName + '_current_life_' + playerId + '_' + randomId);
-		let lifeProgressbar = $('#' + NewAtack.windowName + '_life_display_' + playerId + '_' + randomId);
+		let lifeProgressbarId = NewAtack.windowName + '_life_display_' + playerId + '_' + randomId;
 
-		console.log('totalLife antes', totalLife);
-		console.log('lifeDiference', lifeDiference);
 		totalLife = totalLife + lifeDiference;
 
-		console.log('totalLife depois', totalLife);
-
-		lifeProgressbar.progressbar('value', totalLife);
-		lifeProgressbar.attr('title', totalLife + '%');
-
 		currentLifeInput.val(totalLife);
-		
-		console.log('currentLifeInput', currentLifeInput);
 
-		// se morreu, colocar um fundo diferente
-		if (totalLife <= 0) {
-			lifeProgressbar.css({ 'background': 'Black' });
-		} else {
-			lifeProgressbar.css({ 'background': 'none' });
-		}
+		Player.alterLifeProgressbar(lifeProgressbarId, totalLife);
 	}
 
 	// retornar num array todos os ids dos players selecionados
@@ -514,7 +516,7 @@ class NewAtack extends Box {
 	}
 
 	// realizar um ataque corpo a corpo
-	static saveResults (randomId) {
+	static saveResults (randomId, originalRandomId) {
 		let atackerId = $('.new_atack_atacker_' + randomId)[0].value;
 
 		// verificar defensores
@@ -524,6 +526,13 @@ class NewAtack extends Box {
 
 		defenderIdInputs.each(function() {
 			let defenderId = $(this).val();
+
+			let enabledDefender = $('#' + NewAtack.windowName + '_target_' + defenderId + '_' + randomId).is(':checked');
+
+			// continua apenas se estiver checkado
+			if (! enabledDefender) {
+				return true;
+			}
 
 			playerIds.push(defenderId);
 		});
@@ -536,7 +545,13 @@ class NewAtack extends Box {
 			// salvar o valor da vida
 			let resultSaved = Player.saveAttribute(playerId, 'life', currentLife);
 
-			if (! resultSaved) {
+			if (resultSaved) {
+				let battlePlayerLifeInputId = NewBattle.windowName + '_life_display_' + playerId + '_' + originalRandomId;
+
+				console.log('battlePlayerLifeInputId', battlePlayerLifeInputId);
+
+				Player.alterLifeProgressbar(battlePlayerLifeInputId, currentLife);
+			} else {
 				allSaved = false;
 			}
 		});

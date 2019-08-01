@@ -4,11 +4,16 @@ class NewAtack extends Box {
 
 	boxContent (options) {
 
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let originalBoxId = options['boxId'];
+
 		let playerId = options['playerId'];
 
 		let fighterIds = options['fighterIds'];
 
-		let randomId = Math.floor(Math.random() * 10000);
 		let player = Player.getPlayer(playerId);
 
 		let orderNPC = 'DESC';
@@ -24,6 +29,8 @@ class NewAtack extends Box {
 				'name': 'ASC'
 			}
 		}
+
+		let count = 1;
 
 		let allPlayers = Player.getAllPlayers(allPlayerOptions);
 
@@ -67,7 +74,12 @@ class NewAtack extends Box {
 			)
 		);
 
-		NewAtack.insertPlayerLine(newAtackTable, player, randomId, true);
+		let insertPlayerLineOptions = {
+			count: count,
+			howManyPlayers: allPlayers.length
+		}
+
+		me.insertPlayerLine(newAtackTable, player, true, insertPlayerLineOptions);
 
 		// titulo das colunas na tabela do defensor
 		newAtackTable.append(
@@ -112,19 +124,25 @@ class NewAtack extends Box {
 				return;
 			}
 
-			NewAtack.insertPlayerLine(newAtackTable, player, randomId, false);
+			count += 1;
+
+			let options = {
+				count: count,
+				howManyPlayers: allPlayers.length
+			}
+			me.insertPlayerLine(newAtackTable, player, false, options);
 			
 		});
 
-		let atackIterationDiv = $('<div>', { id: NewAtack.windowName + '_atack_iteration_' + randomId } );
+		let atackIterationDiv = $('<div>', { id: me.createId('atack_iteration') } );
 
 		newAtackDiv.append(
 			newAtackTable,
 			$("<input>", {
 				type: 'button',
-				id: NewAtack.windowName + '_save_button_' + randomId,
+				id: me.createId('save_button'),
 				title: t('Salvar'),
-				onclick: 'NewAtack.saveResults(' + randomId + ')',
+				onclick: 'NewAtack.saveResults("' + boxId + '", "' + originalBoxId + '")',
 				value: Player.EMOJI_SAVE
 			}),
 			'<br />',
@@ -136,7 +154,14 @@ class NewAtack extends Box {
 	}
 
 	// inserir linha do player atual
-	static insertPlayerLine (newAtackTable, player, randomId, currentPlayer) {
+	insertPlayerLine (newAtackTable, player, currentPlayer, options) {
+
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let count = options['count'];
+		let howManyPlayers = options['howManyPlayers'];
 
 		let playerId = player['id'];
 
@@ -155,27 +180,27 @@ class NewAtack extends Box {
 
 		if (currentPlayer) {
 			inputAtackCheck = '';
-			playerIdClass = 'new_atack_atacker_' + randomId;
+			playerIdClass = me.createId('atacker');
 			atackDefenseInput = $("<input>", {
 				type: 'text',
-				id: NewAtack.windowName + '_atack_' + playerId + '_' + randomId,
+				id: me.createId('atack_' + playerId),
 				width: inputWidth,
-				readonly: 'readonly',
+				onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
 				value: Player.getAttribute(player, 'atack', 'points')
 			});
 		} else {
 			inputAtackCheck = $("<input>", {
 				type: 'checkbox',
-				id: NewAtack.windowName + '_target_' + playerId + '_' + randomId,
-				class: 'new_atack_target_' + randomId,
+				id: me.createId('target_' + playerId),
+				class: me.createId('target'),
 				value: playerId
 			});
-			playerIdClass = 'new_atack_defender_' + randomId;
+			playerIdClass = me.createId('defender');
 			atackDefenseInput = $("<input>", {
 				type: 'text',
-				id: NewAtack.windowName + '_defense_' + playerId + '_' + randomId,
+				id: me.createId('defense_' + playerId),
 				width: inputWidth,
-				readonly: 'readonly',
+				onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
 				value: Player.getAttribute(player, 'defense', 'points')
 			});
 		}
@@ -235,7 +260,7 @@ class NewAtack extends Box {
 		}
 
 		let lifeProgressbar = $("<div>", {
-			id: NewAtack.windowName + '_life_display_' + player['id'] + '_' + randomId,
+			id: me.createId('life_display_' + player['id']),
 			width: 38,
 			height: 20,
 			title: playerLife + '%'
@@ -250,57 +275,59 @@ class NewAtack extends Box {
 				),
 				$("<td>").append(
 					$("<input>", {
-						id: NewAtack.windowName + '_atack_general_' + playerId + '_' + randomId,
+						id: me.createId('atack_general_' + playerId),
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')'
+						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
+						tabindex: (howManyPlayers * 0 + count)
 					})
 				),
 				$("<td>", { title: playerTitle } ).append(
 					icon + ' ' + Player.getPlayerShort(playerId),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_player_id_' + playerId + '_' + randomId,
+						id: me.createId('player_id_' + playerId),
 						readonly: 'readonly',
 						class: playerIdClass,
 						value: playerId
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_name_' + playerId + '_' + randomId,
+						id: me.createId('name_' + playerId),
 						readonly: 'readonly',
 						value: player['name']
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_shortname_' + playerId + '_' + randomId,
+						id: me.createId('shortname_' + playerId),
 						readonly: 'readonly',
 						value: player['shortname']
 					}),
 					$("<input>", {
 						type: 'hidden',
-						id: NewAtack.windowName + '_gender_' + playerId + '_' + randomId,
+						id: me.createId('gender_' + playerId),
 						readonly: 'readonly',
 						value: player['gender']
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
-						id: NewAtack.windowName + '_atack_aim_' + playerId + '_' + randomId,
+						id: me.createId('atack_aim_' + playerId),
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')'
+						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
+						tabindex: (howManyPlayers * 1 + count)
 					}),
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_dextery_' + playerId + '_' + randomId,
+						id: me.createId('dextery_' + playerId),
 						width: inputWidth,
-						readonly: 'readonly',
+						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
 						value: player['dextery']['points']
 					}),
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_aim_result_' + playerId + '_' + randomId,
+						id: me.createId('aim_result_' + playerId),
 						width: inputWidth,
 						readonly: 'readonly',
 						value: 0
@@ -308,16 +335,17 @@ class NewAtack extends Box {
 				),
 				$("<td>").append(
 					$("<input>", {
-						id: NewAtack.windowName + '_atack_strength_' + playerId + '_' + randomId,
+						id: me.createId('atack_strength_' + playerId),
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult(' + randomId + ')'
+						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
+						tabindex: (howManyPlayers * 2 + count)
 					}),
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_strength_' + playerId + '_' + randomId,
+						id: me.createId('strength_' + playerId),
 						width: inputWidth,
-						readonly: 'readonly',
+						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
 						value: Player.getAttribute(player, 'strength', 'points')
 					})
 				),
@@ -327,7 +355,7 @@ class NewAtack extends Box {
 
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_strength_result_' + playerId + '_' + randomId,
+						id: me.createId('strength_result_' + playerId),
 						width: inputWidth,
 						readonly: 'readonly',
 						value: 0
@@ -336,16 +364,18 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_constitution_' + playerId + '_' + randomId,
+						id: me.createId('constitution_' + playerId),
 						width: inputWidth,
-						readonly: 'readonly',
+						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
 						value: Player.getAttribute(player, 'constitution', 'points')
 					}),
 					$("<input>", {
 						type: 'text',
-						id: NewAtack.windowName + '_life_result_' + playerId + '_' + randomId,
+						id: me.createId('life_result_' + playerId),
 						width: inputWidth,
-						value: 0
+						value: 0,
+						onkeyup: 'NewAtack.changeCurrentLifeResult("' + boxId + '")',
+						tabindex: (howManyPlayers * 3 + count)
 					}),
 				),
 				$("<td>").append(
@@ -353,13 +383,13 @@ class NewAtack extends Box {
 					lifeProgressbar,
 
 					$("<input>", {
-						id: NewAtack.windowName + '_life_' + playerId + '_' + randomId,
+						id: me.createId('life_' + playerId),
 						type: 'hidden',
 						readonly: 'readonly',
 						value: playerLife
 					}),
 					$("<input>", {
-						id: NewAtack.windowName + '_current_life_' + playerId + '_' + randomId,
+						id: me.createId('current_life_' + playerId),
 						type: 'hidden',
 						readonly: 'readonly',
 						value: playerLife
@@ -368,8 +398,8 @@ class NewAtack extends Box {
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
-						id: NewAtack.windowName + '_visualize_' + playerId + '_' + randomId,
-						onclick: 'VisualizePlayer.visualize_player("' + playerId + '")',
+						id: me.createId('visualize_' + playerId),
+						onclick: 'VisualizePlayer.visualizePlayer("' + playerId + '")',
 						value: Player.EMOJI_VISUALIZE
 					})
 				),
@@ -381,25 +411,28 @@ class NewAtack extends Box {
 	}
 
 	// calcular acertos e danos de acordo com as rolagens de dados
-	static reCalculateAtackResult (randomId) {
-		let atackerId = $('.new_atack_atacker_' + randomId)[0].value;
+	static reCalculateAtackResult (boxId) {
 
-		let atackerDie = parseInt($('#' + NewAtack.windowName + '_atack_general_' + atackerId + '_' + randomId).val() || 0);
-		let atackerDextery = parseInt($('#' + NewAtack.windowName + '_dextery_' + atackerId + '_' + randomId).val() || 0);
-		let atackerStrength = parseInt($('#' + NewAtack.windowName + '_strength_' + atackerId + '_' + randomId).val() || 0);
-		let atackerAtack = parseInt($('#' + NewAtack.windowName + '_atack_' + atackerId + '_' + randomId).val() || 0);
+		let me = Box.getBox(boxId);
+
+		let atackerId = $('.' + me.createId('atacker'))[0].value;
+
+		let atackerDie = parseInt($('#' + me.createId('atack_general_' + atackerId)).val() || 0);
+		let atackerDextery = parseInt($('#' + me.createId('dextery_' + atackerId)).val() || 0);
+		let atackerStrength = parseInt($('#' + me.createId('strength_' + atackerId)).val() || 0);
+		let atackerAtack = parseInt($('#' + me.createId('atack_' + atackerId)).val() || 0);
 
 		// colocar o resultado da rolagem do atacante aqui
-		let atackerAimInput = $('#' + NewAtack.windowName + '_aim_result_' + atackerId + '_' + randomId);
-		let atackerStrengthInput = $('#' + NewAtack.windowName + '_strength_result_' + atackerId + '_' + randomId);
+		let atackerAimInput = $('#' + me.createId('aim_result_' + atackerId));
+		let atackerStrengthInput = $('#' + me.createId('strength_result_' + atackerId));
 
 		let atackerAimDie = atackerDie;
 		let atackerStrengthDie = atackerDie;
 
 		// verificar valores individuais dos dados caso o dado geral nao esteja preenchido
 		if (! atackerDie) {
-			atackerAimDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + atackerId + '_' + randomId).val() || 0);
-			atackerStrengthDie = parseInt($('#' + NewAtack.windowName + '_atack_strength_' + atackerId + '_' + randomId).val() || 0);
+			atackerAimDie = parseInt($('#' + me.createId('atack_aim_' + atackerId)).val() || 0);
+			atackerStrengthDie = parseInt($('#' + me.createId('atack_strength_' + atackerId)).val() || 0);
 		}
 
 		// calcular o resultado da mira do ataque
@@ -412,37 +445,37 @@ class NewAtack extends Box {
 
 
 		// verificar defensores
-		let defenderIdInputs = $('.new_atack_defender_' + randomId);
+		let defenderIdInputs = $('.' + me.createId('defender'));
 
 		defenderIdInputs.each(function() {
 
 			let defenderId = $(this).val();
 
-			let enabledDefender = $('#' + NewAtack.windowName + '_target_' + defenderId + '_' + randomId).is(':checked');
+			let enabledDefender = $('#' + me.createId('target_' + defenderId)).is(':checked');
 
 			// continua apenas se estiver checkado
 			if (! enabledDefender) {
 				return true;
 			}
 
-			let defenderDie = parseInt($('#' + NewAtack.windowName + '_atack_general_' + defenderId + '_' + randomId).val() || 0);
-			let defenderDextery = parseInt($('#' + NewAtack.windowName + '_dextery_' + defenderId + '_' + randomId).val() || 0);
-			let defenderDefense = parseInt($('#' + NewAtack.windowName + '_defense_' + defenderId + '_' + randomId).val() || 0);
-			let defenderStrength = parseInt($('#' + NewAtack.windowName + '_strength_' + defenderId + '_' + randomId).val() || 0);
-			let defenderConstitution = parseInt($('#' + NewAtack.windowName + '_constitution_' + defenderId + '_' + randomId).val() || 0);
+			let defenderDie = parseInt($('#' + me.createId('atack_general_' + defenderId)).val() || 0);
+			let defenderDextery = parseInt($('#' + me.createId('dextery_' + defenderId)).val() || 0);
+			let defenderDefense = parseInt($('#' + me.createId('defense_' + defenderId)).val() || 0);
+			let defenderStrength = parseInt($('#' + me.createId('strength_' + defenderId)).val() || 0);
+			let defenderConstitution = parseInt($('#' + me.createId('constitution_' + defenderId)).val() || 0);
 
 			// colocar o resultado da rolagem do defensor aqui
-			let defenderAimInput = $('#' + NewAtack.windowName + '_aim_result_' + defenderId + '_' + randomId);
-			let defenderStrengthInput = $('#' + NewAtack.windowName + '_strength_result_' + defenderId + '_' + randomId);
-			let defenderLifeInput = $('#' + NewAtack.windowName + '_life_result_' + defenderId + '_' + randomId);
+			let defenderAimInput = $('#' + me.createId('aim_result_' + defenderId));
+			let defenderStrengthInput = $('#' + me.createId('strength_result_' + defenderId));
+			let defenderLifeInput = $('#' + me.createId('life_result_' + defenderId));
 
 			let defenderAimDie = defenderDie;
 			let defenderStrengthDie = defenderDie;
 
 			// verificar valores individuais dos dados caso o dado geral nao esteja preenchido
 			if (! defenderDie) {
-				defenderAimDie = parseInt($('#' + NewAtack.windowName + '_atack_aim_' + defenderId + '_' + randomId).val() || 0);
-				defenderStrengthDie = parseInt($('#' + NewAtack.windowName + '_atack_strength_' + defenderId + '_' + randomId).val() || 0);
+				defenderAimDie = parseInt($('#' + me.createId('atack_aim_' + defenderId)).val() || 0);
+				defenderStrengthDie = parseInt($('#' + me.createId('atack_strength_' + defenderId)).val() || 0);
 			}
 
 			// calcular o resultado da mira do ataque no defensor
@@ -457,73 +490,72 @@ class NewAtack extends Box {
 			let defenderdiferenceResult = Player.defendLifeResult(defenderConstitution, defenderStrengthResult);
 			processVisualResultInput(defenderLifeInput, defenderdiferenceResult);
 
-			NewAtack.changeLife(defenderId, defenderdiferenceResult, randomId);
+			me.changeLife(defenderId, defenderdiferenceResult);
 		});
 	}
 
 	// alterar vida do player
-	static changeLife (playerId, lifeDiference, randomId) {
-		let totalLife = parseInt($('#' + NewAtack.windowName + '_life_' + playerId + '_' + randomId).val() || 0);
-		let currentLifeInput = $('#' + NewAtack.windowName + '_current_life_' + playerId + '_' + randomId);
-		let lifeProgressbar = $('#' + NewAtack.windowName + '_life_display_' + playerId + '_' + randomId);
+	changeLife (playerId, lifeDiference) {
+		let me = this;
 
-		console.log('totalLife antes', totalLife);
-		console.log('lifeDiference', lifeDiference);
+		let totalLife = parseInt($('#' + me.createId('life_' + playerId)).val() || 0);
+		let currentLifeInput = $('#' + me.createId('current_life_' + playerId));
+		let lifeProgressbarId = me.createId('life_display_' + playerId);
+
 		totalLife = totalLife + lifeDiference;
 
-		console.log('totalLife depois', totalLife);
-
-		lifeProgressbar.progressbar('value', totalLife);
-		lifeProgressbar.attr('title', totalLife + '%');
-
 		currentLifeInput.val(totalLife);
-		
-		console.log('currentLifeInput', currentLifeInput);
 
-		// se morreu, colocar um fundo diferente
-		if (totalLife <= 0) {
-			lifeProgressbar.css({ 'background': 'Black' });
-		} else {
-			lifeProgressbar.css({ 'background': 'none' });
-		}
+		Player.alterLifeProgressbar(lifeProgressbarId, totalLife);
 	}
 
-	// retornar num array todos os ids dos players selecionados
-	static getAllCheckedPlayers (randomId) {
+	// // retornar num array todos os ids dos players selecionados
+	// static getAllCheckedPlayers (randomId) {
 
-		var fighterIds = [];
+	// 	var fighterIds = [];
 
-		let allFightersIdInputs = $('.new_atack_target_' + randomId);
+	// 	let allFightersIdInputs = $('.' + me.createId('target'));
 
-		// pegar todos os ids de players, apenas os checkados
-		allFightersIdInputs.each(function (index) {
-			let fighterInput = this;
+	// 	// pegar todos os ids de players, apenas os checkados
+	// 	allFightersIdInputs.each(function (index) {
+	// 		let fighterInput = this;
 
-			let fighterId = fighterInput.value;
+	// 		let fighterId = fighterInput.value;
 
-			// verificar se esta checkado
-			let enabledPlayer = $('#' + NewAtack.windowName + '_target_' + fighterId + '_' + randomId).is(':checked');
+	// 		// verificar se esta checkado
+	// 		let enabledPlayer = $('#' + NewAtack.windowName + '_target_' + fighterId + '_' + randomId).is(':checked');
 
-			if (enabledPlayer) {
-				fighterIds.push(fighterId);
-			}
+	// 		if (enabledPlayer) {
+	// 			fighterIds.push(fighterId);
+	// 		}
 			
-		});
+	// 	});
 
-		return fighterIds;
-	}
+	// 	return fighterIds;
+	// }
 
 	// realizar um ataque corpo a corpo
-	static saveResults (randomId) {
-		let atackerId = $('.new_atack_atacker_' + randomId)[0].value;
+	static saveResults (boxId, originalBoxId) {
+
+		let me = Box.getBox(boxId);
+		let originalBox = Box.getBox(originalBoxId);
+
+		let atackerId = $('.' + me.createId('atacker'))[0].value;
 
 		// verificar defensores
-		let defenderIdInputs = $('.new_atack_defender_' + randomId);
+		let defenderIdInputs = $('.' + me.createId('defender'));
 
 		let playerIds = [atackerId];
 
 		defenderIdInputs.each(function() {
 			let defenderId = $(this).val();
+
+			let enabledDefender = $('#' + me.createId('target_' + defenderId)).is(':checked');
+
+			// continua apenas se estiver checkado
+			if (! enabledDefender) {
+				return true;
+			}
 
 			playerIds.push(defenderId);
 		});
@@ -531,17 +563,21 @@ class NewAtack extends Box {
 		let allSaved = true;
 
 		playerIds.forEach(function (playerId) {
-			let currentLife = parseInt($('#' + NewAtack.windowName + '_current_life_' + playerId + '_' + randomId).val() || 0);
+			let currentLife = parseInt($('#' + me.createId('current_life_' + playerId)).val() || 0);
 
 			// salvar o valor da vida
 			let resultSaved = Player.saveAttribute(playerId, 'life', currentLife);
 
-			if (! resultSaved) {
+			if (resultSaved) {
+				let battlePlayerLifeInputId = originalBox.createId('life_display_' + playerId);
+
+				Player.alterLifeProgressbar(battlePlayerLifeInputId, currentLife);
+			} else {
 				allSaved = false;
 			}
 		});
 
-		let saveButton = $('#' + NewAtack.windowName + '_save_button_' + randomId);
+		let saveButton = $('#' + me.createId('save_button'));
 
 		if (allSaved) {
 
@@ -554,6 +590,10 @@ class NewAtack extends Box {
 			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 		}
 	}
+
+	static changeCurrentLifeResult (boxId) {
+		console.warn('Implementar!');
+	}
 }
 
-boxes[NewAtack.windowName] = NewAtack;
+Box.boxes[NewAtack.windowName] = NewAtack;

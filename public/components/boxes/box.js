@@ -1,5 +1,9 @@
 class Box {
 
+	static boxes = [];
+
+	static allDialogs = [];
+
 	constructor() {
 		this.boxWidth = 'auto';
 		this.boxHeight = 'auto';
@@ -7,8 +11,29 @@ class Box {
 		this.positionMy = 'center top';
 		this.positionAt = 'center top';
 		this.positionOf = '#master-table';
+
+		this.randomId = Math.floor(Math.random() * 10000);
+		this.boxId = this.createId('box_id');
+
+		Box.keepBox(this, this.boxId);
 	}
 
+	// criar um id para usar na dialog em algum lugar
+	createId (idPart) {
+		return this.constructor.name.toLowerCase() + '_' + this.randomId + '_' + idPart;
+	}
+
+	// guardar a instancia da box relacionado a um id achavel
+	static keepBox (box, boxId) {
+		Box.allDialogs[boxId] = box;
+	}
+
+	// resgatar a instancia de uma box relacionado a um id achavel
+	static getBox (boxId) {
+		return Box.allDialogs[boxId];
+	}
+
+	// abrir a dialog
 	static openDialog (id, title, options = {}) {
 
 		var dialogId = "dialog_" + id;
@@ -32,7 +57,8 @@ class Box {
 			}
 		}
 
-		var klass = new boxes[id];
+		var klass = new Box.boxes[id];
+		klass.dialogId = dialogId;
 
 		$("#master-table").append(
 			$("<div>", {

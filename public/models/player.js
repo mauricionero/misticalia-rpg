@@ -354,4 +354,19 @@ class Player extends RModel {
 
 		return lifeDifference;
 	}
+
+	// alterar o valor de um progressbar de vida
+	static alterLifeProgressbar (lifeProgressbarId, totalLife) {
+		let lifeProgressbar = $('#' + lifeProgressbarId);
+
+		lifeProgressbar.progressbar('value', totalLife);
+		lifeProgressbar.attr('title', totalLife + '%');
+
+		// se morreu, colocar um fundo diferente
+		if (totalLife <= 0) {
+			lifeProgressbar.css({ 'background': 'Black' });
+		} else {
+			lifeProgressbar.css({ 'background': 'none' });
+		}
+	}
 }

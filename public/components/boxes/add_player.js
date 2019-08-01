@@ -4,13 +4,15 @@ class AddPlayer extends Box {
 
 	boxContent (options = {}) {
 
+		let me = this;
+
+		let boxId = me.boxId;
+
 		// se eh NPC
 		let isNPC = false;
 		if (options['isNPC']) {
 			isNPC = true;
 		}
-
-		var randomId = Math.floor(Math.random() * 10000);
 
 		let inputWidthBig = 120;
 		let inputWidth = 36;
@@ -40,7 +42,7 @@ class AddPlayer extends Box {
 					$("<input>", {
 						type: 'text',
 						width: inputWidthBig,
-						id: AddPlayer.windowName + '_login_' + randomId
+						id: me.createId('login')
 					})
 				),
 			),
@@ -49,14 +51,14 @@ class AddPlayer extends Box {
 					$("<input>", {
 						type: 'hidden',
 						readonly: 'readonly',
-						id: AddPlayer.windowName + '_is_npc_' + randomId,
+						id: me.createId('is_npc'),
 						value: isNPC
 					}),
 					$('<label>', { title: t('---') } ).append(
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_gender',
-							name: AddPlayer.windowName + '_gender_' + randomId,
+							name: me.createId('gender'),
 							value: Player.NO_GENDER_ID
 						}),
 						$('<span>').append(
@@ -71,7 +73,7 @@ class AddPlayer extends Box {
 							type: 'radio',
 							checked: 'checked',
 							class: 'radio_gender',
-							name: AddPlayer.windowName + '_gender_' + randomId,
+							name: me.createId('gender'),
 							value: Player.MALE_ID
 						}),
 						$('<span>').append(
@@ -85,7 +87,7 @@ class AddPlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_gender',
-							name: AddPlayer.windowName + '_gender_' + randomId,
+							name: me.createId('gender'),
 							value: Player.FEMALE_ID
 						}),
 						$('<span>').append(
@@ -99,7 +101,7 @@ class AddPlayer extends Box {
 						$('<input>', {
 							type: 'radio',
 							class: 'radio_gender',
-							name: AddPlayer.windowName + '_gender_' + randomId,
+							name: me.createId('gender'),
 							value: Player.TRANS_GENDER_ID
 						}),
 						$('<span>').append(
@@ -114,7 +116,7 @@ class AddPlayer extends Box {
 					$('<input>', {
 						type: 'text',
 						width: inputWidthBig,
-						id: AddPlayer.windowName + '_name_' + randomId
+						id: me.createId('name')
 					})
 				)
 			),
@@ -150,7 +152,7 @@ class AddPlayer extends Box {
 						$("<input>", {
 							type: 'text',
 							readonly: 'readonly',
-							id: AddPlayer.windowName + '_level_' + attribute + '_' + randomId,
+							id: me.createId('level_' + attribute),
 							width: inputWidthSmall,
 							height: inputHeight,
 							value: Player.levelCalculator(0)
@@ -159,10 +161,10 @@ class AddPlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: AddPlayer.windowName + '_base_points_' + attribute + '_' + randomId,
+							id: me.createId('base_points_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'AddPlayer.reCalculateTotalPoints(' + randomId + ', "' + attribute + '")',
+							onkeyup: 'AddPlayer.reCalculateTotalPoints("' + boxId + '", "' + attribute + '")',
 							value: 0
 						})
 					),
@@ -170,7 +172,7 @@ class AddPlayer extends Box {
 						$("<input>", {
 							type: 'text',
 							readonly: 'readonly',
-							id: AddPlayer.windowName + '_points_' + attribute + '_' + randomId,
+							id: me.createId('points_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
 							value: 0
@@ -186,8 +188,8 @@ class AddPlayer extends Box {
 				$("<th>", { colspan: 5 } ).append(
 					$("<input>", {
 						type: 'button',
-						id: AddPlayer.windowName + '_save_' + randomId,
-						onclick: 'AddPlayer.addPlayer(' + randomId + ')',
+						id: me.createId('save'),
+						onclick: 'AddPlayer.addPlayer("' + boxId + '")',
 						value: saveButtonText
 					})
 				)
@@ -200,13 +202,16 @@ class AddPlayer extends Box {
 	}
 
 	// recalcula o nivel e total de pontos
-	static reCalculateTotalPoints (randomId, attribute) {
-		let basePoints = $('#' + AddPlayer.windowName + '_base_points_' + attribute + '_' + randomId).val() || 0;
+	static reCalculateTotalPoints (boxId, attribute) {
+
+		let me = Box.getBox(boxId);
+
+		let basePoints = $('#' + me.createId('base_points_' + attribute)).val() || 0;
 		let temporaryModifier = 0;
 		let permanentModifier = 0;
 
-		let levelInput = $('#' + AddPlayer.windowName + '_level_' + attribute + '_' + randomId);
-		let totalPointsInput = $('#' + AddPlayer.windowName + '_points_' + attribute + '_' + randomId)
+		let levelInput = $('#' + me.createId('level_' + attribute));
+		let totalPointsInput = $('#' + me.createId('points_' + attribute))
 
 		let level = Player.levelCalculator(basePoints);
 		let totalPoints = Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier);
@@ -216,12 +221,14 @@ class AddPlayer extends Box {
 	}
 
 	// adicionar jogador à aventura
-	static addPlayer (randomId) {
+	static addPlayer (boxId) {
 
-		let playerLogin = $('#' + AddPlayer.windowName + '_login_' + randomId).val();
-		let playerGender = $("input[name='" + AddPlayer.windowName + '_gender_' + randomId + "']:checked").val()
-		let playerName = $('#' + AddPlayer.windowName + '_name_' + randomId).val();
-		let isNPC = $('#' + AddPlayer.windowName + '_is_npc_' + randomId).val();
+		let me = Box.getBox(boxId);
+
+		let playerLogin = $('#' + me.createId('login')).val();
+		let playerGender = $("input[name='" + me.createId('gender') + "']:checked").val()
+		let playerName = $('#' + me.createId('name')).val();
+		let isNPC = $('#' + me.createId('is_npc')).val();
 
 		isNPC = (isNPC == 'true') ? true : false;
 
@@ -238,9 +245,9 @@ class AddPlayer extends Box {
 		}
 
 		allAttributes.forEach(function (attribute) {
-			let basePoints = parseInt($('#' + AddPlayer.windowName + '_base_points_' + attribute + '_' + randomId).val());
+			let basePoints = parseInt($('#' + me.createId('base_points_' + attribute)).val());
 			let permanentModifier = 0;
-			let points = parseInt($('#' + AddPlayer.windowName + '_points_' + attribute + '_' + randomId).val());
+			let points = parseInt($('#' + me.createId('points_' + attribute)).val());
 
 			newPlayer[attribute] = {
 				'basePoints': basePoints,
@@ -252,7 +259,7 @@ class AddPlayer extends Box {
 
 		let resultSaved = Player.savePlayer(newPlayer);
 
-		let saveButton = $('#' + AddPlayer.windowName + '_save_' + randomId);
+		let saveButton = $('#' + me.createId('save'));
 
 		if (resultSaved) {
 
@@ -267,4 +274,4 @@ class AddPlayer extends Box {
 
 }
 
-boxes[AddPlayer.windowName] = AddPlayer;
+Box.boxes[AddPlayer.windowName] = AddPlayer;

@@ -3,9 +3,12 @@ class NewAdventure extends Box {
 	static get windowName () { return 'new_adventure' };
 
 	boxContent () {
-		var randomId = Math.floor(Math.random() * 10000);
 
-		let formNewAdventure = $("<form>", { id: NewAdventure.windowName + '_form_' + randomId });
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let formNewAdventure = $("<form>", { id: me.createId('form') });
 
 		// titulo das colunas na tabela
 		formNewAdventure.append(
@@ -17,7 +20,7 @@ class NewAdventure extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: NewAdventure.windowName + '_name_' + randomId,
+							id: me.createId('name'),
 							placeholder: t('Mundo fantástico')
 						})
 					)
@@ -29,7 +32,7 @@ class NewAdventure extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							id: NewAdventure.windowName + '_style_' + randomId,
+							id: me.createId('style'),
 							placeholder: t('Fantasia')
 						})
 					)
@@ -38,8 +41,8 @@ class NewAdventure extends Box {
 					$("<th>", { colspan: 2 } ).append(
 						$("<input>", {
 							type: 'button',
-							id: NewAdventure.windowName + '_save_' + randomId,
-							onclick: 'NewAdventure.saveAdventure(' + randomId + ')',
+							id: me.createId('save'),
+							onclick: 'NewAdventure.saveAdventure("' + boxId + '")',
 							value: t('Criar')
 						})
 					)
@@ -51,10 +54,12 @@ class NewAdventure extends Box {
 	}
 
 	// salvar aventura
-	static saveAdventure (randomId) {
+	static saveAdventure (boxId) {
 
-		let adventureName = $('#' + NewAdventure.windowName + '_name_' + randomId).val();
-		let adventureStyle = $('#' + NewAdventure.windowName + '_style_' + randomId).val();
+		let me = Box.getBox(boxId);
+
+		let adventureName = $('#' + me.createId('name')).val();
+		let adventureStyle = $('#' + me.createId('style')).val();
 
 		let newAdventure = {
 			'name': adventureName,
@@ -62,7 +67,7 @@ class NewAdventure extends Box {
 		}
 
 		let resultSaved = Adventure.newAdventure(newAdventure);
-		let saveButton = $('#' + NewAdventure.windowName + '_save_' + randomId);
+		let saveButton = $('#' + me.createId('save'));
 
 		if (resultSaved) {
 
@@ -77,4 +82,4 @@ class NewAdventure extends Box {
 
 }
 
-boxes[NewAdventure.windowName] = NewAdventure;
+Box.boxes[NewAdventure.windowName] = NewAdventure;

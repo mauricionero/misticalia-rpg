@@ -4,11 +4,13 @@ class AddDice extends Box {
 
 	boxContent () {
 
-		var random_id = Math.floor(Math.random() * 10000);
+		let me = this;
+
+		let boxId = me.boxId;
 
 		return $("<div>").append(
 			$("<input>", {
-				id: 'add_dice_number_' + random_id,
+				id: me.createId('number'),
 				type: 'number',
 				min: "1",
 				max: "6",
@@ -16,7 +18,7 @@ class AddDice extends Box {
 			}),
 			' d',
 			$("<input>", {
-				id: 'add_dice_sides_' + random_id,
+				id: me.createId('sides'),
 				type: 'number',
 				min: "1",
 				max: "100",
@@ -26,47 +28,52 @@ class AddDice extends Box {
 			' ',
 			$("<input>", {
 				type: 'button',
-				onclick: 'AddDice.rollTheDice('+random_id+')',
+				onclick: 'AddDice.rollTheDice("'+boxId+'")',
 				value: t('Rolar')
 			}),
 			' ',
 			$("<input>", {
 				type: 'button',
-				onclick: 'AddDice.resetDice('+random_id+')',
+				onclick: 'AddDice.resetDice("'+boxId+'")',
 				value: t('Resetar')
 			}),
 
 			$("<div>", {
-				id: 'add_dice_container_'+random_id
-			}),
+				id: me.createId('container'),
+			})
 		);
 
 	}
 
-	static rollTheDice (random_id) {
-		var i,
+	static rollTheDice (boxId) {
+
+		let me = Box.getBox(boxId);
+
+		let i,
 			faceValue,
 			output = '',
-			diceCount = $('#add_dice_number_' + random_id).val() || 1,
-			diceSides = $('#add_dice_sides_' + random_id).val() || 100;
+			diceCount = $('#' + me.createId('number')).val() || 1,
+			diceSides = $('#' + me.createId('sides')).val() || 100;
 
 		for (i = 0; i < diceCount; i++) {
 			faceValue = Dice.rollDice(diceSides);
 
 			output = $("<div class='die_style'>", {
-				id: 'add_dice_container_'+random_id
+				id: me.createId('container')
 			}).html(faceValue);
 
-			$('#add_dice_container_'+random_id).append(output);
+			$('#' + me.createId('container')).append(output);
 		}
 
-		$('#add_dice_container_'+random_id).append('<br style="clear: left" />');
+		$('#' + me.createId('container')).append('<br style="clear: left" />');
 	}
 
-	static resetDice (random_id) {
-		$('#add_dice_container_'+random_id).html('');
+	static resetDice (dialogId) {
+		let me = Box.getBox(dialogId);
+
+		$('#' + me.createId('container')).html('');
 	}
 
 }
 
-boxes['add_dice'] = AddDice;
+Box.boxes[AddDice.windowName] = AddDice;

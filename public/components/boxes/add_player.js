@@ -50,7 +50,7 @@ class AddPlayer extends Box {
 				$('<th>').append(
 					$("<input>", {
 						type: 'hidden',
-						readonly: 'readonly',
+						disabled: 'disabled',
 						id: me.createId('is_npc'),
 						value: isNPC
 					}),
@@ -112,7 +112,7 @@ class AddPlayer extends Box {
 					' &nbsp;'
 				),
 				$('<th>', { title: t('Nome do personagem'), colspan: 4 } ).append(
-					Player.EMOJI_NAME,
+					Player.EMOJI_NAME + '*',
 					$('<input>', {
 						type: 'text',
 						width: inputWidthBig,
@@ -120,6 +120,7 @@ class AddPlayer extends Box {
 					})
 				)
 			),
+			$('<tr>'),
 			$("<tr>").append(
 				$("<th>", { title: t('Atributo') }).append(
 					Player.EMOJI_ATTRIBUTE
@@ -151,7 +152,7 @@ class AddPlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							readonly: 'readonly',
+							disabled: 'disabled',
 							id: me.createId('level_' + attribute),
 							width: inputWidthSmall,
 							height: inputHeight,
@@ -171,7 +172,7 @@ class AddPlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							readonly: 'readonly',
+							disabled: 'disabled',
 							id: me.createId('points_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
@@ -199,6 +200,41 @@ class AddPlayer extends Box {
 		addPlayerDiv.append(addPlayerTable);
 
 		return addPlayerDiv;
+	}
+
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				t('Adicionar um novo jogador à aventura')
+			),
+			$('<p>').append(
+				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s Login do jogador</b> (ainda não implementado)'), User.EMOJI_LOGIN)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s nome do personagem</b> (* obrigatório preencher)'), Player.EMOJI_NAME)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Atributo</b>'), Player.EMOJI_ATTRIBUTE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Nível</b> desse atributo'), Player.EMOJI_LEVEL)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Pontuação</b> desse atributo, o "normal" para um jovem adulto gira em torno de 100'), Player.EMOJI_POINTS)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Total de pontos</b>, isso irá mudar ao longo da aventura. Alguns equipamentos e modificadores podem alterar isso'), Player.EMOJI_TOTAL_POINTS)
+				)
+			),
+			Player.helpAttributesMeaning()
+		];
 	}
 
 	// recalcula o nivel e total de pontos
@@ -265,10 +301,12 @@ class AddPlayer extends Box {
 
 			saveButton.val(t('Adicionado!'));
 			saveButton.attr('disabled','disabled');
+			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 
 		} else {
 
-			saveButton.val(t('Erro :('));
+			saveButton.val(t('Adicionar'));
+			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 		}
 	}
 

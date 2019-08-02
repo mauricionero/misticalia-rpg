@@ -1,5 +1,8 @@
 class Player extends RModel {
 
+	static get EMOJI_MAIN () { return '♟️' };
+	static get EMOJI_NPC_MAIN () { return '😐' };
+
 	static get NO_GENDER_ID () { return 0 };
 	static get MALE_ID () { return 1 };
 	static get FEMALE_ID () { return 2 };
@@ -75,6 +78,7 @@ class Player extends RModel {
 
 	static get ALL_ATTRIBUTES_NAMES () {
 		return {
+			'life': 'Vida',
 			'strength': 'Força',
 			'dextery': 'Destreza',
 			'agility': 'Agilidade',
@@ -115,6 +119,22 @@ class Player extends RModel {
 			1130,
 			1280 // 20
 		]
+	}
+
+	// traduções dos campos
+	static get fieldTranslations () {
+		return {
+			'name': 'Nome',
+		}
+	}
+
+	// validações dessa model
+	validations () {
+		return {
+			'name' : {
+				'mandatory': true
+			}
+		}
 	}
 
 
@@ -176,6 +196,25 @@ class Player extends RModel {
 		}, this);
 
 		this.save();
+	}
+
+	// montar o progressbar da vida do jogador
+	getLifeProgressBar (boxId) {
+
+		let box = Box.getBox(boxId);
+
+		let playerLife = this.getAttribute('life') || 100;
+
+		let lifeProgressbar = $("<div>", {
+			id: box.createId('life_display_' + this['id']),
+			width: 38,
+			height: 20,
+			title: playerLife + '%'
+		}).progressbar({ value: playerLife })
+
+		lifeProgressbar.children().css({ 'background': 'Red' });
+
+		return lifeProgressbar;
 	}
 
 
@@ -371,6 +410,41 @@ class Player extends RModel {
 		} else {
 			lifeProgressbar.css({ 'background': 'none' });
 		}
+	}
+
+	static helpAttributesMeaning () {
+
+		return $('<p>').append(
+			$('<p>').append(
+				t('Atributos:')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Quão forte irá acertar algo, quanto maior, mais impacto'), Player.EMOJI_STRENGTH + ' ' + Player.getAttributeName('strength'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Quão preciso será o acerto, quanto maior, mais certeiro'), Player.EMOJI_DEXTERY + ' ' + Player.getAttributeName('dextery'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Quão rápido irá atacar, quanto mais rapido, mais vezes ataca e antes dos outros'), Player.EMOJI_AGILITY + ' ' + Player.getAttributeName('agility'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Quanto absorve de impacto, quanto maior, menos dano sofre com ataques'), Player.EMOJI_CONSTITUTION + ' ' + Player.getAttributeName('constitution'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'), Player.EMOJI_INTELIGENCE + ' ' + Player.getAttributeName('inteligence'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'), Player.EMOJI_WISDOM + ' ' + Player.getAttributeName('wisdom'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: O quão apresentavel e comunicativo o personagem é'), Player.EMOJI_CHARISMA + ' ' + Player.getAttributeName('charisma'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definidas pelo mestre'), Player.EMOJI_SANITY + ' ' + Player.getAttributeName('sanity'))
+				)
+			)
+		);
 	}
 }
 

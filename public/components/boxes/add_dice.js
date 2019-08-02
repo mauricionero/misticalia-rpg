@@ -12,6 +12,7 @@ class AddDice extends Box {
 			$("<input>", {
 				id: me.createId('number'),
 				type: 'number',
+				width: 36,
 				min: "1",
 				max: "6",
 				placeholder: t('1')
@@ -20,6 +21,7 @@ class AddDice extends Box {
 			$("<input>", {
 				id: me.createId('sides'),
 				type: 'number',
+				width: 40,
 				min: "1",
 				max: "100",
 				placeholder: t('100')
@@ -28,12 +30,14 @@ class AddDice extends Box {
 			' ',
 			$("<input>", {
 				type: 'button',
+				id: me.createId('roll'),
 				onclick: 'AddDice.rollTheDice("'+boxId+'")',
 				value: t('Rolar')
 			}),
 			' ',
 			$("<input>", {
 				type: 'button',
+				id: me.createId('reset'),
 				onclick: 'AddDice.resetDice("'+boxId+'")',
 				value: t('Resetar')
 			}),
@@ -42,7 +46,31 @@ class AddDice extends Box {
 				id: me.createId('container'),
 			})
 		);
+	}
 
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		let quantityInput = $('#' + me.createId('number'));
+		let sidesInput = $('#' + me.createId('sides'));
+		let rollInput = $('#' + me.createId('roll'));
+		let resetInput = $('#' + me.createId('reset'));
+
+		return [
+			$('<h3>').append(
+				t('Rolagem de dados')
+			),
+			$('<p>').append(
+				sprintf(t('Escolha a quantidade de dados no primeiro campo, (por padrão %s) e depois a quantidade de lados do dado (por padrão %s).'), quantityInput.attr('placeHolder'), sidesInput.attr('placeHolder'))
+			),
+			$('<p>').append(
+				sprintf(t('Aperte %s para rolar o dado ou os dados'), rollInput.val())
+			),
+			$('<p>').append(
+				sprintf(t('Aperte %s para limpar os dados rolados'), resetInput.val())
+			)
+		];
 	}
 
 	static rollTheDice (boxId) {

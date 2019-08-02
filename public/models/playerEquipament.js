@@ -18,7 +18,7 @@ class PlayerEquipament extends RModel {
 
 
 	// validações dessa model
-	static validations () {
+	validations () {
 		return {
 			'equipamentId': {
 				'uniqueness': {

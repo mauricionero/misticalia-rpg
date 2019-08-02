@@ -1,6 +1,9 @@
 class Equipament extends RModel {
 
+	static get EMOJI_MAIN () { return '⛨' }
+
 	static get EMOJI_ADD () { return '⛨' }
+
     static get EMOJI_VISUALIZE () { return '👁️' }
 	static get EMOJI_QUANTITY () { return '📦' }
 
@@ -56,6 +59,27 @@ class Equipament extends RModel {
 		}
 	}
 
+	// traduções dos campos
+	static get fieldTranslations () {
+		return {
+			'name': 'Nome',
+		}
+	}
+
+	// validações dessa model
+	validations () {
+		return {
+			'name' : {
+				'mandatory': true
+			},
+			'name': {
+				'uniqueness': {
+					'scope': [ 'currentAdventureId' ]
+				}
+			}
+		}
+	}
+
 
 	// salvar um equipamento (editar ou criar um novo)
 	saveEquipament () {
@@ -79,25 +103,25 @@ class Equipament extends RModel {
 	}
 
 	// retorna todos os equipamentos da aventura atual
-	static getAllEquipamentsCurrentAdventure () {
+	static getAllEquipamentsCurrentAdventure (options) {
 
-		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure();
+		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure(options);
 
 		return allCurrentEquipaments;
 	}
 
 	// retorna todos os equipamentos num array
-	static getAllEquipaments () {
+	static getAllEquipaments (options) {
 
-		let equipaments = this.getAll(); 
+		let equipaments = this.getAll(options); 
 
 		return equipaments;
 	}
 
 	// retorna todos os equipamentos da aventura atual
-	static getAllEquipamentsCurrentAdventure () {
+	static getAllEquipamentsCurrentAdventure (options) {
 
-		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure();
+		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure(options);
 
 		return allCurrentEquipaments;
 	}
@@ -105,6 +129,10 @@ class Equipament extends RModel {
 	// converter peso sendo recebido em gramas em algo mais legivel
 	static weightHuman (weight) {
 		var measureUnit = 'g';
+
+		if (! weight) {
+			return '?';
+		}
 
 		if (weight >= 1000 && weight < 10000) {
 			weight = Math.round(weight / 100) / 10; // 1 casa decimal

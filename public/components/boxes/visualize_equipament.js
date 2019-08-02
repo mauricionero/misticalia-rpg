@@ -192,6 +192,7 @@ class VisualizeEquipament extends Box {
 
 		return divEditEquipament;
 	}
+	
 
 	// executa após printar a janela
 	callBackRender () {
@@ -202,6 +203,7 @@ class VisualizeEquipament extends Box {
 
 		this.listModifiers(equipamentId);
 	}
+
 
 	// salvar modificações do equipamento
 	static updateEquipament (equipamentId, boxId) {
@@ -235,7 +237,7 @@ class VisualizeEquipament extends Box {
 			saveButton.val('😟'); // :(
 			saveButton.attr('disabled', 'disabled');
 			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
-			saveButton.val(Equipament.EMOJI_ADD);
+			saveButton.val('Salvar');
 		}
 	}
 
@@ -271,7 +273,7 @@ class VisualizeEquipament extends Box {
 
 		if (resultSaved) {
 
-			saveButton.val(t('Adicionado!'));
+			saveButton.val(t('Salvo!'));
 			saveButton.attr('disabled', 'disabled');
 			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 
@@ -279,10 +281,9 @@ class VisualizeEquipament extends Box {
 
 		} else {
 
-			saveButton.val('😟'); // :(
+			saveButton.val(t('Salvar'));
 			saveButton.attr('disabled', 'disabled');
 			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
-			saveButton.val(t('Adicionar'));
 		}
 	}
 

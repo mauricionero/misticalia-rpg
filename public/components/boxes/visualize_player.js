@@ -12,6 +12,8 @@ class VisualizePlayer extends Box {
 		
 		let boxId = me.boxId;
 
+		let originBoxId = options['boxId'];
+
 		let playerId = options['playerId'];
 		this.playerId = playerId;
 
@@ -33,7 +35,6 @@ class VisualizePlayer extends Box {
 			id: me.createId('equipaments_' + playerId),
 			style: 'display: none',
 		});
-
 
 		let playerEquipamentTable = $('<table>').append(
 			$('<tr>').append(
@@ -197,7 +198,7 @@ class VisualizePlayer extends Box {
 				type: 'button',
 				id: me.createId('save'),
 				title: t('Salvar'),
-				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '")',
+				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
 				value: t('Salvar')
 			}),
 			'<br />',
@@ -240,6 +241,23 @@ class VisualizePlayer extends Box {
 		let inputWidth = VisualizePlayer.inputWidth;
 		let inputWidthSmall = VisualizePlayer.inputWidthSmall;
 		let inputHeight = VisualizePlayer.inputHeight;
+
+		let playerSimpleData = $('<table>').append(
+			$('<tr>').append(
+				$('<th>').append(
+					Player.EMOJI_LIFE
+				),
+				$('<td>').append(
+					$('<input>', {
+						type: 'text',
+						id: me.createId('life_' + playerId),
+						width: inputWidth,
+						value: player.getAttribute('life') || 100
+					}),
+					'%'
+				)
+			)
+		);
 
 		let listPlayerTable = $("<table>");
 
@@ -296,7 +314,7 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							readonly: 'readonly',
+							disabled: 'disabled',
 							id: me.createId('level_' + playerId + '_' + attribute),
 							width: inputWidthSmall,
 							height: inputHeight,
@@ -319,7 +337,7 @@ class VisualizePlayer extends Box {
 							id: me.createId('permanent_modifier_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
 							value: permanentModifier
 						})
@@ -337,7 +355,7 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							readonly: 'readonly',
+							disabled: 'disabled',
 							id: me.createId('points_' + playerId + '_' + attribute),
 							width: inputWidth,
 							height: inputHeight,
@@ -367,7 +385,7 @@ class VisualizePlayer extends Box {
 					$("<td>").append(
 						$("<input>", {
 							type: 'text',
-							readonly: 'readonly',
+							disabled: 'disabled',
 							class: 'bold',
 							id: me.createId('result_' + playerId + '_' + attribute),
 							width: inputWidth,
@@ -379,7 +397,7 @@ class VisualizePlayer extends Box {
 			);
 		});
 
-		let secondaryAttributes = $('<div>');
+		let secondaryAttributes = $('<div>').append('&nbsp;');
 
 		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
 			if (player[attribute] == undefined) {
@@ -408,6 +426,7 @@ class VisualizePlayer extends Box {
 		playerEquipamentListDiv.html('');
 
 		playerEquipamentListDiv.append(
+			playerSimpleData,
 			listPlayerTable,
 			secondaryAttributes
 		);
@@ -474,7 +493,7 @@ class VisualizePlayer extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('player_equipament_type_' + equipamentId),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipamentTypeId
 						})
 					),
@@ -483,7 +502,7 @@ class VisualizePlayer extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('player_equipament_name_' + equipamentId),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['name']
 						})
 					)
@@ -567,7 +586,7 @@ class VisualizePlayer extends Box {
 	}
 
 	// abrir dialog de visualização do player
-	static visualizePlayer (playerId, isNPC) {
+	static visualizePlayer (playerId, isNPC, boxId = null) {
 
 		let player = Player.getPlayer(playerId);
 
@@ -581,6 +600,7 @@ class VisualizePlayer extends Box {
 			playerId: playerId,
 			singleTon: true,
 			isNPC: isNPC,
+			boxId: boxId,
 			windowId: VisualizePlayer.windowName + '_' + playerId
 		};
 
@@ -651,7 +671,7 @@ class VisualizePlayer extends Box {
 	}
 
 	// salvar modificações do jogador
-	static updatePlayer (playerId, boxId) {
+	static updatePlayer (playerId, boxId, originBoxId) {
 
 		let me = Box.getBox(boxId);
 
@@ -664,6 +684,10 @@ class VisualizePlayer extends Box {
 		if (isNPC) {
 			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
 		}
+
+		let life = parseInt($('#' + me.createId('life_' + playerId)).val());
+
+		editPlayer['life'] = life;
 
 		allAttributes.forEach(function (attribute) {
 			let basePoints = parseInt($('#' + me.createId('base_points_' + playerId + '_' + attribute)).val());
@@ -692,6 +716,12 @@ class VisualizePlayer extends Box {
 			saveButton.val(t('Salvo!'));
 			saveButton.attr('disabled', 'disabled');
 			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+
+			// atualizar listagem da dialog que originou essa dialog
+			if (originBoxId) {
+				let originBox = Box.getBox(originBoxId);
+				originBox.listPlayerData();
+			}
 
 		} else {
 

@@ -4,9 +4,57 @@ class ListPlayers extends Box {
 
 	boxContent (options = {}) {
 
+		this.options = options;
+
+		let me = this;
+
+		let listPlayersDiv = $("<div>", { id: me.createId('list_players') } );
+
+		return listPlayersDiv;
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+		
+		let boxId = this.boxId;
+
+		this.listPlayerData();
+	}
+
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				t('Listagem dos jogadores')
+			),
+			$('<p>').append(
+				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
+			),
+			Player.helpAttributesMeaning(),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Vida total, deixando o mouse em cima, pode-se verificar o percentual total de vida'), Player.EMOJI_LIFE + ' ' + Player.getAttributeName('life'))
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Clique para visualizar de forma mais completa esse personagem'), Player.EMOJI_VISUALIZE + ' Detalhes')
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Clique para visualizar os equipamentos desse personagem'), PlayerEquipament.EMOJI_VISUALIZE + ' Equipamentos')
+				)
+			)
+		];
+	}
+
+	// listar dados do jogador
+	listPlayerData () {
+
 		let me = this;
 
 		let boxId = me.boxId;
+
+		let options = this.options;
 
 		// se eh NPC
 		let isNPC = false;
@@ -15,7 +63,10 @@ class ListPlayers extends Box {
 		}
 
 		// filtrar se eh npc ou nao
-		let optionFilter = { 'filters': { 'isNPC': isNPC } }
+		let optionFilter = {
+			'filters': { 'isNPC': isNPC },
+			'order': { 'name': 'ASC' }
+		}
 
 		let allPlayers = [];
 
@@ -26,7 +77,9 @@ class ListPlayers extends Box {
 			allPlayers = Player.getAllPlayers(optionFilter);
 		}
 
-		let listPlayersDiv = $("<div>");
+		// div principal
+		let listPlayersDiv = $('#' + me.createId('list_players'));
+		listPlayersDiv.html('');
 
 		let listPlayersTable = $("<table>");
 
@@ -62,10 +115,13 @@ class ListPlayers extends Box {
 				$("<th>", { title: t('Sanidade') }).append(
 					Player.EMOJI_SANITY
 				),
-				$("<th>", { title: t('Visualizar jogador') }).append(
+				$("<th>", { title: t('Vida') }).append(
+					Player.EMOJI_LIFE
+				),
+				$("<th>", { title: t('Visualizar personagem') }).append(
 					Player.EMOJI_VISUALIZE
 				),
-				$("<th>", { title: t('Visualizar equipamentos do jogador') }).append(
+				$("<th>", { title: t('Visualizar equipamentos do personagem') }).append(
 					PlayerEquipament.EMOJI_VISUALIZE
 				)
 			)
@@ -74,6 +130,8 @@ class ListPlayers extends Box {
 		allPlayers.forEach(function (player) {
 
 			let listPlayersTableLine = $("<tr>");
+
+			let lifeProgressbar = player.getLifeProgressBar(boxId);
 			
 			listPlayersTable.append(
 				listPlayersTableLine.append(
@@ -82,19 +140,19 @@ class ListPlayers extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('name_' + player['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['name']
 						}),
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('shortname_' + player['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player.getPlayerShort()
 						}),
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('gender_' + player['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['gender']
 						})
 					),
@@ -103,7 +161,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('strength_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['strength']['basePoints']
 						})
 					),
@@ -112,7 +170,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('dextery_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['dextery']['basePoints']
 						})
 					),
@@ -121,7 +179,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('agility_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: (player['agility']) ? player['agility']['basePoints'] : 0
 						})
 					),
@@ -130,7 +188,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('constitution_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['constitution']['basePoints']
 						})
 					),
@@ -139,7 +197,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('inteligence_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['inteligence']['basePoints']
 						})
 					),
@@ -148,7 +206,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('wisdom_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['wisdom']['basePoints']
 						})
 					),
@@ -157,7 +215,7 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('charisma_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['charisma']['basePoints']
 						})
 					),
@@ -166,15 +224,20 @@ class ListPlayers extends Box {
 							type: 'text',
 							id: me.createId('sanity_' + player['id']),
 							width: 32,
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: player['sanity']['basePoints']
 						})
+					),
+					$("<td>").append(
+
+						lifeProgressbar
 					),
 					$("<td>").append(
 						$("<input>", {
 							type: 'button',
 							id: me.createId('visualize_' + player['id']),
-							onclick: 'VisualizePlayer.visualizePlayer("' + player['id'] + '", ' + isNPC + ')',
+							title: t('Visualizar personagem'),
+							onclick: 'VisualizePlayer.visualizePlayer("' + player['id'] + '", ' + isNPC + ', "' + boxId + '")',
 							value: Player.EMOJI_VISUALIZE
 						})
 					),
@@ -183,6 +246,7 @@ class ListPlayers extends Box {
 							type: 'button',
 							id: me.createId('visualize_equipaments_' + player['id']),
 							onclick: 'ListPlayerEquipaments.visualizePlayerEquipaments("' + player['id'] + '")',
+							title: t('Visualizar equipamentos do personagem'),
 							value: PlayerEquipament.EMOJI_VISUALIZE
 						})
 					)
@@ -193,10 +257,7 @@ class ListPlayers extends Box {
 		listPlayersDiv.append(
 			listPlayersTable
 		);
-
-		return listPlayersDiv;
 	}
-
 }
 
 Box.boxes[ListPlayers.windowName] = ListPlayers;

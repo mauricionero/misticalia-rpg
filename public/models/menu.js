@@ -7,7 +7,7 @@ class Menu extends RModel {
 			{
 				id: 1,
 				name: 'Aventuras',
-				emoji: '🌎',
+				emoji: Adventure.EMOJI_MAIN,
 				action_id: '',
 				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 				class: '',
@@ -16,7 +16,7 @@ class Menu extends RModel {
 						id: 2,
 						name: 'Nova aventura',
 						single_ton: true,
-						emoji: '➕',
+						emoji: Adventure.EMOJI_ADD,
 						action_id: 'new_adventure',
 						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 						class: 'open_box',
@@ -27,7 +27,7 @@ class Menu extends RModel {
 						id: 3,
 						name: 'Abrir aventura',
 						single_ton: true,
-						emoji: '📂',
+						emoji: Adventure.EMOJI_OPEN,
 						action_id: 'open_adventure',
 						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
 						class: 'open_box',
@@ -67,7 +67,7 @@ class Menu extends RModel {
 					{
 						id: 7,
 						name: 'Jogadores',
-						emoji: '♟️',
+						emoji: Player.EMOJI_MAIN,
 						action_id: '',
 						roles: [ Adventure.ROLE_MASTER ],
 						class: '',
@@ -99,7 +99,7 @@ class Menu extends RModel {
 					{
 						id: 16,
 						name: t('NPCs'),
-						emoji: '😐',
+						emoji: Player.EMOJI_NPC_MAIN,
 						action_id: '',
 						single_ton: true,
 						roles: [ Adventure.ROLE_MASTER ],
@@ -133,7 +133,7 @@ class Menu extends RModel {
 					{
 						id: 12,
 						name: t('Equipamentos'),
-						emoji: '⛨',
+						emoji: Equipament.EMOJI_MAIN,
 						action_id: '',
 						single_ton: true,
 						roles: [ Adventure.ROLE_MASTER ],
@@ -166,7 +166,7 @@ class Menu extends RModel {
 					{
 						id: 10,
 						name: 'Batalha',
-						emoji: '⚔️',
+						emoji: Battle.EMOJI_MAIN,
 						action_id: 'new_battle',
 						options: { filterAdventureId: true },
 						roles: [ Adventure.ROLE_MASTER ],
@@ -178,11 +178,11 @@ class Menu extends RModel {
 			},
 			{
 				id: 11,
-				name: 'Meu usuário',
-				emoji: '👤',
-				action_id: '',
+				name: 'Ajuda',
+				emoji: 'ℹ️',
+				action_id: 'global_help',
 				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
-				class: '',
+				class: 'open_box',
 				items: [
 				]
 			}

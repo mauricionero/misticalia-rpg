@@ -1,5 +1,10 @@
 class Adventure extends RModel {
 
+	static get EMOJI_MAIN () { return '🌎' };
+	
+	static get EMOJI_ADD () { return '➕' };
+	static get EMOJI_OPEN () { return '📂' };
+
 	static get ROLE_UNDEFINED () { return 0 };
 	static get ROLE_PLAYER () { return 1 };
 	static get ROLE_MASTER () { return 2 };
@@ -10,8 +15,25 @@ class Adventure extends RModel {
 	static get EMOJI_NAME () { return '🏷' };
 	static get EMOJI_WORLD_STYLE () { return '🌎' };
 
-		
-	//TODO: validar
+
+	// traduções dos campos
+	static get fieldTranslations () {
+		return {
+			'name': 'Nome',
+		}
+	}
+
+	// validações dessa model
+	validations () {
+		return {
+			'name': {
+				'uniqueness': {}
+			},
+			'name' : {
+				'mandatory': true
+			}
+		}
+	}
 
 
 	// criar uma nova aventura

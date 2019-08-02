@@ -69,6 +69,43 @@ class OpenAdventure extends Box {
 		return listAdventuresTable;
 	}
 
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				t('Abrir aventura')
+			),
+			$('<p>').append(
+				sprintf(t('Clique em <b>%s</b> para selecionar uma <b>nova aventura</b>.'), Adventure.EMOJI_OPEN)
+			),
+			$('<p>').append(
+				t('Quando uma nova aventura é selecionada, um novo item no menu é criado com o nome da aventura.')
+			),
+			$('<p>').append(
+				sprintf(('%s indica qual o seu papel na aventura, se %smestre ou %sjogador'), Adventure.EMOJI_ROLE_MASTER + Adventure.EMOJI_ROLE_PLAYER, Adventure.EMOJI_ROLE_MASTER, Adventure.EMOJI_ROLE_PLAYER)
+			),
+			$('<p>').append(
+				t('Dentro desse menu estarão tudo que for relacionado a essa aventura, como:')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('%s Jogadores'), Player.EMOJI_MAIN)
+				),
+				$('<li>').append(
+					sprintf(t('%s NPCs (personagens não jogaveis, controlados pelo mestre)'), Player.EMOJI_NPC_MAIN)
+				),
+				$('<li>').append(
+					sprintf(t('%s Equipamentos'), Equipament.EMOJI_MAIN)
+				),
+				$('<li>').append(
+					sprintf(t('%s Batalhas'), Battle.EMOJI_MAIN)
+				)
+			)
+		];
+	}
+
 	// abrir aventura atual e refazer o menu
 	static open_adventure (adventureId) {
 		Adventure.setCurrentAdventureId(adventureId);

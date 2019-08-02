@@ -38,9 +38,9 @@ class EquipedEquipament extends RModel {
 	static recalculateEquipedModifiers (playerId) {
 		let allEquipedEquipaments = this.getAllPlayerEquipedEquipaments(playerId);
 
-		Player.clearPermanentModifiers(playerId);
-
 		let player = Player.getPlayer(playerId);
+
+		player.clearPermanentModifiers();
 
 		// pegar todos os equipamentos equipados no jogador
 		allEquipedEquipaments.forEach(function (equipedEquipament) {

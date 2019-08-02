@@ -78,7 +78,7 @@ class ListPlayers extends Box {
 			listPlayersTable.append(
 				listPlayersTableLine.append(
 					$("<td>", { title: player['name'] } ).append(
-						Player.getPlayerShort(player['id']),
+						player.getPlayerShort(),
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('name_' + player['id']),
@@ -89,7 +89,7 @@ class ListPlayers extends Box {
 							type: 'hidden',
 							id: me.createId('shortname_' + player['id']),
 							readonly: 'readonly',
-							value: Player.getPlayerShort(player['id'])
+							value: player.getPlayerShort()
 						}),
 						$("<input>", {
 							type: 'hidden',

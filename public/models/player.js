@@ -124,23 +124,60 @@ class Player extends RModel {
 		return this.save();
 	}
 
-
 	// pegar o valor de um atributo
-	static getAttribute (player, attribute, subAttribute = '') {
+	getAttribute (attribute, subAttribute = '') {
 
 		// se tiver subatributo
 		if (subAttribute) {
-			if (player[attribute]) {
-				return player[attribute][subAttribute] || 0;
+			if (this[attribute]) {
+				return this[attribute][subAttribute] || 0;
 			}
 
 		// se for um atributo de 1 nivel soh (sem subatributo)
 		} else {
-			return player[attribute]
+			return this[attribute]
 		}
 
 		return 0;
 	}
+
+	// retorna algo para colocar num espaço pequeno sobre o player (html), tipo um avatar ou as iniciais
+	getPlayerShort () {
+		// pegar as primeiras letras do nome e deixar maiusculo
+		let playerShort = this['name'].match(/\b(\w)/g).join('').toUpperCase();
+
+		return playerShort;
+	}
+
+	// apagar os modificadores permanentes
+	clearPermanentModifiers () {
+
+		// apagar todos os modificadores permanentes antes de calcular tudo de volta
+		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+			let basePoints = this[attribute]['basePoints'] || 0;
+			let permanentModifier = this[attribute]['permanentModifier'] || 0;
+			let temporaryModifier = this[attribute]['temporaryModifier'] || 0;
+
+			this[attribute]['permanentModifier'] = 0;
+			this[attribute]['points'] = basePoints;
+		}, this);
+
+		// apagar todos os modificadores secundarios também antes de calcular tudo de volta
+		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
+			if (this[attribute] == undefined) {
+				this[attribute] = {}
+			}
+
+			let basePoints = this[attribute]['basePoints'] || 0;
+			let permanentModifier = this[attribute]['permanentModifier'] || 0;
+
+			this[attribute]['permanentModifier'] = 0;
+			this[attribute]['points'] = basePoints;
+		}, this);
+
+		this.save();
+	}
+
 
 	// salvar um valor de um atributo com o id do jogador
 	static saveAttribute (playerId, attribute, value) {
@@ -170,16 +207,6 @@ class Player extends RModel {
 		let allCurrentPlayers = this.getAllFromCurrentAdventure(options);
 
 		return allCurrentPlayers;
-	}
-
-	// retorna algo para colocar num espaço pequeno sobre o player (html), tipo um avatar ou as iniciais
-	static getPlayerShort (playerId) {
-		let player = this.getPlayer(playerId);
-
-		// pegar as primeiras letras do nome e deixar maiusculo
-		let playerShort = player['name'].match(/\b(\w)/g).join('').toUpperCase();
-
-		return playerShort;
 	}
 
 	// retorna 1 player especifico pelo id
@@ -243,38 +270,6 @@ class Player extends RModel {
 
 		return parseInt(basePoints) + parseInt(temporaryModifier) + parseInt(permanentModifier);
 	}
-
-	// apagar os modificadores permanentes
-	static clearPermanentModifiers (playerId) {
-
-		let player = this.getPlayer(playerId);
-
-		// apagar todos os modificadores permanentes antes de calcular tudo de volta
-		this.ALL_ATTRIBUTES.forEach(function (attribute) {
-			let basePoints = player[attribute]['basePoints'] || 0;
-			let permanentModifier = player[attribute]['permanentModifier'] || 0;
-			let temporaryModifier = player[attribute]['temporaryModifier'] || 0;
-
-			player[attribute]['permanentModifier'] = 0;
-			player[attribute]['points'] = basePoints;
-		});
-
-		// apagar todos os modificadores secundarios também antes de calcular tudo de volta
-		this.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
-			if (player[attribute] == undefined) {
-				player[attribute] = {}
-			}
-
-			let basePoints = player[attribute]['basePoints'] || 0;
-			let permanentModifier = player[attribute]['permanentModifier'] || 0;
-
-			player[attribute]['permanentModifier'] = 0;
-			player[attribute]['points'] = basePoints;
-		});
-
-		player.save();
-	}
-
 
 	// calcular mira do ataque
 	static atackAim (dieAim, dextery) {

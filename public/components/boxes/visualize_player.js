@@ -282,9 +282,9 @@ class VisualizePlayer extends Box {
 		}
 
 		allAttributes.forEach(function (attribute) {
-			let basePoints = Player.getAttribute(player, attribute, 'basePoints');
-			let permanentModifier = Player.getAttribute(player, attribute, 'permanentModifier');
-			let temporaryModifier = Player.getAttribute(player, attribute, 'temporaryModifier');
+			let basePoints = player.getAttribute(attribute, 'basePoints');
+			let permanentModifier = player.getAttribute(attribute, 'permanentModifier');
+			let temporaryModifier = player.getAttribute(attribute, 'temporaryModifier');
 
 			let typeId = Modifier.ALL_TYPE_IDS[attribute];
 

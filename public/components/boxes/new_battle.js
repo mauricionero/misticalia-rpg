@@ -85,9 +85,9 @@ class NewBattle extends Box {
 			let isNPC = player['isNPC'];
 			let playerGenderId = player['gender'];
 			let playerName = player['name'];
-			let playerLife = Player.getAttribute(player, 'life') || 100;
+			let playerLife = player.getAttribute('life') || 100;
 
-			let playerAgility = Player.getAttribute(player, 'agility', 'basePoints') || 0;
+			let playerAgility = player.getAttribute('agility', 'basePoints') || 0;
 
 			// se nao estiver definido se eh npc, ou se estiver definido de forma errada (nao boolean), pular
 			if (isNPC == undefined || typeof isNPC == 'string') {
@@ -137,7 +137,7 @@ class NewBattle extends Box {
 					})
 				),
 				$("<td>", { title: playerTitle } ).append(
-					icon + ' ' + Player.getPlayerShort(player['id']) + ':',
+					icon + ' ' + player.getPlayerShort() + ':',
 					$("<input>", {
 						type: 'hidden',
 						class: me.createId('new_battle_player_ids'),
@@ -154,7 +154,7 @@ class NewBattle extends Box {
 						type: 'hidden',
 						id: me.createId('player_shortname_' + player['id']),
 						readonly: 'readonly',
-						value: Player.getPlayerShort(player['id'])
+						value: player.getPlayerShort()
 					})
 				),
 				$("<td>").append(

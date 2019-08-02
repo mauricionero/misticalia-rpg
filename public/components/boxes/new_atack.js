@@ -176,7 +176,7 @@ class NewAtack extends Box {
 		let inputWidth = 30;
 		let inputWidthSmall = 26;
 
-		let playerLife = Player.getAttribute(player, 'life') || 100;
+		let playerLife = player.getAttribute('life') || 100;
 
 		if (currentPlayer) {
 			inputAtackCheck = '';
@@ -186,7 +186,7 @@ class NewAtack extends Box {
 				id: me.createId('atack_' + playerId),
 				width: inputWidth,
 				onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-				value: Player.getAttribute(player, 'atack', 'points')
+				value: player.getAttribute('atack', 'points')
 			});
 		} else {
 			inputAtackCheck = $("<input>", {
@@ -201,7 +201,7 @@ class NewAtack extends Box {
 				id: me.createId('defense_' + playerId),
 				width: inputWidth,
 				onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-				value: Player.getAttribute(player, 'defense', 'points')
+				value: player.getAttribute('defense', 'points')
 			});
 		}
 
@@ -283,7 +283,7 @@ class NewAtack extends Box {
 					})
 				),
 				$("<td>", { title: playerTitle } ).append(
-					icon + ' ' + Player.getPlayerShort(playerId),
+					icon + ' ' + player.getPlayerShort(),
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('player_id_' + playerId),
@@ -346,7 +346,7 @@ class NewAtack extends Box {
 						id: me.createId('strength_' + playerId),
 						width: inputWidth,
 						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-						value: Player.getAttribute(player, 'strength', 'points')
+						value: player.getAttribute('strength', 'points')
 					})
 				),
 				$("<td>").append(
@@ -367,7 +367,7 @@ class NewAtack extends Box {
 						id: me.createId('constitution_' + playerId),
 						width: inputWidth,
 						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-						value: Player.getAttribute(player, 'constitution', 'points')
+						value: player.getAttribute('constitution', 'points')
 					}),
 					$("<input>", {
 						type: 'text',

@@ -112,15 +112,13 @@ class AddPlayerEquipament extends Box {
 		let quantity = $('#' + me.createId('quantity_' + equipamentId)).val();
 		let addButton = $('#' + me.createId('add_' + equipamentId));
 
-		let newPlayerEquipament = {
+		let newPlayerEquipament = new PlayerEquipament({
 			'playerId': playerId,
 			'equipamentId': equipamentId,
 			'quantity': quantity
-		}
+		});
 
-		let resultSaved = PlayerEquipament.addPlayerEquipament(newPlayerEquipament);
-
-		//TODO: adicionar modificadores
+		let resultSaved = newPlayerEquipament.addPlayerEquipament();
 
 		if (resultSaved) {
 

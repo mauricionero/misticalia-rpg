@@ -7,7 +7,15 @@ class PlayerEquipament extends RModel {
 		return {
 			'quantity': 'quantidade',
 		}
-	};
+	}
+
+
+	// adicionar um novo equipamento ao jogador
+	addPlayerEquipament () {
+		
+		return this.save();
+	}
+
 
 	// validações dessa model
 	static validations () {
@@ -23,12 +31,6 @@ class PlayerEquipament extends RModel {
 		}
 	}
 
-	// adicionar um novo equipamento ao jogador
-	static addPlayerEquipament (newPlayerEquipament) {
-		
-		return this.saveItem(newPlayerEquipament);
-	}
-
 	// retorna todos os equipamentos do jogador
 	static getAllPlayerEquipaments (playerId) {
 
@@ -39,3 +41,5 @@ class PlayerEquipament extends RModel {
 		return playerEquipaments;
 	}
 }
+
+RModel.models['PlayerEquipament'] = PlayerEquipament;

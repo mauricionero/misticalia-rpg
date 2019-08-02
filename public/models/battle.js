@@ -12,3 +12,5 @@ class Battle extends RModel {
 	static get EMOJI_HURT () { return '🤕' };
 
 }
+
+RModel.models['Battle'] = Battle;

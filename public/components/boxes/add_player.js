@@ -232,12 +232,12 @@ class AddPlayer extends Box {
 
 		isNPC = (isNPC == 'true') ? true : false;
 
-		let newPlayer = {
+		let newPlayer = new Player({
 			'login': playerLogin,
 			'gender': playerGender,
 			'name': playerName,
 			'isNPC': isNPC
-		}
+		});
 
 		let allAttributes = Player.ALL_ATTRIBUTES;
 		if (isNPC) {
@@ -257,7 +257,7 @@ class AddPlayer extends Box {
 			}
 		});
 
-		let resultSaved = Player.savePlayer(newPlayer);
+		let resultSaved = newPlayer.savePlayer();
 
 		let saveButton = $('#' + me.createId('save'));
 

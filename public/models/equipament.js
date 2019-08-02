@@ -56,7 +56,15 @@ class Equipament extends RModel {
 		}
 	}
 
-	//TODO: criar metodo estatico padronizado e colocar os campos a serem validados e o tipo de validacao
+
+	// salvar um equipamento (editar ou criar um novo)
+	saveEquipament () {
+
+		return this.save();
+	}
+
+
+	//TODO: validar
 
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
@@ -114,10 +122,6 @@ class Equipament extends RModel {
 
 		return weight + measureUnit;
 	}
-
-	// salvar um equipamento (editar ou criar um novo)
-	static saveEquipament (equipament) {
-
-		return this.saveItem(equipament);
-	}
 }
+
+RModel.models['Equipament'] = Equipament;

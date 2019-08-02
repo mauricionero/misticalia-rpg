@@ -117,6 +117,14 @@ class Player extends RModel {
 		]
 	}
 
+
+	// salvar um player (editar ou criar um novo)
+	savePlayer () {
+
+		return this.save();
+	}
+
+
 	// pegar o valor de um atributo
 	static getAttribute (player, attribute, subAttribute = '') {
 
@@ -140,18 +148,12 @@ class Player extends RModel {
 
 		player[attribute] = value;
 
-		return this.savePlayer(player);
+		return player.savePlayer();
 	}
 
 	// pegar a tradução do atributo
 	static getAttributeName (attribute) {
 		return t(Player.ALL_ATTRIBUTES_NAMES[attribute])
-	}
-
-	// salvar um player (editar ou criar um novo)
-	static savePlayer (player) {
-
-		return this.saveItem(player);
 	}
 
 	// retorna todos os players num array
@@ -270,7 +272,7 @@ class Player extends RModel {
 			player[attribute]['points'] = basePoints;
 		});
 
-		this.saveItem(player);
+		player.save();
 	}
 
 
@@ -287,22 +289,29 @@ class Player extends RModel {
 	// calcular o resultado do quanto acertou o defensor
 	static defendAimResult (dieAim, dextery, aimPoints) {
 		let level = this.levelCalculator(dextery);
-
+		
 		let minNormalAim = -100;
 
 		// verificar a habilidade de desviar
 		let dodgePoints = parseInt((dieAim * dextery) / 100) + level;
-
-		let totalDodge = (parseInt((aimPoints / dodgePoints) * 100) - 100) * -1;
+		
+		let totalDodge = 0;
+		if (dodgePoints == 0) {
+			dodgePoints = -1;
+		}
+		totalDodge = (parseInt((aimPoints / dodgePoints) * 100) - 100);
+		if (totalDodge > 0) {
+			totalDodge *= -1;
+		}
 
 		// a partir de 100% de acerto (negativo), amortecer o acerto critico
 		if (totalDodge < minNormalAim) {
 			// pegar 10% do que esta passando de 100% como critico
 			let criticalHit = (totalDodge - minNormalAim) * 0.1;
-			console.log('criticalHit', criticalHit);
 
 			totalDodge = parseInt(minNormalAim + criticalHit);
 		}
+
 		return totalDodge;
 	}
 
@@ -329,24 +338,23 @@ class Player extends RModel {
 		// verificar primeiro se passou da defesa total
 		let totalDefense = parseInt((dieStrength * strength) / 100) + level + defense;
 
-		return totalDefense - totalHit;
+		let defenseResult = totalDefense - totalHit;
+
+		return defenseResult;
 	}
 
 	// calcular o quanto de vida perdeu de acordo com o ataque recebido
 	static defendLifeResult(constitution, totalDefense) {
 
 		let level = this.levelCalculator(constitution);
-
-		let constitutionModifier = 100 / constitution;
-
-		console.log('constitutionModifier', constitutionModifier);
-		console.log('totalDefense', totalDefense);
-		console.log('level', level);
+		
+		let constitutionModifier = 0;
+		if (constitution != 0) {
+			constitutionModifier = 100 / constitution;
+		}
 
 		let lifeDifference = parseInt(totalDefense * constitutionModifier) + level;
-
-		console.log('lifeDifference', lifeDifference);
-
+		
 		// positivo eh pq nao levou dano
 		if (lifeDifference > 0) {
 			lifeDifference = 0;
@@ -370,3 +378,5 @@ class Player extends RModel {
 		}
 	}
 }
+
+RModel.models['Player'] = Player;

@@ -188,5 +188,6 @@ class Menu extends RModel {
 			}
 		]
 	}
-
 }
+
+RModel.models['Menu'] = Menu;

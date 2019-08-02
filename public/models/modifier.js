@@ -120,3 +120,5 @@ class Modifier extends RModel {
 		return modifiers;
 	}
 }
+
+RModel.models['Modifier'] = Modifier;

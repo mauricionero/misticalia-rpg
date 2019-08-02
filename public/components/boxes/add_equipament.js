@@ -98,13 +98,13 @@ class AddEquipament extends Box {
 		let equipamentName = $('#' + me.createId('name')).val();
 		let equipamentWeight = $('#' + me.createId('weight')).val();
 
-		let newEquipament = {
+		let newEquipament = new Equipament({
 			'typeId': equipamentType,
 			'name': equipamentName,
 			'weight': equipamentWeight
-		}
+		});
 
-		let resultSaved = Equipament.saveEquipament(newEquipament);
+		let resultSaved = newEquipament.saveEquipament();
 
 		let saveButton = $('#' + me.createId('save'));
 

@@ -16,3 +16,5 @@ class User extends RModel {
 	}
 
 }
+
+RModel.models['User'] = User;

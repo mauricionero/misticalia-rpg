@@ -11,7 +11,16 @@ class Adventure extends RModel {
 	static get EMOJI_WORLD_STYLE () { return '🌎' };
 
 		
-	//TODO: criar metodo estatico padronizado e colocar os campos a serem validados e o tipo de validacao
+	//TODO: validar
+
+
+	// criar uma nova aventura
+	newAdventure () {
+		this['role'] = Adventure.ROLE_MASTER;
+		
+		return this.save();
+	}
+	
 
 	static get EMOJI_ROLE () {
 		return {
@@ -26,13 +35,6 @@ class Adventure extends RModel {
 		let adventures = Adventure.getAll();
 
 		return adventures;
-	}
-
-	// criar uma nova aventura
-	static newAdventure (adventure) {
-		adventure['role'] = Adventure.ROLE_MASTER;
-		
-		return this.saveItem(adventure);
 	}
 
 	// pegar o id da aventura atual
@@ -93,3 +95,5 @@ class Adventure extends RModel {
 	}
 
 }
+
+RModel.models['Adventure'] = Adventure;

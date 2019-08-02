@@ -1,9 +1,26 @@
 class RModel {
 
+	static models = [];
+
+	constructor(newAttributes = {}) {
+
+		if (newAttributes) {
+			for (var attribute in newAttributes) {
+				this[attribute] = newAttributes[attribute];
+			}
+		}
+
+	}
+
 	// fazer as validações
-	static validate (newData) {
+	validate () {
 
 		let errorMessages = [];
+
+		// se nao existir definicao de validação na model, nao tem o que fazer
+		if (this.validations !== 'function') {
+			return [];
+		}
 
 		let validations = this.validations();
 
@@ -18,11 +35,11 @@ class RModel {
 
 						let options = { 'filters': {} };
 
-						options['filters'][fieldValidate] = newData[fieldValidate];
+						options['filters'][fieldValidate] = this[fieldValidate];
 
 						// montar uma filtragem com todos os campos, se vier algum, eh invalido
 						scope.forEach(function (fieldName) {
-							options['filters'][fieldName] = newData[fieldName];
+							options['filters'][fieldName] = this[fieldName];
 						});
 
 						let duplicateEntries = this.getAll(options);
@@ -36,7 +53,7 @@ class RModel {
 						// se for realmente obrigatorio
 						if (isMandatory) {
 
-							if (! newData[fieldValidate]) {
+							if (! this[fieldValidate]) {
 
 								let fieldNameTranslated = fieldValidate;
 
@@ -63,27 +80,23 @@ class RModel {
 	}
 
 	// criar novo ou editar um item
-	static saveItem (item) {
-		let storeName = this.name;
+	save () {
+		let storeName = this.constructor.name;
 
-		let randomId = Math.floor(Math.random() * 100000);
+		let randomId = Date.now();
 
-		item['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
+		this['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
 
-		let errorMessages = [];
-
-		// validação
-		if (this.validate === 'function') {
-			errorMessages = this.validate(item);
-		}
+		// validacao
+		let errorMessages = this.validate();
 		
 		// se for valido
 		if (errorMessages.length == 0) {
-			let storeData = this.getAll();
+			let storeData = RModel.models[storeName].getAll();
 
 			// se nao tiver id: criar um para depois adicionar o novo item
-			if (! item['id']) {
-				item['id'] = 't' + randomId; // criar um id temporario local enquanto nao salva no servidor
+			if (! this['id']) {
+				this['id'] = this['currentAdventureId'] + randomId; // criar um id temporario local enquanto nao salva no servidor
 
 			// se ja tiver id, procurar na store local e apagar para depois re-adicionar o item
 			} else {
@@ -91,16 +104,16 @@ class RModel {
 				storeData = storeData.filter(function (singleData) {
 
 					// soh remove do filtro se for o id atual
-					if (singleData['id'] == item['id']) {
+					if (singleData['id'] == this['id']) {
 						return false;
 					}
 
 					return true;
-				});
+				}, this); // precisa passar o this para manter o escopo atual
 			}
 
 			// adicionar item na store local
-			storeData.push(item);
+			storeData.push(this);
 
 			try {
 				localStorage.setItem(storeName, JSON.stringify(storeData));
@@ -126,9 +139,6 @@ class RModel {
 		// pega todos os itens que nao estao no filtro
 		let storeData = this.getAll(options, true);
 
-		console.log('options removeItem', options);
-		console.log('storeData removeItem', storeData);
-
 		try {
 			localStorage.setItem(storeName, JSON.stringify(storeData));
 
@@ -151,11 +161,22 @@ class RModel {
 			storeData = [];
 		}
 
+		let allModelInstances = [];
+
+		// transformar tudo na model atual
+		storeData.forEach(function (item) {
+			let klass = new RModel.models[storeName];
+
+			Object.assign(klass, item);
+
+			allModelInstances.push(klass);
+		});
+
 		// verificar se tem alguma filtragem dos dados
 		if (typeof options['filters'] == 'object') {
 
 			// filtrando os dados
-			storeData = storeData.filter(function (singleData) {
+			allModelInstances = allModelInstances.filter(function (singleData) {
 				let onFilter = true;
 
 				for (var filterField in options['filters']) {
@@ -198,7 +219,7 @@ class RModel {
 		if (typeof options['order'] == 'object') {
 
 			// ordenação com logica manual
-			storeData.sort(function(obj1, obj2) {
+			allModelInstances.sort(function(obj1, obj2) {
 
 				let compResult = 0;
 
@@ -238,7 +259,7 @@ class RModel {
 			})
 		}
 
-		return storeData;
+		return allModelInstances;
 	}
 	
 	// retornar todos os dados relacionados aa essa model da aventura atual

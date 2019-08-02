@@ -212,14 +212,13 @@ class VisualizeEquipament extends Box {
 		let equipamentName = $('#' + me.createId('name')).val();
 		let equipamentWeight = $('#' + me.createId('weight')).val();
 
-		let editEquipament = {
-			'id': equipamentId, // identificar o registro a ser editado
-			'typeId': equipamentType,
-			'name': equipamentName,
-			'weight': equipamentWeight
-		}
+		let editEquipament = Equipament.getEquipament(equipamentId);
 
-		let resultSaved = Equipament.saveEquipament(editEquipament);
+		editEquipament['typeId'] = equipamentType;
+		editEquipament['name'] = equipamentName;
+		editEquipament['weight'] = equipamentWeight;
+
+		let resultSaved = editEquipament.saveEquipament();
 
 		let saveButton = $('#' + me.createId('save'));
 

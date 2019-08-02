@@ -1,9 +1,9 @@
 class EquipedEquipament extends RModel {
 
 	// equipar um novo equipamento ao jogador
-	static equipEquipament (newEquipedEquipament) {
+	equipEquipament () {
 		
-		return this.saveItem(newEquipedEquipament);
+		return this.save();
 	}
 
 	// desequipar o equipamento do jogador
@@ -77,6 +77,8 @@ class EquipedEquipament extends RModel {
 			});
 		});
 
-		let resultSaved = Player.savePlayer(player);
+		let resultSaved = player.savePlayer();
 	}
 }
+
+RModel.models['EquipedEquipament'] = EquipedEquipament;

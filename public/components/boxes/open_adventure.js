@@ -12,6 +12,8 @@ class OpenAdventure extends Box {
 
 		var allAdventures = Adventure.getUserAdventures();
 
+		console.log('allAdventures', allAdventures);
+
 		let listAdventuresTable = $("<table>");
 
 		// titulo das colunas na tabela

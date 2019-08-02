@@ -511,20 +511,18 @@ class VisualizePlayer extends Box {
 		
 		isNPC = (isNPC == 'true') ? true : false;
 
-		console.log("isNPC", isNPC);
-
 		let resultSaved = false;
 
 		// se estiver equipando
 		if (inserting) {
-			let newEquipedEquipament = {
+			let newEquipedEquipament = new EquipedEquipament({
 				'equipamentTypeId': equipamentTypeId,
 				'playerId': playerId,
 				'playerEquipamentId': playerEquipamentId,
 				'equipamentId': equipamentId
-			}
+			});
 
-			resultSaved = EquipedEquipament.equipEquipament(newEquipedEquipament);
+			resultSaved = newEquipedEquipament.equipEquipament();
 
 		// se estiver desequipando
 		} else {
@@ -603,8 +601,8 @@ class VisualizePlayer extends Box {
 		let me = Box.getBox(boxId);
 
 		let basePoints = $('#' + me.createId('base_points_' + playerId + '_' + attribute)).val() || 0;
-		let temporaryModifier = $('#' + me.createId('_temporary_modifier_' + playerId + '_' + attribute)).val() || 0;
-		let permanentModifier = $('#' + me.createId('_permanent_modifier_' + playerId + '_' + attribute)).val() || 0;
+		let temporaryModifier = $('#' + me.createId('temporary_modifier_' + playerId + '_' + attribute)).val() || 0;
+		let permanentModifier = $('#' + me.createId('permanent_modifier_' + playerId + '_' + attribute)).val() || 0;
 
 		let levelInput = $('#' + me.createId('level_' + playerId + '_' + attribute));
 		let totalPointsInput = $('#' + me.createId('points_' + playerId + '_' + attribute));
@@ -670,19 +668,22 @@ class VisualizePlayer extends Box {
 		allAttributes.forEach(function (attribute) {
 			let basePoints = parseInt($('#' + me.createId('base_points_' + playerId + '_' + attribute)).val());
 			let points = parseInt($('#' + me.createId('points_' + playerId + '_' + attribute)).val());
+			let temporaryModifier = $('#' + me.createId('temporary_modifier_' + playerId + '_' + attribute)).val() || 0;
 
 			if (editPlayer[attribute]) {
 				editPlayer[attribute]['basePoints'] = basePoints;
 				editPlayer[attribute]['points'] = points;
+				editPlayer[attribute]['temporaryModifier'] = temporaryModifier;
 			} else {
 				editPlayer[attribute] = {
 					'basePoints': basePoints,
-					'points': points
+					'points': points,
+					'temporaryModifier': temporaryModifier
 				}
 			}
 		});
 
-		let resultSaved = Player.savePlayer(editPlayer);
+		let resultSaved = editPlayer.savePlayer();
 
 		let saveButton = $('#' + me.createId('save'));
 

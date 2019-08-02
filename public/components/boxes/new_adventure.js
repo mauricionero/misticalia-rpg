@@ -61,12 +61,12 @@ class NewAdventure extends Box {
 		let adventureName = $('#' + me.createId('name')).val();
 		let adventureStyle = $('#' + me.createId('style')).val();
 
-		let newAdventure = {
+		let newAdventure = new Adventure({
 			'name': adventureName,
 			'style': adventureStyle
-		}
+		});
 
-		let resultSaved = Adventure.newAdventure(newAdventure);
+		let resultSaved = newAdventure.newAdventure();
 		let saveButton = $('#' + me.createId('save'));
 
 		if (resultSaved) {

@@ -259,14 +259,7 @@ class NewAtack extends Box {
 			secondaryAttributes = '--';
 		}
 
-		let lifeProgressbar = $("<div>", {
-			id: me.createId('life_display_' + player['id']),
-			width: 38,
-			height: 20,
-			title: playerLife + '%'
-		}).progressbar({ value: playerLife })
-
-		lifeProgressbar.children().css({ 'background': 'Red' });
+		let lifeProgressbar = player.getLifeProgressBar(boxId);
 
 		newAtackTable.append(
 			$("<tr>").append(
@@ -287,26 +280,26 @@ class NewAtack extends Box {
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('player_id_' + playerId),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						class: playerIdClass,
 						value: playerId
 					}),
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('name_' + playerId),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: player['name']
 					}),
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('shortname_' + playerId),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: player['shortname']
 					}),
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('gender_' + playerId),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: player['gender']
 					})
 				),
@@ -329,7 +322,7 @@ class NewAtack extends Box {
 						type: 'text',
 						id: me.createId('aim_result_' + playerId),
 						width: inputWidth,
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: 0
 					})
 				),
@@ -357,7 +350,7 @@ class NewAtack extends Box {
 						type: 'text',
 						id: me.createId('strength_result_' + playerId),
 						width: inputWidth,
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: 0
 					})
 				),
@@ -374,7 +367,7 @@ class NewAtack extends Box {
 						id: me.createId('life_result_' + playerId),
 						width: inputWidth,
 						value: 0,
-						onkeyup: 'NewAtack.changeCurrentLifeResult("' + boxId + '")',
+						onkeyup: 'NewAtack.changeCurrentLifeResult("' + boxId + '", "' + playerId + '", this)',
 						tabindex: (howManyPlayers * 3 + count)
 					}),
 				),
@@ -385,13 +378,13 @@ class NewAtack extends Box {
 					$("<input>", {
 						id: me.createId('life_' + playerId),
 						type: 'hidden',
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: playerLife
 					}),
 					$("<input>", {
 						id: me.createId('current_life_' + playerId),
 						type: 'hidden',
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: playerLife
 					})
 				),
@@ -498,6 +491,12 @@ class NewAtack extends Box {
 	changeLife (playerId, lifeDiference) {
 		let me = this;
 
+		lifeDiference = parseInt(lifeDiference);
+
+		if (! lifeDiference) {
+			lifeDiference = 0;
+		}
+
 		let totalLife = parseInt($('#' + me.createId('life_' + playerId)).val() || 0);
 		let currentLifeInput = $('#' + me.createId('current_life_' + playerId));
 		let lifeProgressbarId = me.createId('life_display_' + playerId);
@@ -591,8 +590,14 @@ class NewAtack extends Box {
 		}
 	}
 
-	static changeCurrentLifeResult (boxId) {
-		console.warn('Implementar!');
+	// alterar manualmente de acordo com o input preenchido pelo usuario
+	static changeCurrentLifeResult (boxId, playerId, input) {
+
+		let me = Box.getBox(boxId);
+
+		let lifeLoss = input.value;
+
+		me.changeLife(playerId, lifeLoss);
 	}
 }
 

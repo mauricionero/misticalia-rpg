@@ -23,6 +23,7 @@ class AddEquipament extends Box {
 						type: 'radio',
 						class: 'radio_equipament_type',
 						name: me.createId('equipament_type'),
+						checked: (key == 1),
 						value: key
 					}),
 					$('<span>').append(
@@ -47,7 +48,7 @@ class AddEquipament extends Box {
 
 				$('<tr>').append(
 					$('<th>').append(
-						Equipament.EMOJI_NAME + ' ' + t('Nome')
+						Equipament.EMOJI_NAME + ' ' + t('Nome') + '*'
 					),
 					$('<td>').append(
 						$("<input>", {
@@ -112,10 +113,14 @@ class AddEquipament extends Box {
 
 			saveButton.val(t('Adicionado!'));
 			saveButton.attr('disabled','disabled');
+			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+
+			//TODO: apos salvar, abrir dialog dos detalhes desse equipamento ou dar um jeito de usar a propria visualização para adicioanr um novo
 
 		} else {
 
-			saveButton.val(t('Erro :('));
+			saveButton.val(t('Adicionar equipamento'));
+			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 		}
 	}
 

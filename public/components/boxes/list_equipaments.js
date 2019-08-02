@@ -10,11 +10,21 @@ class ListEquipaments extends Box {
 
 		let allEquipaments = [];
 
+		// filtrar se eh npc ou nao
+		let optionFilter = {
+			'order': {
+				'typeId': 'ASC',
+				'name': 'ASC'
+			}
+		}
+
+		console.log('optionFilter', optionFilter);
+
 		// se deve filtrar por aventura
 		if (options['filterAdventureId']) {
-			allEquipaments = Equipament.getAllEquipamentsCurrentAdventure();
+			allEquipaments = Equipament.getAllEquipamentsCurrentAdventure(optionFilter);
 		} else {
-			allEquipaments = Equipament.getAllEquipaments();
+			allEquipaments = Equipament.getAllEquipaments(optionFilter);
 		}
 
 		let listEquipamentDiv = $('<div>');
@@ -48,7 +58,7 @@ class ListEquipaments extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('type_' + equipament['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['typeId']
 						})
 					),
@@ -57,7 +67,7 @@ class ListEquipaments extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('name_' + equipament['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['name']
 						})
 					),
@@ -66,7 +76,7 @@ class ListEquipaments extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('weight_' + equipament['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['weight']
 						})
 					),

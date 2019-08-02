@@ -15,7 +15,7 @@ class NewAdventure extends Box {
 			$("<table>").append(
 				$("<tr>").append(
 					$("<th>").append(
-						Adventure.EMOJI_NAME + ' ' + t('Nome')
+						Adventure.EMOJI_NAME + ' ' + t('Nome') + ' *'
 					),
 					$("<td>").append(
 						$("<input>", {
@@ -73,10 +73,12 @@ class NewAdventure extends Box {
 
 			saveButton.val(t('Criado!'));
 			saveButton.attr('disabled','disabled');
+			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 			
 		} else {
 
-			saveButton.val(t('Erro :('));
+			saveButton.val(t('Criar'));
+			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 		}
 	}
 

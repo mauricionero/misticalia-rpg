@@ -85,7 +85,6 @@ class NewBattle extends Box {
 			let isNPC = player['isNPC'];
 			let playerGenderId = player['gender'];
 			let playerName = player['name'];
-			let playerLife = player.getAttribute('life') || 100;
 
 			let playerAgility = player.getAttribute('agility', 'basePoints') || 0;
 
@@ -107,14 +106,7 @@ class NewBattle extends Box {
 				playerTitle = t('Jogador') + ' ' + playerName;
 			}
 
-			let lifeProgressbar = $("<div>", {
-				id: me.createId('life_display_' + player['id']),
-				width: 38,
-				height: 20,
-				title: playerLife + '%'
-			}).progressbar({ value: playerLife })
-
-			lifeProgressbar.children().css({ 'background': 'Red' });
+			let lifeProgressbar = player.getLifeProgressBar(boxId);
 
 			let atackProgressbar = $("<div>", {
 				id: me.createId('current_display_' + player['id']),
@@ -141,19 +133,19 @@ class NewBattle extends Box {
 					$("<input>", {
 						type: 'hidden',
 						class: me.createId('new_battle_player_ids'),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: player['id']
 					}),
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('player_name_' + player['id']),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: player['name']
 					}),
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('player_shortname_' + player['id']),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: player.getPlayerShort()
 					})
 				),
@@ -182,7 +174,7 @@ class NewBattle extends Box {
 					$("<input>", {
 						type: 'hidden',
 						id: me.createId('current_' + player['id']),
-						readonly: 'readonly',
+						disabled: 'disabled',
 						value: 0
 					})
 				),

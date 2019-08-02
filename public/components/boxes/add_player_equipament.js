@@ -51,7 +51,7 @@ class AddPlayerEquipament extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('type_' + equipament['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['typeId']
 						})
 					),
@@ -60,7 +60,7 @@ class AddPlayerEquipament extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('name_' + equipament['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['type']
 						})
 					),
@@ -69,7 +69,7 @@ class AddPlayerEquipament extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('weight_' + equipament['id']),
-							readonly: 'readonly',
+							disabled: 'disabled',
 							value: equipament['weight']
 						})
 					),

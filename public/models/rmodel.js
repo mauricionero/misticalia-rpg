@@ -14,11 +14,14 @@ class RModel {
 
 	// fazer as validações
 	validate () {
+		let storeName = this.constructor.name;
+
+		let klass = RModel.models[storeName];
 
 		let errorMessages = [];
 
 		// se nao existir definicao de validação na model, nao tem o que fazer
-		if (this.validations !== 'function') {
+		if (typeof this.validations != 'function') {
 			return [];
 		}
 
@@ -31,7 +34,7 @@ class RModel {
 				for (var whichValidation in whichValidations) {
 
 					if (whichValidation == 'uniqueness') {
-						let scope = whichValidations[whichValidation]['scope'];
+						let scope = whichValidations[whichValidation]['scope'] || [];
 
 						let options = { 'filters': {} };
 
@@ -40,9 +43,9 @@ class RModel {
 						// montar uma filtragem com todos os campos, se vier algum, eh invalido
 						scope.forEach(function (fieldName) {
 							options['filters'][fieldName] = this[fieldName];
-						});
+						}, this);
 
-						let duplicateEntries = this.getAll(options);
+						let duplicateEntries = klass.getAll(options);
 
 						if (duplicateEntries.length) {
 							errorMessages.push(t('Já contém um igual'));
@@ -59,13 +62,13 @@ class RModel {
 
 								// se existe o metodo de tradução dos campos da model
 								// deixar esses warnings, eles auxiliam o que fazer em caso desse erro
-								if (this.fieldTranslations == undefined) {
-									console.warn(sprintf(t('Nenhum metodo de tradução encontrado para a model %s'), this.name));
-									console.warn(sprintf(t('Deve ser implementado o metodo static fieldTranslations dentro da model %s'), this.name));
-								} else if (this.fieldTranslations[fieldValidate] == undefined) {
-									console.warn(sprintf(t('Não contém a tradução do campo %s dentro do metodo static fieldTranslations da model %s'), fieldValidate, this.name));
+								if (klass.fieldTranslations == undefined) {
+									console.warn(sprintf(t('Nenhum metodo de tradução encontrado para a model %s'), storeName));
+									console.warn(sprintf(t('Deve ser implementado o metodo static fieldTranslations dentro da model %s'), storeName));
+								} else if (klass.fieldTranslations[fieldValidate] == undefined) {
+									console.warn(sprintf(t('Não contém a tradução do campo %s dentro do metodo static fieldTranslations da model %s'), fieldValidate, storeName));
 								} else {
-									fieldNameTranslated = t(this.fieldTranslations[fieldValidate]);
+									fieldNameTranslated = t(klass.fieldTranslations[fieldValidate]);
 								}
 
 								errorMessages.push(sprintf(t('Obrigatório preencher o campo %s'), fieldNameTranslated));

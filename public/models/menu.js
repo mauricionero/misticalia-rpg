@@ -86,7 +86,7 @@ class Menu extends RModel {
 								id: 9,
 								name: 'Listar jogadores',
 								single_ton: true,
-								emoji: '📝',
+								emoji: Player.EMOJI_LIST,
 								action_id: 'list_players',
 								options: { filterAdventureId: true },
 								roles: [ Adventure.ROLE_MASTER ],

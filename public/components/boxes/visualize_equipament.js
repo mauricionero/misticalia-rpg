@@ -11,6 +11,8 @@ class VisualizeEquipament extends Box {
 		let equipamentId = options['equipamentId'];
 		this.equipamentId = equipamentId;
 
+		let addModifierOpened = options['addModifierOpened'] || false;
+
 		let equipament = Equipament.getEquipament(equipamentId);
 
 		let equipamentTypeId = equipament['typeId'];
@@ -125,10 +127,15 @@ class VisualizeEquipament extends Box {
 			);
 		});
 
+		let modifierDefaultDisplay = 'none';
+		if (addModifierOpened) {
+			modifierDefaultDisplay = 'show';
+		}
+
 		let addEquipamentModifiersDiv = $('<div>', {
 			class: 'visualize_equipament_modifiers',
 			id: me.createId('equipament_modifiers_' + equipamentId),
-			style: 'display: none',
+			style: 'display: ' + modifierDefaultDisplay,
 		});
 
 		addEquipamentModifiersDiv.append(
@@ -202,6 +209,28 @@ class VisualizeEquipament extends Box {
 		let equipamentId = this.equipamentId;
 
 		this.listModifiers(equipamentId);
+	}
+
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				t('Adicionar modificadores a um equipamento')
+			),
+			sprintf(t('Para adicionar um modificador nesse equipamento, clique em <b>+ Modificador</b>'), Equipament.EMOJI_VISUALIZE),
+			Modifier.helpTypeMeaning(),
+			t('Dicas:'),
+			$('<ul>').append(
+				$('<li>').append(
+					t('Leve sempre em conta o peso de um equipamento, costume adicionar algum modificador negativo, por menor que seja, na destreza quando tiver algum peso maior ou for algo de dificil manuseio.')
+				),
+				$('<li>').append(
+					t('Uma espada não aumenta a força de ninguém, e sim o ataque! Só aumente a força ou outras coisas no caso de ser uma espada mágica. Inclusive, uma espada sempre tira um pouco da agilidade e da destreza, boas espadas dão menos penalidade de destreza.')
+				)
+			)
+		];
 	}
 
 

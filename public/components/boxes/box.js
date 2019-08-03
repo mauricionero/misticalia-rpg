@@ -38,19 +38,23 @@ class Box {
 				}).html(me.helpInfo()) // window[id]()
 			);
 
+			var height = $(window).height() - 30;
+
 			$('#'+dialogId).dialog({
 				position: {
 					my: 'right top',
 					at: 'right top',
 					of: me.positionOf
 				},
+				width: 400,
+				height: height,
 				show: { effect: "fade", duration: 400 },
 				close: function(event, ui)
 				{
 					$(this).dialog("close");
 					$(this).remove();
 				}
-			}).css("background-color", "#eff");
+			}).css("background-color", "#dff");
 		} else {
 			alert(t('Sem ajuda para essa funcionalidade ainda :('));
 		}

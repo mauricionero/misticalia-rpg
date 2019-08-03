@@ -48,16 +48,29 @@ class Equipament extends RModel {
 
 	static get ALL_TYPE_NAMES () {
 		return {
-			1: 'Peitoral',
-			2: 'Capacete',
-			3: 'Pernas',
-			4: 'Botas',
-			5: 'Ataque',
-			6: 'Escudo',
-			7: 'Amuleto',
-			8: 'Anel'
+			1: t('Peito'),
+			2: t('Cabeça'),
+			3: t('Pernas'),
+			4: t('Pés'),
+			5: t('Ataque'),
+			6: t('Defesa'),
+			7: t('Amuleto'),
+			8: t('Anel')
 		}
 	}
+
+	static get ALL_TYPE_DESCRIPTIONS () {
+		return {
+			1: t('Para se colocar no torax'),
+			2: t('Para colocar na cabeça'),
+			3: t('Para colocar nas pernas'),
+			4: t('Para colocar nos pés'),
+			5: t('Para colocar na mão que ataca'),
+			6: t('Para colocar na mão que defende'),
+			7: t('Para se usar no pescoço'),
+			8: t('Para se usar nos dedos')
+		}
+	};
 
 	// traduções dos campos
 	static get fieldTranslations () {
@@ -92,7 +105,7 @@ class Equipament extends RModel {
 
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
-		return t(Equipament.ALL_TYPE_NAMES[typeId])
+		return Equipament.ALL_TYPE_NAMES[typeId]
 	}
 
 	// retorna 1 equipamento especifico pelo id
@@ -149,6 +162,37 @@ class Equipament extends RModel {
 		}
 
 		return weight + measureUnit;
+	}
+
+	// retorna uma descrição para a box de ajuda sobre o que sao os tipos dos equipamentos
+	static helpTypeMeaning () {
+
+		let equipamentTypeList = $('<ul>');
+
+		for (var typeId in Equipament.ALL_TYPE_NAMES) {
+			let typeName = Equipament.ALL_TYPE_NAMES[typeId];
+			let typeDescription = Equipament.ALL_TYPE_DESCRIPTIONS[typeId];
+			let typeEmoji = Equipament.EMOJI_TYPES[typeId];
+
+			equipamentTypeList.append(
+				$('<li>').append(
+					$('<b>').append(
+						typeEmoji, ' ', typeName
+					),
+					': ', typeDescription
+				)
+			)
+		}
+
+		return $('<p>').append(
+			$('<p>').append(
+				sprintf(t('Os equipamentos podem ser dados aos jogadores. Deve-se ir no menu %s Jogadores > %s Listar jogadores e então clicar no %s para visualizar os equipamentos desse jogador, clique no icone %s para adicionar um novo equipamento'), Player.EMOJI_MAIN, Player.EMOJI_LIST, PlayerEquipament.EMOJI_VISUALIZE, Equipament.EMOJI_ADD)
+			),
+			$('<p>').append(
+				sprintf(t('O personagem portando o equipamento que lhe foi dado, pode se equipar com ele. Vá no menu %s Jogadores > %s Listar jogadores e então clicar no %s para visualizar detalhes do jogador. Nessa janela terá a opção de ver os equipamentos para equipar ou desequipar'), Player.EMOJI_MAIN, Player.EMOJI_LIST, Player.EMOJI_VISUALIZE)
+			),
+			equipamentTypeList
+		);
 	}
 }
 

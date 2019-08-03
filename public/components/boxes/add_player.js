@@ -23,7 +23,7 @@ class AddPlayer extends Box {
 
 		let addPlayerTable = $("<table>");
 
-		let loginDisplay = 'show';
+		let loginDisplay = 'none'; // por enquanto nao mostrar nunca
 		let saveButtonText = t('Adicionar jogador');
 
 		if (isNPC) {
@@ -42,7 +42,8 @@ class AddPlayer extends Box {
 					$("<input>", {
 						type: 'text',
 						width: inputWidthBig,
-						id: me.createId('login')
+						id: me.createId('login'),
+						placeholder: t('login')
 					})
 				),
 			),
@@ -116,7 +117,8 @@ class AddPlayer extends Box {
 					$('<input>', {
 						type: 'text',
 						width: inputWidthBig,
-						id: me.createId('name')
+						id: me.createId('name'),
+						placeholder: t('Nome')
 					})
 				)
 			),
@@ -206,17 +208,29 @@ class AddPlayer extends Box {
 	helpInfo () {
 		let me = this;
 
+		let isNPC = $('#' + me.createId('is_npc')).val();
+		isNPC = (isNPC == 'true') ? true : false;
+
+		let playerOrNPC = (isNPC) ? t('NPC') : t('personagem');
+
+		let complement = '';
+
+		if (isNPC) {
+			complement = t('Um NPC é um personagem controlado apenas pelo mestre, alguém que faz parte da aventura como um personagem que não será jogado por nenhum jogador senão o mestre');
+		}
+
 		return [
 			$('<h3>').append(
-				t('Adicionar um novo jogador à aventura')
+				sprintf(t('Adicionar um novo %s à aventura'), playerOrNPC)
 			),
+			complement,
 			$('<p>').append(
 				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
 			),
 			$('<ul>').append(
-				$('<li>').append(
-					sprintf(t('<b>%s Login do jogador</b> (ainda não implementado)'), User.EMOJI_LOGIN)
-				),
+				// $('<li>').append(
+				// 	sprintf(t('<b>%s Login do jogador</b> (ainda não implementado)'), User.EMOJI_LOGIN)
+				// ),
 				$('<li>').append(
 					sprintf(t('<b>%s nome do personagem</b> (* obrigatório preencher)'), Player.EMOJI_NAME)
 				),
@@ -233,7 +247,7 @@ class AddPlayer extends Box {
 					sprintf(t('<b>%s Total de pontos</b>, isso irá mudar ao longo da aventura. Alguns equipamentos e modificadores podem alterar isso'), Player.EMOJI_TOTAL_POINTS)
 				)
 			),
-			Player.helpAttributesMeaning()
+			Player.helpAttributesMeaning(isNPC)
 		];
 	}
 

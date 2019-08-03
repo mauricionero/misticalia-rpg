@@ -106,9 +106,9 @@ class ListPlayerEquipaments extends Box {
 						$("<input>", {
 							type: 'button',
 							id: me.createId('manage_equipament_' + playerId),
-							title: t('Adicionar equipamento'),
+							title: t('Adicionar equipamento ao inventário desse personagem'),
 							onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", "' + boxId + '")',
-							value: Equipament.EMOJI_ADD
+							value: Equipament.EMOJI_ADD + ' ' + t('Add equipamento')
 						})
 					)
 				)

@@ -39,7 +39,14 @@ class AddEquipament extends Box {
 			$('<table>').append(
 				$('<tr>').append(
 					$('<th>').append(
-						Equipament.EMOJI_TYPE + ' ' + t('Tipo')
+						Equipament.EMOJI_TYPE + ' ' + t('Tipo'),
+
+						$("<input>", {
+							type: 'hidden',
+							id: me.createId('equipament_id'),
+							disabled: 'disabled',
+							value: 0
+						})
 					),
 					$('<th>').append(
 						radioButtonTypes
@@ -73,12 +80,22 @@ class AddEquipament extends Box {
 				),
 
 				$('<tr>').append(
-					$('<th>', { colspan: 2 } ).append(
+					$('<th>').append(
+						$("<input>", {
+							type: 'button',
+							id: me.createId('modifier_form_button'),
+							title: t('Adicionar modificador'),
+							onclick: 'AddEquipament.addModifiers("' + boxId + '")',
+							style: 'display: none',
+							value: '+ ' + t('Modificador')
+						})
+					),
+					$('<th>').append(
 						$("<input>", {
 							type: 'button',
 							id: me.createId('save'),
 							onclick: 'AddEquipament.addEquipament("' + boxId + '")',
-							value: t('Adicionar equipamento')
+							value: t('Adicionar')
 						})
 					)
 				)
@@ -90,17 +107,54 @@ class AddEquipament extends Box {
 		return divAddEquipament;
 	}
 
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				t('Adicionar um novo equipamento à aventura')
+			),
+			Equipament.helpTypeMeaning()
+		];
+	}
+
+
+	// abrir janela de visualizar o equipamento para adicionar os modificadores
+	static addModifiers (boxId) {
+
+		let me = Box.getBox(boxId);
+
+		let equipamentName = $('#' + me.createId('name')).val();
+		let equipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
+		let equipamentId = $('#' + me.createId('equipament_id')).val();
+
+		let windowTitle = Equipament.EMOJI_TYPES[equipamentTypeId] + ' ' + equipamentName;
+
+		let options = {
+			equipamentId: equipamentId,
+			singleTon: true,
+			addModifierOpened: true,
+			windowId: VisualizeEquipament.windowName + '_' + equipamentId
+		};
+
+		Box.openDialog(VisualizeEquipament.windowName, windowTitle, options);
+
+		$('#' + me.dialogId).dialog('close');
+		$('#' + me.dialogId).remove();
+	}
+
 	// adicionar equipamento à aventura
 	static addEquipament (boxId) {
 
 		let me = Box.getBox(boxId);
 
-		let equipamentType = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
+		let equipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
 		let equipamentName = $('#' + me.createId('name')).val();
 		let equipamentWeight = $('#' + me.createId('weight')).val();
 
 		let newEquipament = new Equipament({
-			'typeId': equipamentType,
+			'typeId': equipamentTypeId,
 			'name': equipamentName,
 			'weight': equipamentWeight
 		});
@@ -115,7 +169,11 @@ class AddEquipament extends Box {
 			saveButton.attr('disabled','disabled');
 			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 
-			//TODO: apos salvar, abrir dialog dos detalhes desse equipamento ou dar um jeito de usar a propria visualização para adicioanr um novo
+			let addModifierButton = $('#' + me.createId('modifier_form_button'));
+			addModifierButton.slideToggle();
+
+			let equipamentIdInput = $('#' + me.createId('equipament_id'));
+			equipamentIdInput.val(resultSaved['id']);
 
 		} else {
 

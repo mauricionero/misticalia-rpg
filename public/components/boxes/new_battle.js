@@ -31,9 +31,9 @@ class NewBattle extends Box {
 
 		// se deve filtrar por aventura
 		if (options['filterAdventureId']) {
-			allPlayers = Player.getAllPlayersCurrentAdventure();
+			allPlayers = Player.getAllPlayersCurrentAdventure(playerOptions);
 		} else {
-			allPlayers = Player.getAllPlayers();
+			allPlayers = Player.getAllPlayers(playerOptions);
 		}
 
 		var allPlayerIds = [];
@@ -70,7 +70,7 @@ class NewBattle extends Box {
 				Battle.EMOJI_ITEM
 			),
 			$("<th>", { title: t('Visualizar jogador') }).append(
-				'👁️'
+				Player.EMOJI_VISUALIZE
 			),
 			$("<th>", { title: t('Visualizar equipamentos do jogador') }).append(
 				PlayerEquipament.EMOJI_VISUALIZE
@@ -251,7 +251,7 @@ class NewBattle extends Box {
 				type: 'button',
 				id: me.createId('next'),
 				onclick: 'NewBattle.nextToAtack("' + boxId + '")',
-				value: '⏭️'
+				value: Battle.EMOJI_NEXT_ATACKER
 			}),
 			'<br />',
 			'<br />',
@@ -264,6 +264,65 @@ class NewBattle extends Box {
 
 		return newBattleDiv;
 	}
+
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				sprintf(t('Iniciar uma batalha'))
+			),
+			$('<p>').append(
+				t('São listados todos os jogadores (por primeiro) e NPCs (separados para facilitar)')
+			),
+			$('<p>').append(
+				sprintf(t('Os ataques são por turno levando em conta a agilidade para aumentar a barra de progresso. Quem preencher toda a barra está apto a atacar. O sistema não limita quem pode ou não atacar, apenas sugere. Clique em %s para avançar para o próximo atacante'), Battle.EMOJI_NEXT_ATACKER)
+			),
+			$('<p>').append(
+				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s</b> Selecionar para indicar que está fazendo parte da batalha'), Battle.EMOJI_GO_WAIT)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Nome abreviado</b>, deixe o mouse em cima para ver o nome completo'), Player.EMOJI_NAME)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Agilidade</b>, define quem ataca por primeiro e quantas vezes ataca. Quanto maior, mais progride a barra de ataque. Pode ser adicionado um modificador temporario na agilidade no campo aberto.'), Player.EMOJI_AGILITY)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Vida</b> do personagem. Deixe o mouse em cima para ver exatamente quanto de vida tem'), Player.EMOJI_LIFE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s % para atacar</b>: Barra de progresso dos atacantes, quem enche essa barra, está apto a atacar! Quanto mais alto a agilidade, mais rápido enche e antes ataca. Clique em %s para avançar ao próximo atacante'), Battle.EMOJI_ACTION_WAIT, Battle.EMOJI_NEXT_ATACKER)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Ação</b>. Ação que será feita pelo jogador. Reseta o progresso de ataque desse personagem'), Battle.EMOJI_ACTION)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Ataque</b>. Abrirá uma nova janela para realizar um ataque. Reseta o progresso de ataque desse personagem. Ver o manual dessa janela para mais detalhes'), Battle.EMOJI_FIGHT)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Item</b>. Ainda não implementado, mas servirá para usar algum item do inventário. Reseta o progresso de ataque desse personagem'), Battle.EMOJI_ITEM)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Visualizar personagem</b>. Abre uma nova janela com os detalhes do personagem'), Player.EMOJI_VISUALIZE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Equipamentos</b>. Abre uma nova janela com os equipamentos do personagem'), PlayerEquipament.EMOJI_VISUALIZE)
+				),
+			),
+			$('<p>').append(
+				t('<b>NPCs:</b> Ao clicar, esconde ou mostra os NPCs que não estão em combate, util para economizar espaço após definir os atacantes.')
+			),
+			$('<p>').append(
+				sprintf(t('<b>%s:</b> Enche as barras de progresso até o próximo apto a atacar. Cálculo para o progresso de cada personagem: <b>%s</b>'), Battle.EMOJI_NEXT_ATACKER, Battle.fighterNextAtackFormula())
+			),
+		];
+	}
+
 
 	// adicionar e remover os NPCs da listagem de atacantes
 	static addRemoveNPCPlayer (playerId, boxId, checkbox) {
@@ -350,7 +409,6 @@ class NewBattle extends Box {
 		// agora com o maximo calculado:
 		// calcular os progressos q cada um deve chegar e verificar o menor
 		fighterIds.forEach(function (fighterId) {
-			let fighterMultiplier = 0;
 
 			let agility = $('#' + me.createId('original_' + fighterId)).val();
 			let modifier = $('#' + me.createId('modifier_' + fighterId)).val();
@@ -361,11 +419,7 @@ class NewBattle extends Box {
 
 			let fighterToNextAttack = totalAgility;
 
-			if (maxDextery != 0) {
-				fighterMultiplier = parseFloat(maxDextery) / parseFloat(totalAgility);
-			}
-
-			let fighterNextAttack = Math.round(maxDextery * fighterMultiplier);
+			let fighterNextAttack = Battle.fighterNextAtack(maxDextery, totalAgility)
 			fighterNextAttacks[fighterId] = fighterNextAttack;
 
 			fighterToNextAttack = fighterNextAttack - current;

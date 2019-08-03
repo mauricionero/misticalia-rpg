@@ -2,6 +2,7 @@ class Player extends RModel {
 
 	static get EMOJI_MAIN () { return '♟️' };
 	static get EMOJI_NPC_MAIN () { return '😐' };
+	static get EMOJI_LIST () { return '📝' };
 
 	static get NO_GENDER_ID () { return 0 };
 	static get MALE_ID () { return 1 };
@@ -91,6 +92,24 @@ class Player extends RModel {
 			'cold_protection': 'Proteção ao frio',
 			'defense': 'Defesa',
 			'atack': 'Ataque'
+		}
+	};
+
+	// todas as descrições dos atributos por id
+	static get ALL_TYPE_DESCRIPTIONS () {
+		return {
+			1: t('Quão forte irá acertar algo, quanto maior, mais impacto'),
+			2: t('Quão preciso será o acerto, quanto maior, mais certeiro'),
+			3: t('Quão rápido irá atacar, quanto mais rapido, mais vezes ataca e antes dos outros'),
+			4: t('Quanto absorve de impacto, quanto maior, menos dano sofre com ataques'),
+			5: t('Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'),
+			6: t('Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'),
+			7: t('O quão apresentavel e comunicativo o personagem é'),
+			8: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
+			9: t('Defesa a ser levada em conta pelo mestre contra fogo'),
+			10: t('Defesa a ser levada em conta pelo mestre contra frio'),
+			11: t('O quanto conseguirá defender antes de chegar o dano ao personagem, quanto maior, mais impacto será absorvido antes de ser levado pelo personagem'),
+			12: t('O quanto irá dar de dano a mais em um ataque')
 		}
 	};
 
@@ -282,6 +301,11 @@ class Player extends RModel {
 		
 	}
 
+	// retorna formula do calculo dos dados em string para exibição
+	static get calculateDiceResultFormula () {
+		return t('arredondar(dado - dificuldade) + nivel - 3');
+	}
+
 	// calcular resultado da rolagem de um dado
 	static calculateDiceResult (diceRoll, totalPoints, difficulty) {
 
@@ -289,7 +313,7 @@ class Player extends RModel {
 
 		let level = this.levelCalculator(totalPoints);
 
-		let result = Math.round(rollPoints - difficulty) + level - 4;
+		let result = Math.round(rollPoints - difficulty) + level - 3;
 
 		return result;
 
@@ -412,38 +436,41 @@ class Player extends RModel {
 		}
 	}
 
-	static helpAttributesMeaning () {
+	// retorna uma descrição para a box de ajuda sobre o que sao os atributos
+	static helpAttributesMeaning (showAllAttributes = false) {
+
+		let attributeList = $('<ul>');
+
+		let allAttributes = Player.ALL_ATTRIBUTES;
+		if (showAllAttributes) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		allAttributes.forEach(function (attribute) {
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			let attributeEmoji = Modifier.EMOJI_TYPES[typeId];
+			let attributeName = Player.getAttributeName(attribute);
+			let attributeDescription = Player.ALL_TYPE_DESCRIPTIONS[typeId];
+
+			attributeList.append(
+				$('<li>').append(
+					$('<b>').append(
+						attributeEmoji, ' ', attributeName
+					),
+					': ', attributeDescription
+				)
+			)
+		});
 
 		return $('<p>').append(
 			$('<p>').append(
-				t('Atributos:')
-			),
-			$('<ul>').append(
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quão forte irá acertar algo, quanto maior, mais impacto'), Player.EMOJI_STRENGTH + ' ' + Player.getAttributeName('strength'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quão preciso será o acerto, quanto maior, mais certeiro'), Player.EMOJI_DEXTERY + ' ' + Player.getAttributeName('dextery'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quão rápido irá atacar, quanto mais rapido, mais vezes ataca e antes dos outros'), Player.EMOJI_AGILITY + ' ' + Player.getAttributeName('agility'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quanto absorve de impacto, quanto maior, menos dano sofre com ataques'), Player.EMOJI_CONSTITUTION + ' ' + Player.getAttributeName('constitution'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'), Player.EMOJI_INTELIGENCE + ' ' + Player.getAttributeName('inteligence'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'), Player.EMOJI_WISDOM + ' ' + Player.getAttributeName('wisdom'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: O quão apresentavel e comunicativo o personagem é'), Player.EMOJI_CHARISMA + ' ' + Player.getAttributeName('charisma'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definidas pelo mestre'), Player.EMOJI_SANITY + ' ' + Player.getAttributeName('sanity'))
+				$('<b>').append(
+					t('Atributos:')
 				)
-			)
+			),
+			attributeList
 		);
 	}
 }

@@ -377,7 +377,7 @@ class VisualizePlayer extends Box {
 							width: inputWidth,
 							height: inputHeight,
 							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
-							value: 0
+							placeholder: Dice.EMOJI_DICE
 						})
 					),
 					$("<td>").append(

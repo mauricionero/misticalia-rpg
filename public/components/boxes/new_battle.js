@@ -182,6 +182,7 @@ class NewBattle extends Box {
 					$("<input>", {
 						type: 'button',
 						id: me.createId('action_' + player['id'] + '_' + NewBattle.ACTION),
+						title: t('Ação'),
 						onclick: 'NewBattle.playerAction("' + boxId + '", "' + player['id'] + '", ' + NewBattle.ACTION + ')',
 						value: NewBattle.ACTION_EMOJIS[NewBattle.ACTION]
 					})
@@ -190,6 +191,7 @@ class NewBattle extends Box {
 					$("<input>", {
 						type: 'button',
 						id: me.createId('action_' + player['id'] + '_' + NewBattle.FIGHT),
+						title: t('Ataque'),
 						onclick: 'NewBattle.playerAction("' + boxId + '", "' + player['id'] + '", ' + NewBattle.FIGHT + ')',
 						value: NewBattle.ACTION_EMOJIS[NewBattle.FIGHT]
 					})
@@ -198,6 +200,7 @@ class NewBattle extends Box {
 					$("<input>", {
 						type: 'button',
 						id: me.createId('action_' + player['id'] + '_' + NewBattle.ITEM),
+						title: t('Item'),
 						onclick: 'NewBattle.playerAction("' + boxId + '", "' + player['id'] + '", ' + NewBattle.ITEM + ')',
 						value: NewBattle.ACTION_EMOJIS[NewBattle.ITEM]
 					})
@@ -206,14 +209,16 @@ class NewBattle extends Box {
 					$("<input>", {
 						type: 'button',
 						id: me.createId('visualize_' + player['id']),
+						title: t('Visualizar jogador'),
 						onclick: 'VisualizePlayer.visualizePlayer("' + player['id'] + '")',
-						value: '👁️'
+						value: Player.EMOJI_VISUALIZE
 					})
 				),
 				$("<td>").append(
 					$("<input>", {
 						type: 'button',
 						id: me.createId('visualize_equipaments_' + player['id']),
+						title: t('Visualizar equipamentos do jogador'),
 						onclick: 'ListPlayerEquipaments.visualizePlayerEquipaments("' + player['id'] + '")',
 						value: PlayerEquipament.EMOJI_VISUALIZE
 					})
@@ -312,14 +317,14 @@ class NewBattle extends Box {
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Equipamentos</b>. Abre uma nova janela com os equipamentos do personagem'), PlayerEquipament.EMOJI_VISUALIZE)
-				),
+				)
 			),
 			$('<p>').append(
 				t('<b>NPCs:</b> Ao clicar, esconde ou mostra os NPCs que não estão em combate, util para economizar espaço após definir os atacantes.')
 			),
 			$('<p>').append(
 				sprintf(t('<b>%s:</b> Enche as barras de progresso até o próximo apto a atacar. Cálculo para o progresso de cada personagem: <b>%s</b>'), Battle.EMOJI_NEXT_ATACKER, Battle.fighterNextAtackFormula())
-			),
+			)
 		];
 	}
 

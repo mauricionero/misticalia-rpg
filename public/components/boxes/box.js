@@ -46,7 +46,7 @@ class Box {
 					at: 'right top',
 					of: me.positionOf
 				},
-				width: 400,
+				width: 420,
 				height: height,
 				show: { effect: "fade", duration: 400 },
 				close: function(event, ui)
@@ -54,7 +54,7 @@ class Box {
 					$(this).dialog("close");
 					$(this).remove();
 				}
-			}).css("background-color", "#dff");
+			}).css("background-color", "#dff").css('padding', '4px');
 		} else {
 			alert(t('Sem ajuda para essa funcionalidade ainda :('));
 		}

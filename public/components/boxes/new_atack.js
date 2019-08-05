@@ -50,7 +50,7 @@ class NewAtack extends Box {
 				$("<th>", { title: t('Nome') }).append(
 					Player.EMOJI_NAME
 				),
-				$("<th>", { title: t('Destreza') }).append(
+				$("<th>", { title: t('Destreza (Mira)') }).append(
 					Dice.EMOJI_DICE + ' ' + Modifier.EMOJI_DEXTERY + ' ='
 				),
 				$("<th>", { title: t('Força') }).append(
@@ -64,9 +64,6 @@ class NewAtack extends Box {
 				),
 				$("<th>", { title: t('Vida') }).append(
 					Player.EMOJI_LIFE
-				),
-				$("<th>", { title: t('Visualizar jogador') }).append(
-					Player.EMOJI_VISUALIZE
 				),
 				$("<th>", { title: t('Modificadores') }).append(
 					Modifier.EMOJI_VISUALIZE
@@ -93,7 +90,7 @@ class NewAtack extends Box {
 				$("<th>", { title: t('Nome') }).append(
 					Player.EMOJI_NAME
 				),
-				$("<th>", { title: t('Destreza') }).append(
+				$("<th>", { title: t('Destreza (esquiva)') }).append(
 					Dice.EMOJI_DICE + ' ' + Modifier.EMOJI_DEXTERY + ' ='
 				),
 				$("<th>", { title: t('Força') }).append(
@@ -107,9 +104,6 @@ class NewAtack extends Box {
 				),
 				$("<th>", { title: t('Vida') }).append(
 					Player.EMOJI_LIFE
-				),
-				$("<th>", { title: t('Visualizar jogador') }).append(
-					Player.EMOJI_VISUALIZE
 				),
 				$("<th>", { title: t('Modificadores') }).append(
 					Modifier.EMOJI_VISUALIZE
@@ -271,8 +265,9 @@ class NewAtack extends Box {
 						id: me.createId('atack_general_' + playerId),
 						type: 'text',
 						width: inputWidth,
-						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-						tabindex: (howManyPlayers * 0 + count)
+						onkeyup: 'NewAtack.fillDiceWithGeneralDie("' + boxId + '")',
+						tabindex: (howManyPlayers * 0 + count),
+						placeholder: Dice.EMOJI_DICE
 					})
 				),
 				$("<td>", { title: playerTitle } ).append(
@@ -309,7 +304,8 @@ class NewAtack extends Box {
 						type: 'text',
 						width: inputWidth,
 						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-						tabindex: (howManyPlayers * 1 + count)
+						tabindex: (howManyPlayers * 1 + count),
+						placeholder: Dice.EMOJI_DICE
 					}),
 					$("<input>", {
 						type: 'text',
@@ -332,7 +328,8 @@ class NewAtack extends Box {
 						type: 'text',
 						width: inputWidth,
 						onkeyup: 'NewAtack.reCalculateAtackResult("' + boxId + '")',
-						tabindex: (howManyPlayers * 2 + count)
+						tabindex: (howManyPlayers * 2 + count),
+						placeholder: Dice.EMOJI_DICE
 					}),
 					$("<input>", {
 						type: 'text',
@@ -389,18 +386,136 @@ class NewAtack extends Box {
 					})
 				),
 				$("<td>").append(
-					$("<input>", {
-						type: 'button',
-						id: me.createId('visualize_' + playerId),
-						onclick: 'VisualizePlayer.visualizePlayer("' + playerId + '")',
-						value: Player.EMOJI_VISUALIZE
-					})
-				),
-				$("<td>").append(
 					secondaryAttributes
 				)
 			)
 		)
+	}
+
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				sprintf(t('Realizar um ataque'))
+			),
+			$('<p>').append(
+				t('São listados todos os personagens selecionados na batalha')
+			),
+			$('<p>').append(
+				t('Na primeira linha está o personagem que está realizando o ataque. Deve ser checkado os personagens que irão receber o ataque. Cabe ao mestre julgar se é possível ou não mais de 1 personagem receber o ataque.')
+			),
+			$('<p>').append(
+				t('<b>Legendas:</b>')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s Alvo do ataque:</b> Selecione para que o ataque seja calculado para esse personagem'), Battle.EMOJI_TARGET)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Dados geral</b>: Você pode escolher preencher apenas esse rolar de dados que irá preencher as outras rolagens para agilizar, ou rolar outros 2 dados em outros campos para deixar mais interessante: um para ver se acertou, outro para saber o dano causado.'), Dice.EMOJI_DICE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Abreviação do nome</b>: Para ver o nome completo, deixe o mouse em cima'), Player.EMOJI_NAME)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s</b>: Rolagem de dado individual para verificar se acertou o alvo; Destreza; Resultado da rolagem. Serão realizados 2 cálculos diferentes, um para o atacante, que leva em conta a rolagem de dados e a destreza (que pode ser alterada). Para o defensor recebendo o ataque, será levado em conta a rolagem do dado, a destreza (para saber se conseguiu desviar) e será comparado com o resultado do atacante. Os resultados devem ser interpretados como o quanto acertou no defensor:'), Dice.EMOJI_DICE + ' ' + Modifier.EMOJI_DEXTERY + ' ='),
+
+					$('<ul>').append(
+						$('<li>').append(
+							t('<b>< -100:</b> Acerto total da forma mais perfeita possível com um extra de acerto crítico! (+ de 100% de aproveitamento do golpe).')
+						),
+						$('<li>').append(
+							t('<b>-100:</b> Acerto total da forma mais perfeita possível (100% de aproveitamento do golpe).')
+						),
+						$('<li>').append(
+							t('<b>0:</b> Passou de raspão sem acertar.')
+						),
+						$('<li>').append(
+							t('<b>100:</b> Esquiva total e perfeita')
+						)
+					),
+					'<br />',
+					t('<b>Fórmulas:</b>'),
+					$('<ul>').append(
+						$('<li>').append(
+							t('<b>Atacante (mira):</b>'),
+							'<br />',
+							Player.atackAimFormula
+						),
+						$('<li>').append(
+							t('<b>Defensor (esquiva):</b> Está limitado a -100 de resultado, abaixo disso é considerado crítico e é pego 10% da diferença:'),
+							'<br />',
+							t('<b>Pontos:</b>'),
+							'<br />',
+							Player.defendAimFormula,
+							'<br />',
+							t('<b>Crítico:</b>'),
+							'<br />',
+							Player.defendAimCriticalFormula,
+							'<br />',
+							t('Somando os 2 valores, acha-se o resultado final da esquiva')
+						)
+					)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Força</b>: Rolagem de dado individual para verificar a força do ataque; Destreza; Resultado da rolagem. Serão realizados 2 cálculos diferentes, um para o atacante, que leva em conta a rolagem de dados e a destreza (que pode ser alterada). Para o defensor recebendo o ataque, será levado em conta a rolagem do dado, a destreza (para saber se conseguiu desviar) e será comparado com o resultado do atacante. Quanto menor o número no defensor, maior o dano causado (leva em conta a mira)'), Dice.EMOJI_DICE + ' ' + Modifier.EMOJI_STRENGTH),
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Ataque</b>: Modificador de ataque, pode ser alterado. Fórmula do ataque:'), Modifier.EMOJI_ATACK + ' ='),
+					$('<ul>').append(
+						$('<li>').append(
+							t('<b>Atacante:</b>'),
+							'<br />',
+							Player.atackStrengthFormula
+						)
+					)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Defesa</b>: Modificador de defesa, pode ser alterado. Fórmula do resultado da defesa (leva em conta a mira):'), Modifier.EMOJI_DEFENSE + ' ='),
+					$('<ul>').append(
+						$('<li>').append(
+							t('<b>Defensor:</b>'),
+							'<br />',
+							Player.defendStrengthFormula
+						)
+					)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Constituição</b>: Pode ser alterado. Resultado do quanto de vida o ataque tirou do defensor, caso tenha acertado. Quanto maior a constituição, menos dano irá causar. Resultado será subtraido da vida total. Fórmula para o defensor:'), Modifier.EMOJI_CONSTITUTION + ' ' + Battle.EMOJI_HURT, Player.defendLifeFormula)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Vida</b>: Para ver a quantidade, deixe o mouse em cima'), Player.EMOJI_LIFE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Modificadores extras</b>: Outros modificadores para que o mestre possa levar em conta na hora de decidir os ataques e os valores dos modificadores.'), Modifier.EMOJI_VISUALIZE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Salvar</b>: Salvar as vidas calculadas nesse ataque. Pode ser alterada manualmente, inclusive a do atacante.'), Player.EMOJI_SAVE)
+				)
+			)
+		];
+	}
+
+
+	// preencher os dados individuais com o dado geral
+	static fillDiceWithGeneralDie (boxId) {
+
+		let me = Box.getBox(boxId);
+
+		let atackerId = $('.' + me.createId('atacker'))[0].value;
+
+		let atackerDie = parseInt($('#' + me.createId('atack_general_' + atackerId)).val() || 0);
+
+		let aimDieInput = $('#' + me.createId('atack_aim_' + atackerId));
+		let strengthDieInput = $('#' + me.createId('atack_strength_' + atackerId));
+
+		aimDieInput.val(atackerDie);
+		strengthDieInput.val(atackerDie);
+
+		// recalcular o restante
+		NewAtack.reCalculateAtackResult(boxId);
 	}
 
 	// calcular acertos e danos de acordo com as rolagens de dados
@@ -419,14 +534,8 @@ class NewAtack extends Box {
 		let atackerAimInput = $('#' + me.createId('aim_result_' + atackerId));
 		let atackerStrengthInput = $('#' + me.createId('strength_result_' + atackerId));
 
-		let atackerAimDie = atackerDie;
-		let atackerStrengthDie = atackerDie;
-
-		// verificar valores individuais dos dados caso o dado geral nao esteja preenchido
-		if (! atackerDie) {
-			atackerAimDie = parseInt($('#' + me.createId('atack_aim_' + atackerId)).val() || 0);
-			atackerStrengthDie = parseInt($('#' + me.createId('atack_strength_' + atackerId)).val() || 0);
-		}
+		let atackerAimDie = parseInt($('#' + me.createId('atack_aim_' + atackerId)).val() || 0);
+		let atackerStrengthDie = parseInt($('#' + me.createId('atack_strength_' + atackerId)).val() || 0);
 
 		// calcular o resultado da mira do ataque
 		let aimResult = Player.atackAim(atackerAimDie, atackerDextery);

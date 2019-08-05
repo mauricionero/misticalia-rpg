@@ -334,6 +334,10 @@ class Player extends RModel {
 		return parseInt(basePoints) + parseInt(temporaryModifier) + parseInt(permanentModifier);
 	}
 
+	// retornar formula do calculo da mira para o atacante
+	static get atackAimFormula () {
+		return t('(dado * destreza) / 100 + nivelDestreza');
+	}
 	// calcular mira do ataque
 	static atackAim (dieAim, dextery) {
 		let level = this.levelCalculator(dextery);
@@ -344,36 +348,45 @@ class Player extends RModel {
 		return aimPoints;
 	}
 
+	// retornar formula do calculo da mira para o defensor
+	static get defendAimFormula () {
+		return t('(dado * destreza / 100) - ataque + nivelDestreza');
+	}
+	// retornar formula do calculo da mira para o defensor
+	static get defendAimCriticalFormula () {
+		return t('(pontosDefesa + 100) * 10%');
+	}
 	// calcular o resultado do quanto acertou o defensor
 	static defendAimResult (dieAim, dextery, aimPoints) {
 		let level = this.levelCalculator(dextery);
 		
 		let minNormalAim = -100;
 
-		// verificar a habilidade de desviar
-		let dodgePoints = parseInt((dieAim * dextery) / 100) + level;
-		
-		let totalDodge = 0;
-		if (dodgePoints == 0) {
-			dodgePoints = -1;
-		}
-		totalDodge = (parseInt((aimPoints / dodgePoints) * 100) - 100);
-		if (totalDodge > 0) {
-			totalDodge *= -1;
+		// pontos da rolagem de dados da defesa
+		let dodgePoints = (dieAim * dextery / 100);
+
+		// pontos da rolagem da defesa comparados com o ataque
+		dodgePoints = dodgePoints - aimPoints + level;
+
+		// pontos da rolagem limitados ateh o maximo de ataque sem ser critico (minNormalAim)
+		// e calcular o ataque critico, que eh 10% da diferença de minNormalAim e o restante
+		let totalDodgeLimited = dodgePoints;
+		let criticalHit = 0;
+		if (totalDodgeLimited < minNormalAim) {
+			totalDodgeLimited = minNormalAim;
+			criticalHit = (dodgePoints - minNormalAim) * 0.1;
 		}
 
-		// a partir de 100% de acerto (negativo), amortecer o acerto critico
-		if (totalDodge < minNormalAim) {
-			// pegar 10% do que esta passando de 100% como critico
-			let criticalHit = (totalDodge - minNormalAim) * 0.1;
-
-			totalDodge = parseInt(minNormalAim + criticalHit);
-		}
+		// o total da defesa sera o total limitado + o critico
+		let totalDodge = parseInt(totalDodgeLimited + criticalHit);
 
 		return totalDodge;
 	}
 
-
+	// retornar formula do calculo da força para o atacante
+	static get atackStrengthFormula () {
+		return t('((dado * força) / 100) + nivelForça + ataque');
+	}
 	// calcular o resultado da força do ataque
 	static atackStrength(dieStrength, strength, atack) {
 		let level = this.levelCalculator(strength);
@@ -383,6 +396,10 @@ class Player extends RModel {
 		return atackStrength;
 	}
 
+	// retornar formula do calculo da força para o defensor
+	static get defendStrengthFormula () {
+		return t('((dado * força) / 100) + nivelForça + defesa - (forçaAtaque * (totalEsquiva / 100 * -1))');
+	}
 	// calcular o resultado da força do ataque no defensor
 	static defendStrength(dieStrength, strength, defense, totalDodge, atackStrength) {
 		let level = this.levelCalculator(strength);
@@ -401,6 +418,10 @@ class Player extends RModel {
 		return defenseResult;
 	}
 
+	// retornar formula do calculo da força para o defensor
+	static get defendLifeFormula () {
+		return t('resultDefesa * (100 / constituição) + nivelConstituição');
+	}
 	// calcular o quanto de vida perdeu de acordo com o ataque recebido
 	static defendLifeResult(constitution, totalDefense) {
 

@@ -196,6 +196,14 @@ class VisualizePlayer extends Box {
 			' ',
 			$("<input>", {
 				type: 'button',
+				id: me.createId('manage_equipament_' + playerId),
+				title: t('Adicionar equipamento ao inventário desse personagem'),
+				onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", "' + boxId + '")',
+				value: Equipament.EMOJI_ADD + ' ' + t('Add equipamento')
+			}),
+			' ',
+			$("<input>", {
+				type: 'button',
 				id: me.createId('save'),
 				title: t('Salvar'),
 				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
@@ -244,7 +252,7 @@ class VisualizePlayer extends Box {
 
 		let playerSimpleData = $('<table>').append(
 			$('<tr>').append(
-				$('<th>').append(
+				$('<th>', { title: t('Vida') } ).append(
 					Player.EMOJI_LIFE
 				),
 				$('<td>').append(
@@ -369,7 +377,7 @@ class VisualizePlayer extends Box {
 							width: inputWidth,
 							height: inputHeight,
 							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
-							value: 0
+							placeholder: Dice.EMOJI_DICE
 						})
 					),
 					$("<td>").append(
@@ -430,6 +438,149 @@ class VisualizePlayer extends Box {
 			listPlayerTable,
 			secondaryAttributes
 		);
+	}
+
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		let isNPC = $('#' + me.createId('is_npc')).val();
+		isNPC = (isNPC == 'true') ? true : false;
+
+		let playerOrNPC = (isNPC) ? t('NPCs') : t('personagens');
+
+		let complement = '';
+
+		if (isNPC) {
+			complement = t('Um NPC é um personagem controlado apenas pelo mestre, alguém que faz parte da aventura como um personagem que não será jogado por nenhum jogador senão o mestre');
+		}
+
+		let playerEquipamentTable = $('<table>', { style: 'border: 1px solid #999; float: left; margin-right: 5px' } ).append(
+			$('<tr>').append(
+				$('<td>').append(
+					''
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_HELMET)) } ).append(
+						Equipament.EMOJI_HELMET
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_AMULET)) } ).append(
+						Equipament.EMOJI_AMULET
+					)
+				)
+			),
+			$('<tr>').append(
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_ATACK)) } ).append(
+						Equipament.EMOJI_ATACK
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_CHESTPLATE)) } ).append(
+						Equipament.EMOJI_CHESTPLATE
+					)
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_CHESTPLATE)) } ).append(
+						Equipament.EMOJI_SHIELD
+					)
+				)
+			),
+			$('<tr>').append(
+				$('<td>').html(
+					''
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_LEGGING)) } ).append(
+						Equipament.EMOJI_LEGGING
+					)
+				),
+				$('<td>').html(
+					''
+				)
+			),
+			$('<tr>').append(
+				$('<td>').html(
+					''
+				),
+				$('<td>').append(
+					$('<label>', { title: t(Equipament.getTypeName(Equipament.TYPE_BOOTS)) } ).append(
+						Equipament.EMOJI_BOOTS
+					)
+				),
+				$('<td>').html(
+					''
+				)
+			)
+		);
+
+		return [
+			$('<h3>').append(
+				sprintf(t('Listar os %s da aventura'), playerOrNPC)
+			),
+			complement,
+			$('<p>').append(
+				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s Vida</b> desse personagem (percentual), quanto mais constituição, menos vida perde'), Player.EMOJI_LIFE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Atributo</b>'), Player.EMOJI_ATTRIBUTE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Nível</b> desse atributo'), Player.EMOJI_LEVEL)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Pontuação</b> desse atributo, o "normal" para um jovem adulto gira em torno de 100'), Player.EMOJI_POINTS)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Modificador permanente</b> desse atributo, modificado apenas por equipamentos contendo modificadores. Aumentam o total de pontos do atributo'), Player.EMOJI_PERMANENT_MODIFICATOR)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Modificador temporario</b> desse atributo, modificado a qualquer momento pelo mestre. Aumentam o total de pontos do atributo'), Player.EMOJI_TEMPORARY_MODIFICATOR)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Total de pontos</b>, isso irá mudar ao longo da aventura. Alguns equipamentos e modificadores podem alterar isso'), Player.EMOJI_TOTAL_POINTS)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Dado rolado</b>, coloque nesse campo o valor de uma rolagem de dados para que seja calculado o resultado de algum teste desse atributo'), Player.EMOJI_ROLL_DICE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Dificuldade</b> do teste, coloque nesse campo o valor da dificuldade de algum teste que queira fazer para que seja calculado o resultado combinado com a rolagem de dados'), Player.EMOJI_DIFFICULTY)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Resultado</b> do teste, mostra o resultado do teste combinando o valor do dado rolado com a dificuldade e a pontuação desse atributo (<b> %s </b>)'), Player.EMOJI_RESULT, Player.calculateDiceResultFormula)
+				)
+			),
+			$('<p>').append(
+				t('<b>Ver equipamentos e itens:</b> Ao clicar exibe os equipamentos que o personagem tem em seu inventario podendo equipar ou desequipar')
+			),
+			$('<p>').append(
+				sprintf(t('<b>%s:</b> Ao clicar, abre uma janela para adicionar equipamentos ao inventário desse personagem'), Equipament.EMOJI_ADD + ' ' + t('Add equipamento'))
+			),
+			$('<p>').append(
+				t('<b>Salvar:</b> Ao clicar salva qualquer modificação feita nos atributos ou vida do personagem')
+			),
+			$('<h4>').append(
+				'* ' + t('Ver equipamentos e itens:') + ' *'
+			),
+			playerEquipamentTable,
+			$('<p>').append(
+				t('Clicando nos itens dessa tabela você pode filtrar os equipamentos que se encontram ao lado dela')
+			),
+			'<br style="clear: both" />',
+			$('<p>').append(
+				t('Na tabela do meio, são listados os equipamentos que o personagem possui, clicando em algum, esse equipamento ficará em negrito para indicar que foi equipado. Se clicar em um equipamento em negrito, irá desequipar. Perceba que os modificadores desse equipamento farão efeito nos atributos correspondentes')
+			),
+			$('<p>').append(
+				t('A tabela do canto direito ainda não foi implementada, mas será a listagem dos itens consumiveis, como poções para recuperar vida por exemplo')
+			),
+			Player.helpAttributesMeaning(isNPC)
+		];
 	}
 
 	// atualizar lista de equipamentos de acordo com filtro de tipo opcional

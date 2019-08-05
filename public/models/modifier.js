@@ -51,18 +51,35 @@ class Modifier extends RModel {
 
 	static get ALL_TYPE_NAMES () {
 		return {
-			1: 'Força',
-			2: 'Destreza',
-			3: 'Agilidade',
-			4: 'Constituição',
-			5: 'Inteligencia',
-			6: 'Sabedoria',
-			7: 'Carisma',
-			8: 'Sanidade',
-			9: 'Proteção contra fogo',
-			10: 'Proteção contra frio',
-			11: 'Defesa',
-			12: 'Ataque'
+			1: t('Força'),
+			2: t('Destreza'),
+			3: t('Agilidade'),
+			4: t('Constituição'),
+			5: t('Inteligencia'),
+			6: t('Sabedoria'),
+			7: t('Carisma'),
+			8: t('Sanidade'),
+			9: t('Proteção contra fogo'),
+			10: t('Proteção contra frio'),
+			11: t('Defesa'),
+			12: t('Ataque')
+		}
+	};
+
+	static get ALL_TYPE_DESCRIPTIONS () {
+		return {
+			1: t('Adiciona ou subtrai à força'),
+			2: t('Adiciona ou subtrai à destreza'),
+			3: t('Adiciona ou subtrai à agilidade'),
+			4: t('Adiciona ou subtrai à constituição'),
+			5: t('Adiciona ou subtrai à inteligencia'),
+			6: t('Adiciona ou subtrai à sabedoria'),
+			7: t('Adiciona ou subtrai ao carisma'),
+			8: t('Adiciona ou subtrai à sanidade'),
+			9: t('Adiciona ou subtrai à proteção contra fogo'),
+			10: t('Adiciona ou subtrai à proteção contra frio'),
+			11: t('Adiciona ou subtrai à defesa'),
+			12: t('Adiciona ou subtrai ao ataque')
 		}
 	};
 
@@ -102,7 +119,7 @@ class Modifier extends RModel {
 
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
-		return t(Modifier.ALL_TYPE_NAMES[typeId])
+		return Modifier.ALL_TYPE_NAMES[typeId]
 	}
 
 	// salvar um modificador (editar ou criar um novo)
@@ -118,6 +135,34 @@ class Modifier extends RModel {
 		let modifiers = this.getAll(options); 
 
 		return modifiers;
+	}
+
+	// retorna uma descrição para a box de ajuda sobre o que sao os modificadores
+	static helpTypeMeaning () {
+
+		let modificationsList = $('<ul>');
+
+		for (var typeId in Modifier.ALL_TYPE_NAMES) {
+			let typeName = Modifier.ALL_TYPE_NAMES[typeId];
+			let typeDescription = Modifier.ALL_TYPE_DESCRIPTIONS[typeId];
+			let typeEmoji = Modifier.EMOJI_TYPES[typeId];
+
+			modificationsList.append(
+				$('<li>').append(
+					$('<b>').append(
+						typeEmoji, ' ', typeName
+					),
+					': ', typeDescription
+				)
+			)
+		}
+
+		return $('<p>').append(
+			$('<p>').append(
+				t('Os modificadores alteram o modificador permanente do personagem que estiver usando o equipamento com esses modificadores')
+			),
+			modificationsList
+		);
 	}
 }
 

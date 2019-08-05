@@ -97,6 +97,20 @@ class ListEquipaments extends Box {
 		return listEquipamentDiv;
 	}
 
+	// Box padrao de ajuda
+	helpInfo () {
+		let me = this;
+
+		return [
+			$('<h3>').append(
+				t('Listar equipamentos da aventura')
+			),
+			sprintf(t('Para ver os modificadores de um equipamento, clique em <b>%s</b>'), Equipament.EMOJI_VISUALIZE),
+			Equipament.helpTypeMeaning()
+		];
+	}
+
+
 	// abrir visualização de detalhes do equipamento
 	static visualizeEquipament (equipamentId, boxId) {
 

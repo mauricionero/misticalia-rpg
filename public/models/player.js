@@ -2,6 +2,7 @@ class Player extends RModel {
 
 	static get EMOJI_MAIN () { return '♟️' };
 	static get EMOJI_NPC_MAIN () { return '😐' };
+	static get EMOJI_LIST () { return '📝' };
 
 	static get NO_GENDER_ID () { return 0 };
 	static get MALE_ID () { return 1 };
@@ -91,6 +92,24 @@ class Player extends RModel {
 			'cold_protection': 'Proteção ao frio',
 			'defense': 'Defesa',
 			'atack': 'Ataque'
+		}
+	};
+
+	// todas as descrições dos atributos por id
+	static get ALL_TYPE_DESCRIPTIONS () {
+		return {
+			1: t('Quão forte irá acertar algo, quanto maior, mais impacto'),
+			2: t('Quão preciso será o acerto, quanto maior, mais certeiro'),
+			3: t('Quão rápido irá atacar, quanto mais rapido, mais vezes ataca e antes dos outros'),
+			4: t('Quanto absorve de impacto, quanto maior, menos dano sofre com ataques'),
+			5: t('Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'),
+			6: t('Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'),
+			7: t('O quão apresentavel e comunicativo o personagem é'),
+			8: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
+			9: t('Defesa a ser levada em conta pelo mestre contra fogo'),
+			10: t('Defesa a ser levada em conta pelo mestre contra frio'),
+			11: t('O quanto conseguirá defender antes de chegar o dano ao personagem, quanto maior, mais impacto será absorvido antes de ser levado pelo personagem'),
+			12: t('O quanto irá dar de dano a mais em um ataque')
 		}
 	};
 
@@ -282,6 +301,11 @@ class Player extends RModel {
 		
 	}
 
+	// retorna formula do calculo dos dados em string para exibição
+	static get calculateDiceResultFormula () {
+		return t('arredondar(dado - dificuldade) + nivel - 3');
+	}
+
 	// calcular resultado da rolagem de um dado
 	static calculateDiceResult (diceRoll, totalPoints, difficulty) {
 
@@ -289,7 +313,7 @@ class Player extends RModel {
 
 		let level = this.levelCalculator(totalPoints);
 
-		let result = Math.round(rollPoints - difficulty) + level - 4;
+		let result = Math.round(rollPoints - difficulty) + level - 3;
 
 		return result;
 
@@ -310,6 +334,10 @@ class Player extends RModel {
 		return parseInt(basePoints) + parseInt(temporaryModifier) + parseInt(permanentModifier);
 	}
 
+	// retornar formula do calculo da mira para o atacante
+	static get atackAimFormula () {
+		return t('(dado * destreza) / 100 + nivelDestreza');
+	}
 	// calcular mira do ataque
 	static atackAim (dieAim, dextery) {
 		let level = this.levelCalculator(dextery);
@@ -320,36 +348,45 @@ class Player extends RModel {
 		return aimPoints;
 	}
 
+	// retornar formula do calculo da mira para o defensor
+	static get defendAimFormula () {
+		return t('(dado * destreza / 100) - ataque + nivelDestreza');
+	}
+	// retornar formula do calculo da mira para o defensor
+	static get defendAimCriticalFormula () {
+		return t('(pontosDefesa + 100) * 10%');
+	}
 	// calcular o resultado do quanto acertou o defensor
 	static defendAimResult (dieAim, dextery, aimPoints) {
 		let level = this.levelCalculator(dextery);
 		
 		let minNormalAim = -100;
 
-		// verificar a habilidade de desviar
-		let dodgePoints = parseInt((dieAim * dextery) / 100) + level;
-		
-		let totalDodge = 0;
-		if (dodgePoints == 0) {
-			dodgePoints = -1;
-		}
-		totalDodge = (parseInt((aimPoints / dodgePoints) * 100) - 100);
-		if (totalDodge > 0) {
-			totalDodge *= -1;
+		// pontos da rolagem de dados da defesa
+		let dodgePoints = (dieAim * dextery / 100);
+
+		// pontos da rolagem da defesa comparados com o ataque
+		dodgePoints = dodgePoints - aimPoints + level;
+
+		// pontos da rolagem limitados ateh o maximo de ataque sem ser critico (minNormalAim)
+		// e calcular o ataque critico, que eh 10% da diferença de minNormalAim e o restante
+		let totalDodgeLimited = dodgePoints;
+		let criticalHit = 0;
+		if (totalDodgeLimited < minNormalAim) {
+			totalDodgeLimited = minNormalAim;
+			criticalHit = (dodgePoints - minNormalAim) * 0.1;
 		}
 
-		// a partir de 100% de acerto (negativo), amortecer o acerto critico
-		if (totalDodge < minNormalAim) {
-			// pegar 10% do que esta passando de 100% como critico
-			let criticalHit = (totalDodge - minNormalAim) * 0.1;
-
-			totalDodge = parseInt(minNormalAim + criticalHit);
-		}
+		// o total da defesa sera o total limitado + o critico
+		let totalDodge = parseInt(totalDodgeLimited + criticalHit);
 
 		return totalDodge;
 	}
 
-
+	// retornar formula do calculo da força para o atacante
+	static get atackStrengthFormula () {
+		return t('((dado * força) / 100) + nivelForça + ataque');
+	}
 	// calcular o resultado da força do ataque
 	static atackStrength(dieStrength, strength, atack) {
 		let level = this.levelCalculator(strength);
@@ -359,6 +396,10 @@ class Player extends RModel {
 		return atackStrength;
 	}
 
+	// retornar formula do calculo da força para o defensor
+	static get defendStrengthFormula () {
+		return t('((dado * força) / 100) + nivelForça + defesa - (forçaAtaque * (totalEsquiva / 100 * -1))');
+	}
 	// calcular o resultado da força do ataque no defensor
 	static defendStrength(dieStrength, strength, defense, totalDodge, atackStrength) {
 		let level = this.levelCalculator(strength);
@@ -377,6 +418,10 @@ class Player extends RModel {
 		return defenseResult;
 	}
 
+	// retornar formula do calculo da força para o defensor
+	static get defendLifeFormula () {
+		return t('resultDefesa * (100 / constituição) + nivelConstituição');
+	}
 	// calcular o quanto de vida perdeu de acordo com o ataque recebido
 	static defendLifeResult(constitution, totalDefense) {
 
@@ -412,38 +457,41 @@ class Player extends RModel {
 		}
 	}
 
-	static helpAttributesMeaning () {
+	// retorna uma descrição para a box de ajuda sobre o que sao os atributos
+	static helpAttributesMeaning (showAllAttributes = false) {
+
+		let attributeList = $('<ul>');
+
+		let allAttributes = Player.ALL_ATTRIBUTES;
+		if (showAllAttributes) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		allAttributes.forEach(function (attribute) {
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			let attributeEmoji = Modifier.EMOJI_TYPES[typeId];
+			let attributeName = Player.getAttributeName(attribute);
+			let attributeDescription = Player.ALL_TYPE_DESCRIPTIONS[typeId];
+
+			attributeList.append(
+				$('<li>').append(
+					$('<b>').append(
+						attributeEmoji, ' ', attributeName
+					),
+					': ', attributeDescription
+				)
+			)
+		});
 
 		return $('<p>').append(
 			$('<p>').append(
-				t('Atributos:')
-			),
-			$('<ul>').append(
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quão forte irá acertar algo, quanto maior, mais impacto'), Player.EMOJI_STRENGTH + ' ' + Player.getAttributeName('strength'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quão preciso será o acerto, quanto maior, mais certeiro'), Player.EMOJI_DEXTERY + ' ' + Player.getAttributeName('dextery'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quão rápido irá atacar, quanto mais rapido, mais vezes ataca e antes dos outros'), Player.EMOJI_AGILITY + ' ' + Player.getAttributeName('agility'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Quanto absorve de impacto, quanto maior, menos dano sofre com ataques'), Player.EMOJI_CONSTITUTION + ' ' + Player.getAttributeName('constitution'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'), Player.EMOJI_INTELIGENCE + ' ' + Player.getAttributeName('inteligence'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'), Player.EMOJI_WISDOM + ' ' + Player.getAttributeName('wisdom'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: O quão apresentavel e comunicativo o personagem é'), Player.EMOJI_CHARISMA + ' ' + Player.getAttributeName('charisma'))
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s</b>: Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definidas pelo mestre'), Player.EMOJI_SANITY + ' ' + Player.getAttributeName('sanity'))
+				$('<b>').append(
+					t('Atributos:')
 				)
-			)
+			),
+			attributeList
 		);
 	}
 }

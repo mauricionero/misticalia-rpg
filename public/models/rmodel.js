@@ -45,11 +45,18 @@ class RModel {
 							options['filters'][fieldName] = this[fieldName];
 						}, this);
 
+						// se estiver editando, procurar apenas ids diferentes desse
+						if (this['id']) {
+							options['filters']['id NOT'] = this['id'];
+						}
+
 						let duplicateEntries = klass.getAll(options);
 
+						// verificar se achou algum
 						if (duplicateEntries.length) {
 							errorMessages.push(t('Já contém um igual'));
 						}
+
 					} else if (whichValidation == 'mandatory') {
 						let isMandatory = whichValidations[whichValidation];
 
@@ -156,6 +163,7 @@ class RModel {
 	
 	// retornar todos os dados relacionados aa essa model
 	static getAll (options = {}, invert = false) {
+
 		let storeName = this.name;
 
 		let storeData = JSON.parse(localStorage.getItem(storeName));
@@ -183,7 +191,24 @@ class RModel {
 				let onFilter = true;
 
 				for (var filterField in options['filters']) {
+
+					// pegar o valor antes de quebrar o nome do campo
 					let filterValue = options['filters'][filterField];
+
+					// verificar se existe algum comando como NOT no campo
+					filterField = filterField.split(' ');
+
+					let command = '='
+					if (filterField.length == 2) {
+						command = filterField[1];
+
+						// ajeitar quando estiver escrito NOT
+						if (command.toLowerCase() == 'not') {
+							command = '!=';
+						}
+					}
+
+					filterField = filterField[0];
 
 					// se for um array
 					if (Array.isArray(filterValue)) {
@@ -191,20 +216,32 @@ class RModel {
 						let inArray = false;
 
 						filterValue.forEach(function (filterSingleValue) {
-							if (singleData[filterField] == filterSingleValue) {
+							// se for para comparar normal
+							if (command == '=' && singleData[filterField] == filterSingleValue) {
+								inArray = true;
+
+							// se for para verificar que nao eh o valor procurado
+							} else if (command == '!=' && singleData[filterField] != filterSingleValue) {
 								inArray = true;
 							}
 						});
 
-						// se nao achou no array, marcar para remover do filtro
+						// se nao for para deixar no array, marcar para remover do filtro
 						if (! inArray) {
 							onFilter = false;
 						}
 
 					} else {
 
-						// soh remove do filtro se algum dos valores nao estiver no filtro
-						if (singleData[filterField] != filterValue) {
+						// se for para comparar normal, soh remove do filtro se algum dos valores nao estiver no filtro
+						if (command == '=' && singleData[filterField] != filterValue) {
+							onFilter = false;
+
+							// se ja achou o que precisava, sai do loop
+							break;
+
+						// se for para verificar que nao eh o valor procurado, soh remove do filtro se algum dos valores estiver no filtro
+						} else if (command == '!=' && singleData[filterField] == filterValue) {
 							onFilter = false;
 
 							// se ja achou o que precisava, sai do loop

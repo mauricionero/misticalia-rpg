@@ -18,8 +18,6 @@ class ListEquipaments extends Box {
 			}
 		}
 
-		console.log('optionFilter', optionFilter);
-
 		// se deve filtrar por aventura
 		if (options['filterAdventureId']) {
 			allEquipaments = Equipament.getAllEquipamentsCurrentAdventure(optionFilter);
@@ -72,7 +70,7 @@ class ListEquipaments extends Box {
 						})
 					),
 					$("<td>").append(
-						Equipament.weightHuman(equipament['weight']),
+						weightHuman(equipament['weight']),
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('weight_' + equipament['id']),

@@ -18,6 +18,7 @@ class VisualizeEquipament extends Box {
 		let equipamentTypeId = equipament['typeId'];
 		let equipamentName = equipament['name'];
 		let equipamentWeight = equipament['weight'];
+		let equipamentDescription = equipament['description'];
 
 		let divEditEquipament = $('<div>');
 
@@ -80,6 +81,21 @@ class VisualizeEquipament extends Box {
 							placeholder: t('Peso em gramas'),
 							value: equipamentWeight
 						})
+					)
+				),
+
+				$('<tr>').append(
+					$('<th>').append(
+						Equipament.EMOJI_DESCRIPTION + ' ' + t('Descrição')
+					),
+					$('<td>').append(
+						$("<textarea>", {
+							type: 'text',
+							id: me.createId('description'),
+							placeholder: t('Utilidade'),
+							width: '100%',
+							lines: 2
+						}).html(equipamentDescription)
 					)
 				),
 
@@ -242,12 +258,14 @@ class VisualizeEquipament extends Box {
 		let equipamentType = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
 		let equipamentName = $('#' + me.createId('name')).val();
 		let equipamentWeight = $('#' + me.createId('weight')).val();
+		let equipamentDescription = $('#' + me.createId('description')).val();
 
 		let editEquipament = Equipament.getEquipament(equipamentId);
 
 		editEquipament['typeId'] = equipamentType;
 		editEquipament['name'] = equipamentName;
 		editEquipament['weight'] = equipamentWeight;
+		editEquipament['description'] = equipamentDescription;
 
 		let resultSaved = editEquipament.saveEquipament();
 

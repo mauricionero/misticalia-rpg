@@ -30,3 +30,28 @@ function processVisualResultInput (resultInput, resultValue) {
 		resultInput.addClass('neutral_result');
 	}
 }
+
+// converter peso sendo recebido em gramas em algo mais legivel
+function weightHuman (weight) {
+	var measureUnit = 'g';
+
+	if (! weight) {
+		return '?';
+	}
+
+	if (weight >= 1000 && weight < 10000) {
+		weight = Math.round(weight / 100) / 10; // 1 casa decimal
+		measureUnit = 'Kg';
+	} else if (weight >= 10000 && weight < 1000000) {
+		weight = Math.round(weight / 1000); // sem casa decimal
+		measureUnit = 'Kg';
+	} else if (weight >= 1000000 && weight < 10000000) {
+		weight = Math.round(weight / 100000) / 10; // 1 casa decimal
+		measureUnit = 'T';
+	} else if (weight >= 10000000) {
+		weight = Math.round(weight / 100000); // sem casa decimal
+		measureUnit = 'T';
+	}
+
+	return weight + measureUnit;
+}

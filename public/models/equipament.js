@@ -32,6 +32,7 @@ class Equipament extends RModel {
 	static get EMOJI_TYPE () { return '🛡️' }
 	static get EMOJI_NAME () { return '🏷️' }
 	static get EMOJI_WEIGHT () { return '⚖️' }
+	static get EMOJI_DESCRIPTION () { return '📝' }
 
 	static get EMOJI_TYPES () {
 		return {
@@ -101,8 +102,6 @@ class Equipament extends RModel {
 	}
 
 
-	//TODO: validar
-
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
 		return Equipament.ALL_TYPE_NAMES[typeId]
@@ -137,31 +136,6 @@ class Equipament extends RModel {
 		let allCurrentEquipaments = Equipament.getAllFromCurrentAdventure(options);
 
 		return allCurrentEquipaments;
-	}
-
-	// converter peso sendo recebido em gramas em algo mais legivel
-	static weightHuman (weight) {
-		var measureUnit = 'g';
-
-		if (! weight) {
-			return '?';
-		}
-
-		if (weight >= 1000 && weight < 10000) {
-			weight = Math.round(weight / 100) / 10; // 1 casa decimal
-			measureUnit = 'Kg';
-		} else if (weight >= 10000 && weight < 1000000) {
-			weight = Math.round(weight / 1000); // sem casa decimal
-			measureUnit = 'Kg';
-		} else if (weight >= 1000000 && weight < 10000000) {
-			weight = Math.round(weight / 100000) / 10; // 1 casa decimal
-			measureUnit = 'T';
-		} else if (weight >= 10000000) {
-			weight = Math.round(weight / 100000); // sem casa decimal
-			measureUnit = 'T';
-		}
-
-		return weight + measureUnit;
 	}
 
 	// retorna uma descrição para a box de ajuda sobre o que sao os tipos dos equipamentos

@@ -113,33 +113,6 @@ class Player extends RModel {
 		}
 	};
 
-	// formula: Math.ceil(level**(2.4) - level**(1.4) + level)
-	static get POINTS_TO_LEVEL () {
-		return [
-			0, // 0
-			1,
-			5,
-			13,
-			25,
-			44, // 5
-			68,
-			99,
-			137,
-			183,
-			237, // 10
-			299,
-			369,
-			449,
-			538,
-			636,
-			744,
-			862,
-			991,
-			1130,
-			1280 // 20
-		]
-	}
-
 	// traduções dos campos
 	static get fieldTranslations () {
 		return {
@@ -283,27 +256,29 @@ class Player extends RModel {
 	}
 
 	// retorna maximo de pontuação de acordo com o nivel
-	// ja esta calculado na constante POINTS_TO_LEVEL para agilizar
+	// formula antiga: Math.ceil(level**(2.4) - level**(1.4) + level)
 	static levelMaxPointsCalculator (level) {
-		return this.POINTS_TO_LEVEL[level];
+		return level**2;
 	}
 
+	// retorna a formula do nivel
+	static get levelCalculatorFormula () {
+		return t('chão(√(pontos))')
+	}
 	// retorna o nivel de acordo com a pontuação
 	static levelCalculator (points) {
+		if (points < 0) {
+			points *= -1;
 
-		var level = 0;
+			return Math.floor(Math.sqrt(points)) * -1;
+		}
 
-		while (this.POINTS_TO_LEVEL[level + 1] <= points) {
-			level++;
-		} 
-
-		return level;
-		
+		return Math.floor(Math.sqrt(points));
 	}
 
 	// retorna formula do calculo dos dados em string para exibição
 	static get calculateDiceResultFormula () {
-		return t('arredondar(dado - dificuldade) + nivel - 3');
+		return t('(dado - dificuldade) + nivel - 6');
 	}
 
 	// calcular resultado da rolagem de um dado
@@ -313,7 +288,7 @@ class Player extends RModel {
 
 		let level = this.levelCalculator(totalPoints);
 
-		let result = Math.round(rollPoints - difficulty) + level - 3;
+		let result = Math.round(rollPoints - difficulty) + level - 6;
 
 		return result;
 

@@ -323,7 +323,10 @@ class NewBattle extends Box {
 				t('<b>NPCs:</b> Ao clicar, esconde ou mostra os NPCs que não estão em combate, util para economizar espaço após definir os atacantes.')
 			),
 			$('<p>').append(
-				sprintf(t('<b>%s:</b> Enche as barras de progresso até o próximo apto a atacar. Cálculo para o progresso de cada personagem: <b>%s</b>'), Battle.EMOJI_NEXT_ATACKER, Battle.fighterNextAtackFormula())
+				sprintf(t('<b>%s:</b> Enche as barras de progresso até o próximo apto a atacar. Cálculo para o progresso de cada personagem:'), Battle.EMOJI_NEXT_ATACKER),
+				$('<pre>').append(
+					Battle.fighterNextAtackFormula
+				)
 			)
 		];
 	}

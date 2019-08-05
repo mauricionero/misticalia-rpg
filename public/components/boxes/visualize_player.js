@@ -532,7 +532,10 @@ class VisualizePlayer extends Box {
 					sprintf(t('<b>%s Atributo</b>'), Player.EMOJI_ATTRIBUTE)
 				),
 				$('<li>').append(
-					sprintf(t('<b>%s Nível</b> desse atributo'), Player.EMOJI_LEVEL)
+					sprintf(t('<b>%s Nível</b> desse atributo. Fórmula:'), Player.EMOJI_LEVEL),
+					$('<pre>').append(
+						Player.levelCalculatorFormula
+					)
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Pontuação</b> desse atributo, o "normal" para um jovem adulto gira em torno de 100'), Player.EMOJI_POINTS)
@@ -553,7 +556,10 @@ class VisualizePlayer extends Box {
 					sprintf(t('<b>%s Dificuldade</b> do teste, coloque nesse campo o valor da dificuldade de algum teste que queira fazer para que seja calculado o resultado combinado com a rolagem de dados'), Player.EMOJI_DIFFICULTY)
 				),
 				$('<li>').append(
-					sprintf(t('<b>%s Resultado</b> do teste, mostra o resultado do teste combinando o valor do dado rolado com a dificuldade e a pontuação desse atributo (<b> %s </b>)'), Player.EMOJI_RESULT, Player.calculateDiceResultFormula)
+					sprintf(t('<b>%s Resultado</b> do teste, mostra o resultado do teste combinando o valor do dado rolado com a dificuldade e a pontuação desse atributo. Fórmula:'), Player.EMOJI_RESULT),
+					$('<pre>').append(
+						Player.calculateDiceResultFormula
+					)
 				)
 			),
 			$('<p>').append(

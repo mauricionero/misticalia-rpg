@@ -14,8 +14,8 @@ class Battle extends RModel {
 
 	static get EMOJI_HURT () { return '🤕' };
 
-	static fighterNextAtackFormula () {
-		return 'arredondar(MaiorDestreza * (MaiorDestreza / agilidade) )';
+	static get fighterNextAtackFormula () {
+		return 'MaiorDestreza * (MaiorDestreza / agilidade)';
 	}
 
 	static fighterNextAtack (maxDextery, totalAgility) {

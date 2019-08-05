@@ -442,18 +442,24 @@ class NewAtack extends Box {
 						$('<li>').append(
 							t('<b>Atacante (mira):</b>'),
 							'<br />',
-							Player.atackAimFormula
+							$('<pre>').append(
+								Player.atackAimFormula
+							)
 						),
 						$('<li>').append(
 							t('<b>Defensor (esquiva):</b> Está limitado a -100 de resultado, abaixo disso é considerado crítico e é pego 10% da diferença:'),
 							'<br />',
 							t('<b>Pontos:</b>'),
 							'<br />',
-							Player.defendAimFormula,
+							$('<pre>').append(
+								Player.defendAimFormula
+							),
 							'<br />',
 							t('<b>Crítico:</b>'),
 							'<br />',
-							Player.defendAimCriticalFormula,
+							$('<pre>').append(
+								Player.defendAimCriticalFormula
+							),
 							'<br />',
 							t('Somando os 2 valores, acha-se o resultado final da esquiva')
 						)
@@ -464,26 +470,23 @@ class NewAtack extends Box {
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Ataque</b>: Modificador de ataque, pode ser alterado. Fórmula do ataque:'), Modifier.EMOJI_ATACK + ' ='),
-					$('<ul>').append(
-						$('<li>').append(
-							t('<b>Atacante:</b>'),
-							'<br />',
-							Player.atackStrengthFormula
-						)
+					'<br />',
+					$('<pre>').append(
+						Player.atackStrengthFormula
 					)
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Defesa</b>: Modificador de defesa, pode ser alterado. Fórmula do resultado da defesa (leva em conta a mira):'), Modifier.EMOJI_DEFENSE + ' ='),
-					$('<ul>').append(
-						$('<li>').append(
-							t('<b>Defensor:</b>'),
-							'<br />',
-							Player.defendStrengthFormula
-						)
+					'<br />',
+					$('<pre>').append(
+						Player.defendStrengthFormula
 					)
 				),
 				$('<li>').append(
-					sprintf(t('<b>%s Constituição</b>: Pode ser alterado. Resultado do quanto de vida o ataque tirou do defensor, caso tenha acertado. Quanto maior a constituição, menos dano irá causar. Resultado será subtraido da vida total. Fórmula para o defensor:'), Modifier.EMOJI_CONSTITUTION + ' ' + Battle.EMOJI_HURT, Player.defendLifeFormula)
+					sprintf(t('<b>%s Constituição</b>: Pode ser alterado. Resultado do quanto de vida o ataque tirou do defensor, caso tenha acertado. Quanto maior a constituição, menos dano irá causar. Resultado será subtraido da vida total. Fórmula para o defensor:'), Modifier.EMOJI_CONSTITUTION + ' ' + Battle.EMOJI_HURT),
+					$('<pre>').append(
+						Player.defendLifeFormula
+					)
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Vida</b>: Para ver a quantidade, deixe o mouse em cima'), Player.EMOJI_LIFE)

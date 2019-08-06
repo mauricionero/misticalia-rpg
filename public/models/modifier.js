@@ -12,12 +12,13 @@ class Modifier extends RModel {
 	static get INTELIGENCE () { return 5 };
 	static get WISDOM () { return 6 };
 	static get CHARISMA () { return 7 };
-	static get SANITY () { return 8 };
+	static get MAGIC () { return 8 };
+	static get SANITY () { return 9 };
 
-	static get FIRE_PROTECTION () { return 9 };
-	static get COLD_PROTECTION () { return 10 };
-	static get DEFENSE () { return 11 };
-	static get ATACK () { return 12 };
+	static get FIRE_PROTECTION () { return 10 };
+	static get COLD_PROTECTION () { return 11 };
+	static get DEFENSE () { return 12 };
+	static get ATACK () { return 13 };
 
 	static get EMOJI_STRENGTH () { return Player.EMOJI_STRENGTH };
 	static get EMOJI_DEXTERY () { return Player.EMOJI_DEXTERY };
@@ -26,6 +27,7 @@ class Modifier extends RModel {
 	static get EMOJI_INTELIGENCE () { return Player.EMOJI_INTELIGENCE };
 	static get EMOJI_WISDOM () { return Player.EMOJI_WISDOM };
 	static get EMOJI_CHARISMA () { return Player.EMOJI_CHARISMA };
+	static get EMOJI_MAGIC () { return Player.EMOJI_MAGIC };
 	static get EMOJI_SANITY () { return Player.EMOJI_SANITY };
 	static get EMOJI_FIRE_PROTECTION () { return '🛡️🔥' };
 	static get EMOJI_COLD_PROTECTION () { return '🛡️❄️' };
@@ -41,11 +43,12 @@ class Modifier extends RModel {
 			5: Modifier.EMOJI_INTELIGENCE,
 			6: Modifier.EMOJI_WISDOM,
 			7: Modifier.EMOJI_CHARISMA,
-			8: Modifier.EMOJI_SANITY,
-			9: Modifier.EMOJI_FIRE_PROTECTION,
-			10: Modifier.EMOJI_COLD_PROTECTION,
-			11: Modifier.EMOJI_DEFENSE,
-			12: Modifier.EMOJI_ATACK
+			8: Modifier.EMOJI_MAGIC,
+			9: Modifier.EMOJI_SANITY,
+			10: Modifier.EMOJI_FIRE_PROTECTION,
+			11: Modifier.EMOJI_COLD_PROTECTION,
+			12: Modifier.EMOJI_DEFENSE,
+			13: Modifier.EMOJI_ATACK
 		}
 	}
 
@@ -58,11 +61,12 @@ class Modifier extends RModel {
 			5: t('Inteligencia'),
 			6: t('Sabedoria'),
 			7: t('Carisma'),
-			8: t('Sanidade'),
-			9: t('Proteção contra fogo'),
-			10: t('Proteção contra frio'),
-			11: t('Defesa'),
-			12: t('Ataque')
+			8: t('Mágica'),
+			9: t('Sanidade'),
+			10: t('Proteção contra fogo'),
+			11: t('Proteção contra frio'),
+			12: t('Defesa'),
+			13: t('Ataque')
 		}
 	};
 
@@ -75,11 +79,12 @@ class Modifier extends RModel {
 			5: t('Adiciona ou subtrai à inteligencia'),
 			6: t('Adiciona ou subtrai à sabedoria'),
 			7: t('Adiciona ou subtrai ao carisma'),
-			8: t('Adiciona ou subtrai à sanidade'),
-			9: t('Adiciona ou subtrai à proteção contra fogo'),
-			10: t('Adiciona ou subtrai à proteção contra frio'),
-			11: t('Adiciona ou subtrai à defesa'),
-			12: t('Adiciona ou subtrai ao ataque')
+			8: t('Adiciona ou subtrai à mágica'),
+			9: t('Adiciona ou subtrai à sanidade'),
+			10: t('Adiciona ou subtrai à proteção contra fogo'),
+			11: t('Adiciona ou subtrai à proteção contra frio'),
+			12: t('Adiciona ou subtrai à defesa'),
+			13: t('Adiciona ou subtrai ao ataque')
 		}
 	};
 
@@ -92,11 +97,12 @@ class Modifier extends RModel {
 			5: 'inteligence',
 			6: 'wisdom',
 			7: 'charisma',
-			8: 'sanity',
-			9: 'fire_protection',
-			10: 'cold_protection',
-			11: 'defense',
-			12: 'atack'
+			8: 'magic',
+			9: 'sanity',
+			10: 'fire_protection',
+			11: 'cold_protection',
+			12: 'defense',
+			13: 'atack'
 		}
 	};
 
@@ -109,23 +115,26 @@ class Modifier extends RModel {
 			'inteligence': 5,
 			'wisdom': 6,
 			'charisma': 7,
-			'sanity': 8,
-			'fire_protection': 9,
-			'cold_protection': 10,
-			'defense': 11,
-			'atack': 12
+			'magic': 8,
+			'sanity': 9,
+			'fire_protection': 10,
+			'cold_protection': 11,
+			'defense': 12,
+			'atack': 13
 		}
 	};
+
+
+	// salvar um modificador (editar ou criar um novo)
+	saveModifier () {
+
+		return this.save();
+	}
+
 
 	// pegar a tradução do tipo
 	static getTypeName (typeId) {
 		return Modifier.ALL_TYPE_NAMES[typeId]
-	}
-
-	// salvar um modificador (editar ou criar um novo)
-	static saveModifier (modifier) {
-
-		return this.saveItem(modifier);
 	}
 
 	// pegar todos os modificadores de um equipamento

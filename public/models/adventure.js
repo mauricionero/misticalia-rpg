@@ -27,9 +27,7 @@ class Adventure extends RModel {
 	validations () {
 		return {
 			'name': {
-				'uniqueness': {}
-			},
-			'name' : {
+				'uniqueness': {},
 				'mandatory': true
 			}
 		}

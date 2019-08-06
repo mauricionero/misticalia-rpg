@@ -14,6 +14,8 @@ class Player extends RModel {
 	static get EMOJI_NAME () { return '웃' };
 	static get EMOJI_SHORT_NAME () { return '…' };
 	static get EMOJI_LIFE () { return '❤️' };
+	static get EMOJI_MAXLIFE () { return '💗' };
+	static get EMOJI_MANA () { return '✨' };
 
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
@@ -27,6 +29,7 @@ class Player extends RModel {
 	static get EMOJI_INTELIGENCE () { return '💡' };
 	static get EMOJI_WISDOM () { return '📚' };
 	static get EMOJI_CHARISMA () { return '👹' };
+	static get EMOJI_MAGIC () { return '🔮' };
 	static get EMOJI_SANITY () { return '🙂' };
 
 	static get EMOJI_LEVEL () { return '🎚️' };
@@ -64,6 +67,7 @@ class Player extends RModel {
 			'inteligence',
 			'wisdom',
 			'charisma',
+			'magic',
 			'sanity'
 		]
 	};
@@ -80,6 +84,7 @@ class Player extends RModel {
 	static get ALL_ATTRIBUTES_NAMES () {
 		return {
 			'life': 'Vida',
+			'maxLife': 'Vida máxima',
 			'strength': 'Força',
 			'dextery': 'Destreza',
 			'agility': 'Agilidade',
@@ -87,6 +92,7 @@ class Player extends RModel {
 			'inteligence': 'Inteligencia',
 			'wisdom': 'Sabedoria',
 			'charisma': 'Carisma',
+			'magic': 'Mágica',
 			'sanity': 'Sanidade',
 			'fire_protection': 'Proteção ao fogo',
 			'cold_protection': 'Proteção ao frio',
@@ -105,11 +111,12 @@ class Player extends RModel {
 			5: t('Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'),
 			6: t('Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'),
 			7: t('O quão apresentavel e comunicativo o personagem é'),
-			8: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
-			9: t('Defesa a ser levada em conta pelo mestre contra fogo'),
-			10: t('Defesa a ser levada em conta pelo mestre contra frio'),
-			11: t('O quanto conseguirá defender antes de chegar o dano ao personagem, quanto maior, mais impacto será absorvido antes de ser levado pelo personagem'),
-			12: t('O quanto irá dar de dano a mais em um ataque')
+			8: t('O poder mágico. Quanto mais mágica, melhores os poderes e menos gasta mana para realizar as ações mágicas'),
+			9: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
+			10: t('Defesa a ser levada em conta pelo mestre contra fogo'),
+			11: t('Defesa a ser levada em conta pelo mestre contra frio'),
+			12: t('O quanto conseguirá defender antes de chegar o dano ao personagem, quanto maior, mais impacto será absorvido antes de ser levado pelo personagem'),
+			13: t('O quanto irá dar de dano a mais em um ataque')
 		}
 	};
 
@@ -139,18 +146,92 @@ class Player extends RModel {
 	// pegar o valor de um atributo
 	getAttribute (attribute, subAttribute = '') {
 
+		let defaultValue = 0;
+
+		// no caso do maximo de vida
+		if (attribute == 'maxLife' || attribute == 'life') {
+			defaultValue = 100;
+		}
+
+		let value = defaultValue;
+
 		// se tiver subatributo
 		if (subAttribute) {
-			if (this[attribute]) {
-				return this[attribute][subAttribute] || 0;
+			if (this[attribute] == undefined) {
+				console.warn(sprintf(t('Não foi possivel achar o atributo %s no Player'), attribute));
+				value = defaultValue;
+			} else {
+				value = this[attribute][subAttribute];
 			}
 
 		// se for um atributo de 1 nivel soh (sem subatributo)
 		} else {
-			return this[attribute]
+			value = this[attribute];
 		}
 
-		return 0;
+		if (value == undefined) {
+			value = defaultValue;
+		}
+
+		return value;
+	}
+
+	// alterar o valor de um atributo
+	setAttribute (value, attribute, subAttribute = '') {
+
+		// se tiver subatributo
+		if (subAttribute) {
+			if (this[attribute]) {
+				this[attribute][subAttribute] = value;
+			} else {
+				console.error(sprintf(t('Não foi possivel achar o atributo %s no Player'), attribute));
+			}
+
+		// se for um atributo de 1 nivel soh (sem subatributo)
+		} else {
+			this[attribute] = value;
+		}
+
+		return this.save();
+	}
+
+	// modificar o atributo com algum modificador
+	modifyAttribute (modificationValue, attribute, subAttribute = '') {
+
+		let value = 0;
+
+		// se tiver subatributo
+		if (subAttribute) {
+			if (this[attribute]) {
+				value = parseInt(this[attribute][subAttribute]);
+			} else {
+				console.error(sprintf(t('Não foi possivel achar o atributo %s no Player'), attribute));
+			}
+
+		// se for um atributo de 1 nivel soh (sem subatributo)
+		} else {
+			value = parseInt(this[attribute]);
+		}
+
+		value += parseInt(modificationValue);
+
+		// verificar particularidades
+		// caso seja vida
+		if (attribute == 'life') {
+
+			let maxLife = this.getAttribute('maxLife');
+
+			// nao deixar ficar maior que a vida máxima
+			if (value > maxLife) {
+				value = maxLife;
+
+			// nem menor que zero
+			} else if (value < 0) {
+				value = 0;
+			}
+		}
+
+		return this.setAttribute(value, attribute, subAttribute);
 	}
 
 	// retorna algo para colocar num espaço pequeno sobre o player (html), tipo um avatar ou as iniciais

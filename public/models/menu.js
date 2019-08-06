@@ -164,6 +164,39 @@ class Menu extends RModel {
 						]
 					},
 					{
+						id: 19,
+						name: t('Itens'),
+						emoji: Item.EMOJI_MAIN,
+						action_id: '',
+						single_ton: true,
+						roles: [ Adventure.ROLE_MASTER ],
+						class: '',
+						items: [
+							{
+								id: 20,
+								name: t('Item'),
+								emoji: '➕',
+								action_id: 'add_item',
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							},
+							{
+								id: 21,
+								name: t('Listar itens'),
+								emoji: Item.EMOJI_MAIN,
+								action_id: 'list_items',
+								options: { filterAdventureId: true },
+								single_ton: true,
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							}
+						]
+					},
+					{
 						id: 10,
 						name: 'Batalha',
 						emoji: Battle.EMOJI_MAIN,

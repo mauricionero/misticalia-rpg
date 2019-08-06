@@ -81,10 +81,10 @@ class OpenAdventure extends Box {
 				sprintf(t('Clique em <b>%s</b> para selecionar uma <b>nova aventura</b>.'), Adventure.EMOJI_OPEN)
 			),
 			$('<p>').append(
-				t('Quando uma nova aventura é selecionada, um novo item no menu é criado com o nome da aventura.')
+				sprintf(('%s indica qual o seu papel na aventura, se %smestre ou %sjogador'), Adventure.EMOJI_ROLE_MASTER + Adventure.EMOJI_ROLE_PLAYER, Adventure.EMOJI_ROLE_MASTER, Adventure.EMOJI_ROLE_PLAYER)
 			),
 			$('<p>').append(
-				sprintf(('%s indica qual o seu papel na aventura, se %smestre ou %sjogador'), Adventure.EMOJI_ROLE_MASTER + Adventure.EMOJI_ROLE_PLAYER, Adventure.EMOJI_ROLE_MASTER, Adventure.EMOJI_ROLE_PLAYER)
+				t('Quando uma nova aventura é selecionada, um novo item no menu é criado com o nome da aventura.')
 			),
 			$('<p>').append(
 				t('Dentro desse menu estarão tudo que for relacionado a essa aventura, como:')
@@ -98,6 +98,9 @@ class OpenAdventure extends Box {
 				),
 				$('<li>').append(
 					sprintf(t('%s Equipamentos'), Equipament.EMOJI_MAIN)
+				),
+				$('<li>').append(
+					sprintf(t('%s Itens'), Item.EMOJI_MAIN)
 				),
 				$('<li>').append(
 					sprintf(t('%s Batalhas'), Battle.EMOJI_MAIN)

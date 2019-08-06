@@ -81,6 +81,21 @@ class AddEquipament extends Box {
 
 				$('<tr>').append(
 					$('<th>').append(
+						Equipament.EMOJI_DESCRIPTION + ' ' + t('Descrição')
+					),
+					$('<td>').append(
+						$("<textarea>", {
+							type: 'text',
+							id: me.createId('description'),
+							placeholder: t('Breve descrição'),
+							width: '100%',
+							lines: 3
+						})
+					)
+				),
+
+				$('<tr>').append(
+					$('<th>').append(
 						$("<input>", {
 							type: 'button',
 							id: me.createId('modifier_form_button'),
@@ -152,11 +167,13 @@ class AddEquipament extends Box {
 		let equipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
 		let equipamentName = $('#' + me.createId('name')).val();
 		let equipamentWeight = $('#' + me.createId('weight')).val();
+		let equipamentDescription = $('#' + me.createId('description')).val();
 
 		let newEquipament = new Equipament({
 			'typeId': equipamentTypeId,
 			'name': equipamentName,
-			'weight': equipamentWeight
+			'weight': equipamentWeight,
+			'description': equipamentDescription
 		});
 
 		let resultSaved = newEquipament.saveEquipament();

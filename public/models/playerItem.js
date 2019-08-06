@@ -23,7 +23,7 @@ class PlayerItem extends RModel {
 	// validações dessa model
 	validations () {
 		return {
-			'equipamentId': {
+			'itemId': {
 				'uniqueness': {
 					'scope': [ 'playerId' ]
 				}
@@ -63,14 +63,17 @@ class PlayerItem extends RModel {
 
 		// se removeu com sucesso, aplicar modificadores no personagem
 		if (resultSaved) {
-			// let player = Player.getPlayer(playerId);
 			let instantModifiers = InstantModifier.getAllInstantModifiers(itemId);
 
-			//TODO: continuar logica de aplicar os modificadores instantaneos no jogador
-			// instantModifiers.forEach
+			instantModifiers.forEach(function (instantModifier) {
+				return instantModifier.applyModifier(playerId);
 
-			console.log('instantModifiers', instantModifiers);
+			}, this);
+		} else {
+			console.error(t('Ocorreu um erro ao salvar a quantidade do item'));
 		}
+
+		return resultSaved;
 	}
 
 	// retorna todos os equipamentos do jogador

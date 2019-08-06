@@ -6,85 +6,91 @@ class InstantModifier extends RModel {
 	static get EMOJI_OBSERVATIONS () { return '📝' }
 
 	static get EMOJI_LIFE () { return Player.EMOJI_LIFE };
+	static get EMOJI_MAXLIFE () { return Player.EMOJI_MAXLIFE };
 	static get EMOJI_MANA () { return Player.EMOJI_MANA };
 
 	static get EMOJI_TYPES () {
 		return {
 			1: InstantModifier.EMOJI_LIFE,
-			2: InstantModifier.EMOJI_MANA,
-			3: Player.EMOJI_STRENGTH,
-			4: Player.EMOJI_DEXTERY,
-			5: Player.EMOJI_AGILITY,
-			6: Player.EMOJI_CONSTITUTION,
-			7: Player.EMOJI_INTELIGENCE,
-			8: Player.EMOJI_WISDOM,
-			9: Player.EMOJI_CHARISMA,
-			10: Player.EMOJI_MAGIC,
-			11: Player.EMOJI_SANITY
+			2: InstantModifier.EMOJI_MAXLIFE,
+			3: InstantModifier.EMOJI_MANA,
+			4: Player.EMOJI_STRENGTH,
+			5: Player.EMOJI_DEXTERY,
+			6: Player.EMOJI_AGILITY,
+			7: Player.EMOJI_CONSTITUTION,
+			8: Player.EMOJI_INTELIGENCE,
+			9: Player.EMOJI_WISDOM,
+			10: Player.EMOJI_CHARISMA,
+			11: Player.EMOJI_MAGIC,
+			12: Player.EMOJI_SANITY
 		}
 	}
 
 	static get ALL_TYPE_NAMES () {
 		return {
 			1: t('Vida'),
-			2: t('Mana'),
-			3: t('Força base'),
-			4: t('Destreza base'),
-			5: t('Agilidade base'),
-			6: t('Constituição base'),
-			7: t('Inteligencia base'),
-			8: t('Sabedoria base'),
-			9: t('Carisma base'),
-			10: t('Mágica base'),
-			11: t('Sanidade base')
+			2: t('Máximo de Vida'),
+			3: t('Mana'),
+			4: t('Força base'),
+			5: t('Destreza base'),
+			6: t('Agilidade base'),
+			7: t('Constituição base'),
+			8: t('Inteligencia base'),
+			9: t('Sabedoria base'),
+			10: t('Carisma base'),
+			11: t('Mágica base'),
+			12: t('Sanidade base')
 		}
 	};
 
 	static get ALL_TYPE_DESCRIPTIONS () {
 		return {
 			1: t('Adicionar ou subtrai vida do jogador que usar'),
-			2: t('Adicionar ou subtrai mana do jogador que usar (mana é o que a mágica usa, quanto mais mágica, menos mana necessária e melhores os poderes)'),
-			3: t('Adiciona ou subtrai à força base'),
-			4: t('Adiciona ou subtrai à destreza base'),
-			5: t('Adiciona ou subtrai à agilidade base'),
-			6: t('Adiciona ou subtrai à constituição base'),
-			7: t('Adiciona ou subtrai à inteligencia base'),
-			8: t('Adiciona ou subtrai à sabedoria base'),
-			9: t('Adiciona ou subtrai ao carisma base'),
-			10: t('Adiciona ou subtrai à mágica base'),
-			11: t('Adiciona ou subtrai à sanidade base')
+			2: t('Adicionar ou subtrai o máximo de vida do jogador que usar'),
+			3: t('Adicionar ou subtrai mana do jogador que usar (mana é o que a mágica usa, quanto mais mágica, menos mana necessária e melhores os poderes)'),
+			4: t('Adiciona ou subtrai à força base'),
+			5: t('Adiciona ou subtrai à destreza base'),
+			6: t('Adiciona ou subtrai à agilidade base'),
+			7: t('Adiciona ou subtrai à constituição base'),
+			8: t('Adiciona ou subtrai à inteligencia base'),
+			9: t('Adiciona ou subtrai à sabedoria base'),
+			10: t('Adiciona ou subtrai ao carisma base'),
+			11: t('Adiciona ou subtrai à mágica base'),
+			12: t('Adiciona ou subtrai à sanidade base')
 		}
 	};
 
 	static get ALL_TYPES () {
 		return {
 			1: 'life',
-			2: 'mana',
-			3: 'strength',
-			4: 'dextery',
-			5: 'agility',
-			6: 'constitution',
-			7: 'inteligence',
-			8: 'wisdom',
-			9: 'charisma',
-			10: 'magic',
-			11: 'sanity'
+			2: 'maxLife',
+			3: 'mana',
+			4: 'strength',
+			5: 'dextery',
+			6: 'agility',
+			7: 'constitution',
+			8: 'inteligence',
+			9: 'wisdom',
+			10: 'charisma',
+			11: 'magic',
+			12: 'sanity'
 		}
 	};
 
 	static get ALL_TYPE_IDS () {
 		return {
 			'life': 1,
-			'mana': 2,
-			'strength': 3,
-			'dextery': 4,
-			'agility': 5,
-			'constitution': 6,
-			'inteligence': 7,
-			'wisdom': 8,
-			'charisma': 9,
-			'magic': 10,
-			'sanity': 11
+			'maxLife': 2,
+			'mana': 3,
+			'strength': 4,
+			'dextery': 5,
+			'agility': 6,
+			'constitution': 7,
+			'inteligence': 8,
+			'wisdom': 9,
+			'charisma': 10,
+			'magic': 11,
+			'sanity': 12
 		}
 	};
 
@@ -93,6 +99,28 @@ class InstantModifier extends RModel {
 	saveInstantModifier () {
 
 		return this.save();
+	}
+
+	// aplicar o modificador atual no player
+	applyModifier(playerId) {
+
+		let player = Player.getPlayer(playerId);
+
+		let typeId = parseInt(this['typeId']);
+
+		switch(typeId) {
+			case InstantModifier.ALL_TYPE_IDS['life']:
+			case InstantModifier.ALL_TYPE_IDS['maxLife']:
+			case InstantModifier.ALL_TYPE_IDS['mana']:
+				
+				return player.modifyAttribute(this['value'], InstantModifier.ALL_TYPES[typeId]);
+				break;
+
+			default:
+
+				return player.modifyAttribute(this['value'], InstantModifier.ALL_TYPES[typeId], 'basePoints');
+				break;
+		}
 	}
 
 

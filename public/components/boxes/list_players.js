@@ -203,7 +203,7 @@ class ListPlayers extends Box {
 						$("<input>", {
 							type: 'button',
 							id: me.createId('visualize_itens_' + player['id']),
-							onclick: 'ListPlayerItems.visualizePlayerItems("' + player['id'] + '")',
+							onclick: 'ListPlayerItems.visualizePlayerItems("' + player['id'] + '", "' + boxId + '")',
 							title: t('Visualizar itens do personagem'),
 							value: PlayerItem.EMOJI_VISUALIZE
 						})

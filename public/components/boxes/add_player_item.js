@@ -97,7 +97,7 @@ class AddPlayerItem extends Box {
 
 		let me = Box.getBox(boxId);
 
-		let quantity = $('#' + me.createId('quantity_' + itemId)).val();
+		let quantity = parseInt($('#' + me.createId('quantity_' + itemId)).val());
 		let addButton = $('#' + me.createId('add_' + itemId));
 
 		let newPlayerItem = new PlayerItem({

@@ -9,6 +9,9 @@ class ListPlayerItems extends Box {
 		let playerId = options['playerId'];
 		this.playerId = playerId;
 
+		let originBoxId = options['boxId'];
+		this.originBoxId = originBoxId;
+
 		let listItemDiv = $('<div>', {
 			id: me.createId('list_items_' + playerId)
 		});
@@ -29,6 +32,8 @@ class ListPlayerItems extends Box {
 		let me = this;
 		
 		let boxId = me.boxId;
+
+		let originBoxId = this.originBoxId;
 
 		let listItemDiv = $('#' + me.createId('list_items_' + playerId));
 
@@ -102,7 +107,7 @@ class ListPlayerItems extends Box {
 							type: 'button',
 							id: me.createId('item_use_' + item['id']),
 							title: sprintf(t("Usar 1 '%s' nesse personagem"), item['name']),
-							onclick: 'ListPlayerItems.useItem("' + playerItem['id'] + '", "' + boxId + '")',
+							onclick: 'ListPlayerItems.useItem("' + playerItem['id'] + '", "' + boxId + '", "' + originBoxId + '")',
 							value: PlayerItem.EMOJI_USE
 						})
 					)
@@ -163,7 +168,7 @@ class ListPlayerItems extends Box {
 
 
 	// abrir visualização dos items do player
-	static visualizePlayerItems (playerId) {
+	static visualizePlayerItems (playerId, boxId) {
 
 		let player = Player.getPlayer(playerId);
 
@@ -174,6 +179,7 @@ class ListPlayerItems extends Box {
 		let options = {
 			playerId: playerId,
 			singleTon: true,
+			boxId: boxId,
 			windowId: ListPlayerItems.windowName + '_' + playerId
 		};
 
@@ -181,19 +187,20 @@ class ListPlayerItems extends Box {
 	}
 
 	// usar 1 item no personagem
-	static useItem  (playerItemId, boxId) {
+	static useItem  (playerItemId, boxId, originBoxId) {
 
 		let me = Box.getBox(boxId);
 
 		let playerItem = PlayerItem.getPlayerItem(playerItemId);
 
-		console.log('playerItem', playerItem);
-
 		let resultSaved = playerItem.useItem();
 
 		if (resultSaved) {
 
+			let originBox = Box.getBox(originBoxId);
+
 			me.callBackRender();
+			originBox.callBackRender();
 		}
 	}
 

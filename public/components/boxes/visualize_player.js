@@ -260,7 +260,19 @@ class VisualizePlayer extends Box {
 						type: 'text',
 						id: me.createId('life_' + playerId),
 						width: inputWidth,
-						value: player.getAttribute('life') || 100
+						value: player.getAttribute('life')
+					}),
+					'%'
+				),
+				$('<th>', { title: t('Vida máxima') } ).append(
+					Player.EMOJI_MAXLIFE
+				),
+				$('<td>').append(
+					$('<input>', {
+						type: 'text',
+						id: me.createId('max_life_' + playerId),
+						width: inputWidth,
+						value: player.getAttribute('maxLife')
 					}),
 					'%&nbsp;'
 				),
@@ -538,6 +550,9 @@ class VisualizePlayer extends Box {
 			$('<ul>').append(
 				$('<li>').append(
 					sprintf(t('<b>%s Vida</b> desse personagem (percentual), quanto mais constituição, menos vida perde'), Player.EMOJI_LIFE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Vida máxima</b> desse personagem (percentual). Aumenta o limite de vida, além de 100% inclusive.'), Player.EMOJI_MAXLIFE)
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Mana</b> desse personagem. Gasta-se mana para realizar ações mágicas.'), Player.EMOJI_MANA)
@@ -858,9 +873,11 @@ class VisualizePlayer extends Box {
 		}
 
 		let life = parseInt($('#' + me.createId('life_' + playerId)).val());
+		let maxLife = parseInt($('#' + me.createId('max_life_' + playerId)).val());
 		let mana = parseInt($('#' + me.createId('mana_' + playerId)).val());
 
 		editPlayer['life'] = life;
+		editPlayer['maxLife'] = maxLife;
 		editPlayer['mana'] = mana;
 
 		allAttributes.forEach(function (attribute) {

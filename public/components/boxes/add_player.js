@@ -286,7 +286,9 @@ class AddPlayer extends Box {
 			'login': playerLogin,
 			'gender': playerGender,
 			'name': playerName,
-			'isNPC': isNPC
+			'isNPC': isNPC,
+			'life': 100,
+			'maxLife': 100
 		});
 
 		let allAttributes = Player.ALL_ATTRIBUTES;

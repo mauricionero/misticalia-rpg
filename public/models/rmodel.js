@@ -144,6 +144,17 @@ class RModel {
 		}
 	}
 
+	// destruir o item
+	destroy () {
+		let storeName = this.constructor.name;
+		
+		let klass = RModel.models[storeName];
+
+		let options = { 'filters': { 'id': this['id'] } };
+
+		return klass.removeItem(options);
+	}
+
 	// remover item de acordo com filtros
 	static removeItem (options = {}) {
 		let storeName = this.name;

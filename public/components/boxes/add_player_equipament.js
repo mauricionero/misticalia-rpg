@@ -32,7 +32,7 @@ class AddPlayerEquipament extends Box {
 					Equipament.EMOJI_WEIGHT
 				),
 				$("<th>", { title: t('Quantidade') }).append(
-					Equipament.EMOJI_QUANTITY
+					PlayerEquipament.EMOJI_QUANTITY
 				),
 				$("<th>", { title: t('Adicionar ao jogador') }).append(
 					Equipament.EMOJI_ADD

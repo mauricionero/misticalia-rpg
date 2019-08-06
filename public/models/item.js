@@ -2,6 +2,7 @@ class Item extends RModel {
 
 	static get EMOJI_MAIN () { return '💊' }
     static get EMOJI_VISUALIZE () { return '👁️' }
+	static get EMOJI_ADD () { return '✚' }
 
 	static get EMOJI_NAME () { return '🏷️' }
 	static get EMOJI_WEIGHT () { return '⚖️' }
@@ -51,10 +52,10 @@ class Item extends RModel {
 	}
 
 	// retorna 1 item especifico pelo id
-	static getItem (ItemId) {
+	static getItem (itemId) {
 		let allItems = Item.getAllItems();
 
-		return allItems.filter(function ( item ) { return item['id'] == ItemId })[0];
+		return allItems.filter(function ( item ) { return item['id'] == itemId })[0];
 	}
 }
 

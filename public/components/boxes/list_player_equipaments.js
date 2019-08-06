@@ -44,6 +44,9 @@ class ListPlayerEquipaments extends Box {
 		// titulo das colunas na tabela
 		listEquipamentTable.append(
 			$("<tr>").append(
+				$("<th>", { title: t('Quantidade') }).append(
+					PlayerEquipament.EMOJI_QUANTITY
+				),
 				$("<th>", { title: t('Tipo') }).append(
 					Equipament.EMOJI_TYPE
 				),
@@ -59,6 +62,7 @@ class ListPlayerEquipaments extends Box {
 		allPlayerEquipaments.forEach(function (playerEquipament) {
 
 			let equipamentId = playerEquipament['equipamentId'];
+			let quantity = playerEquipament['quantity'];
 
 			// criar filtro de equipamento
 			let options = { 'filters': { 'id': equipamentId } }
@@ -66,6 +70,15 @@ class ListPlayerEquipaments extends Box {
 
 			listEquipamentTable.append(
 				$("<tr>").append(
+					$("<td>").append(
+						quantity,
+						$("<input>", {
+							type: 'hidden',
+							id: me.createId('quantity_' + equipament['id']),
+							disabled: 'disabled',
+							value: quantity
+						})
+					),
 					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipament['typeId']] } ).append(
 						Equipament.EMOJI_TYPES[equipament['typeId']],
 						$("<input>", {
@@ -102,7 +115,7 @@ class ListPlayerEquipaments extends Box {
 		if (currentAdventureRoleId == Adventure.ROLE_MASTER) {
 			listEquipamentTable.append(
 				$("<tr>").append(
-					$("<th>", { colspan: 3 } ).append(
+					$("<th>", { colspan: 4 } ).append(
 						$("<input>", {
 							type: 'button',
 							id: me.createId('manage_equipament_' + playerId),

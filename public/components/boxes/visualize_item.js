@@ -212,7 +212,7 @@ class VisualizeItem extends Box {
 			),
 			$('<ul>').append(
 				$('<li>').append(
-					t('Leve sempre em conta o peso de um item para ter noçaõ do quanto está carregando de peso.')
+					t('Leve sempre em conta o peso de um item para ter noção do quanto está carregando de peso.')
 				)
 			)
 		];

@@ -262,7 +262,18 @@ class VisualizePlayer extends Box {
 						width: inputWidth,
 						value: player.getAttribute('life') || 100
 					}),
-					'%'
+					'%&nbsp;'
+				),
+				$('<th>', { title: t('Mana') } ).append(
+					'&nbsp;' + Player.EMOJI_MANA
+				),
+				$('<td>').append(
+					$('<input>', {
+						type: 'text',
+						id: me.createId('mana_' + playerId),
+						width: inputWidth,
+						value: player.getAttribute('mana')
+					})
 				)
 			)
 		);
@@ -278,7 +289,7 @@ class VisualizePlayer extends Box {
 				$("<th>", { title: t('Nivel') }).append(
 					Player.EMOJI_LEVEL
 				),
-				$("<th>", { title: t('Pontos') }).append(
+				$("<th>", { title: t('Pontos base') }).append(
 					Player.EMOJI_POINTS
 				),
 				$("<th>", { title: t('Modificador permanente') }).append(
@@ -529,6 +540,10 @@ class VisualizePlayer extends Box {
 					sprintf(t('<b>%s Vida</b> desse personagem (percentual), quanto mais constituição, menos vida perde'), Player.EMOJI_LIFE)
 				),
 				$('<li>').append(
+					sprintf(t('<b>%s Mana</b> desse personagem. Gasta-se mana para realizar ações mágicas.'), Player.EMOJI_MANA)
+				),
+				'<br />',
+				$('<li>').append(
 					sprintf(t('<b>%s Atributo</b>'), Player.EMOJI_ATTRIBUTE)
 				),
 				$('<li>').append(
@@ -538,7 +553,7 @@ class VisualizePlayer extends Box {
 					)
 				),
 				$('<li>').append(
-					sprintf(t('<b>%s Pontuação</b> desse atributo, o "normal" para um jovem adulto gira em torno de 100'), Player.EMOJI_POINTS)
+					sprintf(t('<b>%s Pontuação base</b> desse atributo, o "normal" para um jovem adulto gira em torno de 100'), Player.EMOJI_POINTS)
 				),
 				$('<li>').append(
 					sprintf(t('<b>%s Modificador permanente</b> desse atributo, modificado apenas por equipamentos contendo modificadores. Aumentam o total de pontos do atributo'), Player.EMOJI_PERMANENT_MODIFICATOR)
@@ -843,8 +858,10 @@ class VisualizePlayer extends Box {
 		}
 
 		let life = parseInt($('#' + me.createId('life_' + playerId)).val());
+		let mana = parseInt($('#' + me.createId('mana_' + playerId)).val());
 
 		editPlayer['life'] = life;
+		editPlayer['mana'] = mana;
 
 		allAttributes.forEach(function (attribute) {
 			let basePoints = parseInt($('#' + me.createId('base_points_' + playerId + '_' + attribute)).val());

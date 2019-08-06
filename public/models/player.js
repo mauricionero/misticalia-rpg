@@ -14,6 +14,7 @@ class Player extends RModel {
 	static get EMOJI_NAME () { return '웃' };
 	static get EMOJI_SHORT_NAME () { return '…' };
 	static get EMOJI_LIFE () { return '❤️' };
+	static get EMOJI_MANA () { return '✨' };
 
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
@@ -108,7 +109,7 @@ class Player extends RModel {
 			5: t('Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'),
 			6: t('Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'),
 			7: t('O quão apresentavel e comunicativo o personagem é'),
-			8: t('O poder mágico'),
+			8: t('O poder mágico. Quanto mais mágica, melhores os poderes e menos gasta mana para realizar as ações mágicas'),
 			9: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
 			10: t('Defesa a ser levada em conta pelo mestre contra fogo'),
 			11: t('Defesa a ser levada em conta pelo mestre contra frio'),

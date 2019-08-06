@@ -1,6 +1,8 @@
 class PlayerEquipament extends RModel {
 
 	static get EMOJI_VISUALIZE () { return '🛡️' }
+	
+	static get EMOJI_QUANTITY () { return '📦' }
 
 	// traduções dos campos
 	static get fieldTranslations () {

@@ -38,10 +38,13 @@ class ListPlayers extends Box {
 					sprintf(t('<b>%s</b>: Vida total, deixando o mouse em cima, pode-se verificar o percentual total de vida'), Player.EMOJI_LIFE + ' ' + Player.getAttributeName('life'))
 				),
 				$('<li>').append(
-					sprintf(t('<b>%s</b>: Clique para visualizar de forma mais completa esse personagem'), Player.EMOJI_VISUALIZE + ' Detalhes')
+					sprintf(t('<b>%s Detalhes</b>: Clique para visualizar de forma mais completa esse personagem'), Player.EMOJI_VISUALIZE)
 				),
 				$('<li>').append(
-					sprintf(t('<b>%s</b>: Clique para visualizar os equipamentos desse personagem'), PlayerEquipament.EMOJI_VISUALIZE + ' Equipamentos')
+					sprintf(t('<b>%s Equipamentos</b>: Clique para visualizar os equipamentos desse personagem'), PlayerEquipament.EMOJI_VISUALIZE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Itens</b>: Clique para visualizar os itens desse personagem'), PlayerItem.EMOJI_VISUALIZE)
 				)
 			)
 		];
@@ -110,6 +113,9 @@ class ListPlayers extends Box {
 			),
 			$("<th>", { title: t('Visualizar equipamentos do personagem') } ).append(
 				PlayerEquipament.EMOJI_VISUALIZE
+			),
+			$("<th>", { title: t('Visualizar itens do personagem') } ).append(
+				PlayerItem.EMOJI_VISUALIZE
 			)
 		);
 
@@ -191,6 +197,15 @@ class ListPlayers extends Box {
 							onclick: 'ListPlayerEquipaments.visualizePlayerEquipaments("' + player['id'] + '")',
 							title: t('Visualizar equipamentos do personagem'),
 							value: PlayerEquipament.EMOJI_VISUALIZE
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'button',
+							id: me.createId('visualize_itens_' + player['id']),
+							onclick: 'ListPlayerItems.visualizePlayerItems("' + player['id'] + '")',
+							title: t('Visualizar itens do personagem'),
+							value: PlayerItem.EMOJI_VISUALIZE
 						})
 					)
 				)

@@ -92,9 +92,9 @@ class VisualizeEquipament extends Box {
 						$("<textarea>", {
 							type: 'text',
 							id: me.createId('description'),
-							placeholder: t('Utilidade'),
+							placeholder: t('Breve descrição'),
 							width: '100%',
-							lines: 2
+							lines: 3
 						}).html(equipamentDescription)
 					)
 				),
@@ -305,14 +305,14 @@ class VisualizeEquipament extends Box {
 		let modifierValue = $('#' + me.createId('modifier_value')).val();
 		let modifierObservations = $('#' + me.createId('modifier_observations')).val();
 
-		let newModifier = {
+		let newModifier = new Modifier({
 			'equipamentId': equipamentId,
 			'typeId': modifierType,
 			'value': modifierValue,
 			'observations': modifierObservations
-		}
+		});
 
-		let resultSaved = Modifier.saveModifier(newModifier);
+		let resultSaved = newModifier.saveModifier();
 
 		let saveButton = $('#' + me.createId('modifier_save'));
 

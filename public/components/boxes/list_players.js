@@ -85,151 +85,94 @@ class ListPlayers extends Box {
 
 		let listPlayersTableTitle = $("<tr>");
 
+		listPlayersTableTitle.append(
+			$("<th>", { title: t('Nome') }).append(
+				Player.EMOJI_NAME
+			)
+		);
+
+		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			listPlayersTableTitle.append(
+				$("<th>", { title: Player.getAttributeName(attribute) } ).append(
+					Modifier.EMOJI_TYPES[typeId]
+				)
+			);
+		});
+
+		listPlayersTableTitle.append(
+			$("<th>", { title: Player.ALL_ATTRIBUTES_NAMES['life'] } ).append(
+				Player.EMOJI_LIFE
+			),
+			$("<th>", { title: t('Visualizar personagem') } ).append(
+				Player.EMOJI_VISUALIZE
+			),
+			$("<th>", { title: t('Visualizar equipamentos do personagem') } ).append(
+				PlayerEquipament.EMOJI_VISUALIZE
+			)
+		);
+
 		// titulo das colunas na tabela
 		listPlayersTable.append(
-			listPlayersTableTitle.append(
-				$("<th>", { title: t('Nome') }).append(
-					Player.EMOJI_NAME
-				),
-				$("<th>", { title: t('Força') }).append(
-					Player.EMOJI_STRENGTH
-				),
-				$("<th>", { title: t('Destreza') }).append(
-					Player.EMOJI_DEXTERY
-				),
-				$("<th>", { title: t('Agilidade') }).append(
-					Player.EMOJI_AGILITY
-				),
-				$("<th>", { title: t('Constituição') }).append(
-					Player.EMOJI_CONSTITUTION
-				),
-				$("<th>", { title: t('Inteligencia') }).append(
-					Player.EMOJI_INTELIGENCE
-				),
-				$("<th>", { title: t('Sabedoria') }).append(
-					Player.EMOJI_WISDOM
-				),
-				$("<th>", { title: t('Carisma') }).append(
-					Player.EMOJI_CHARISMA
-				),
-				$("<th>", { title: t('Sanidade') }).append(
-					Player.EMOJI_SANITY
-				),
-				$("<th>", { title: t('Vida') }).append(
-					Player.EMOJI_LIFE
-				),
-				$("<th>", { title: t('Visualizar personagem') }).append(
-					Player.EMOJI_VISUALIZE
-				),
-				$("<th>", { title: t('Visualizar equipamentos do personagem') }).append(
-					PlayerEquipament.EMOJI_VISUALIZE
-				)
-			)
+			listPlayersTableTitle
 		);
 
 		allPlayers.forEach(function (player) {
 
-			let listPlayersTableLine = $("<tr>");
+			let playerId = player['id'];
+
+			let listPlayersTableLine = $('<tr>');
 
 			let lifeProgressbar = player.getLifeProgressBar(boxId);
-			
+
 			listPlayersTable.append(
 				listPlayersTableLine.append(
 					$("<td>", { title: player['name'] } ).append(
 						player.getPlayerShort(),
 						$("<input>", {
 							type: 'hidden',
-							id: me.createId('name_' + player['id']),
+							id: me.createId('name_' + playerId),
 							disabled: 'disabled',
 							value: player['name']
 						}),
 						$("<input>", {
 							type: 'hidden',
-							id: me.createId('shortname_' + player['id']),
+							id: me.createId('shortname_' + playerId),
 							disabled: 'disabled',
 							value: player.getPlayerShort()
 						}),
 						$("<input>", {
 							type: 'hidden',
-							id: me.createId('gender_' + player['id']),
+							id: me.createId('gender_' + playerId),
 							disabled: 'disabled',
 							value: player['gender']
 						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('strength_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['strength']['basePoints']
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('dextery_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['dextery']['basePoints']
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('agility_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: (player['agility']) ? player['agility']['basePoints'] : 0
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('constitution_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['constitution']['basePoints']
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('inteligence_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['inteligence']['basePoints']
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('wisdom_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['wisdom']['basePoints']
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('charisma_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['charisma']['basePoints']
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('sanity_' + player['id']),
-							width: 32,
-							disabled: 'disabled',
-							value: player['sanity']['basePoints']
-						})
-					),
-					$("<td>").append(
+					)
+				)
+			);
 
+			Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+				let basePoints = player.getAttribute(attribute, 'basePoints');
+
+				let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+				listPlayersTableLine.append(
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId(attribute + '_' + playerId),
+							width: 32,
+							disabled: 'disabled',
+							value: basePoints
+						})
+					)
+				);
+			});
+			
+			listPlayersTable.append(
+				listPlayersTableLine.append(
+					$("<td>").append(
 						lifeProgressbar
 					),
 					$("<td>").append(

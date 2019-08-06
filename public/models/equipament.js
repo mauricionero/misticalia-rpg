@@ -83,13 +83,11 @@ class Equipament extends RModel {
 	// validações dessa model
 	validations () {
 		return {
-			'name' : {
-				'mandatory': true
-			},
 			'name': {
 				'uniqueness': {
 					'scope': [ 'currentAdventureId' ]
-				}
+				},
+				'mandatory': true
 			}
 		}
 	}

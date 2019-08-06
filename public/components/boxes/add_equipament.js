@@ -89,7 +89,7 @@ class AddEquipament extends Box {
 							id: me.createId('description'),
 							placeholder: t('Breve descrição'),
 							width: '100%',
-							lines: 2
+							lines: 3
 						})
 					)
 				),

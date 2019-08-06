@@ -27,6 +27,7 @@ class Player extends RModel {
 	static get EMOJI_INTELIGENCE () { return '💡' };
 	static get EMOJI_WISDOM () { return '📚' };
 	static get EMOJI_CHARISMA () { return '👹' };
+	static get EMOJI_MAGIC () { return '🔮' };
 	static get EMOJI_SANITY () { return '🙂' };
 
 	static get EMOJI_LEVEL () { return '🎚️' };
@@ -64,6 +65,7 @@ class Player extends RModel {
 			'inteligence',
 			'wisdom',
 			'charisma',
+			'magic',
 			'sanity'
 		]
 	};
@@ -87,6 +89,7 @@ class Player extends RModel {
 			'inteligence': 'Inteligencia',
 			'wisdom': 'Sabedoria',
 			'charisma': 'Carisma',
+			'magic': 'Mágica',
 			'sanity': 'Sanidade',
 			'fire_protection': 'Proteção ao fogo',
 			'cold_protection': 'Proteção ao frio',
@@ -105,11 +108,12 @@ class Player extends RModel {
 			5: t('Testes de inteligência do personagem, soluções criativas que não dependem exatamente de conhecimento'),
 			6: t('Testes de conhecimento do personagem, algo que depende de se conhecer algo previo'),
 			7: t('O quão apresentavel e comunicativo o personagem é'),
-			8: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
-			9: t('Defesa a ser levada em conta pelo mestre contra fogo'),
-			10: t('Defesa a ser levada em conta pelo mestre contra frio'),
-			11: t('O quanto conseguirá defender antes de chegar o dano ao personagem, quanto maior, mais impacto será absorvido antes de ser levado pelo personagem'),
-			12: t('O quanto irá dar de dano a mais em um ataque')
+			8: t('O poder mágico'),
+			9: t('Coisas amedrontadoras exigem testes de sanidade para ver se terá alguma reação consciente ou definida pelo mestre'),
+			10: t('Defesa a ser levada em conta pelo mestre contra fogo'),
+			11: t('Defesa a ser levada em conta pelo mestre contra frio'),
+			12: t('O quanto conseguirá defender antes de chegar o dano ao personagem, quanto maior, mais impacto será absorvido antes de ser levado pelo personagem'),
+			13: t('O quanto irá dar de dano a mais em um ataque')
 		}
 	};
 

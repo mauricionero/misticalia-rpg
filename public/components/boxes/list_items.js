@@ -91,8 +91,7 @@ class ListItems extends Box {
 			$('<h3>').append(
 				t('Listar itemos da aventura')
 			),
-			sprintf(t('Para ver os modificadores de um itemo, clique em <b>%s</b>'), Item.EMOJI_VISUALIZE),
-			Item.helpTypeMeaning()
+			sprintf(t('Para ver os modificadores de um itemo, clique em <b>%s</b>'), Item.EMOJI_VISUALIZE)
 		];
 	}
 

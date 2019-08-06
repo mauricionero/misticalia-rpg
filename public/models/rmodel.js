@@ -60,6 +60,8 @@ class RModel {
 					} else if (whichValidation == 'mandatory') {
 						let isMandatory = whichValidations[whichValidation];
 
+						console.log('isMandatory', isMandatory);
+
 						// se for realmente obrigatorio
 						if (isMandatory) {
 

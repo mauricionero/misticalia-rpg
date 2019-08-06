@@ -23,6 +23,12 @@ class AddItem extends Box {
 					),
 					$('<td>').append(
 						$("<input>", {
+							type: 'hidden',
+							id: me.createId('item_id'),
+							disabled: 'disabled',
+							value: 0
+						}),
+						$("<input>", {
 							type: 'text',
 							id: me.createId('name'),
 							placeholder: t('Nome do item')
@@ -146,9 +152,8 @@ class AddItem extends Box {
 			saveButton.attr('disabled','disabled');
 			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
 
-			//TODO: implementar
-			// let addModifierButton = $('#' + me.createId('modifier_form_button'));
-			// addModifierButton.slideToggle();
+			let addModifierButton = $('#' + me.createId('modifier_form_button'));
+			addModifierButton.slideToggle();
 
 			let itemIdInput = $('#' + me.createId('item_id'));
 			itemIdInput.val(resultSaved['id']);

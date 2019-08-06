@@ -7,16 +7,21 @@ class Item extends RModel {
 	static get EMOJI_WEIGHT () { return '⚖️' }
 	static get EMOJI_DESCRIPTION () { return '📝' }
 
+	// traduções dos campos
+	static get fieldTranslations () {
+		return {
+			'name': 'Nome',
+		}
+	}
+
 	// validações dessa model
 	validations () {
 		return {
-			'name' : {
-				'mandatory': true
-			},
 			'name': {
 				'uniqueness': {
 					'scope': [ 'currentAdventureId' ]
-				}
+				},
+				'mandatory': true
 			}
 		}
 	}
@@ -43,6 +48,13 @@ class Item extends RModel {
 		let items = this.getAll(options); 
 
 		return items;
+	}
+
+	// retorna 1 item especifico pelo id
+	static getItem (ItemId) {
+		let allItems = Item.getAllItems();
+
+		return allItems.filter(function ( item ) { return item['id'] == ItemId })[0];
 	}
 }
 

@@ -210,11 +210,44 @@ class Menu extends RModel {
 				]
 			},
 			{
+				id: 22,
+				name: t('Anotações'),
+				emoji: Notebook.EMOJI_MAIN,
+				action_id: '',
+				single_ton: true,
+				roles: [ Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
+				class: '',
+				items: [
+					{
+						id: 23,
+						name: t('Caderno'),
+						emoji: Notebook.EMOJI_NEW,
+						action_id: 'visualize_notebook',
+						roles: [ Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
+						class: 'open_box',
+						items: [
+						]
+					},
+					{
+						id: 24,
+						name: t('Cadernos'),
+						emoji: Notebook.EMOJI_SINGLE,
+						action_id: 'list_notebooks',
+						options: { filterAdventureId: true },
+						single_ton: true,
+						roles: [ Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
+						class: 'open_box',
+						items: [
+						]
+					}
+				]
+			},
+			{
 				id: 11,
 				name: 'Ajuda',
 				emoji: 'ℹ️',
 				action_id: 'global_help',
-				roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
+				roles: [ Adventure.ROLE_UNDEFINED ],
 				class: 'open_box',
 				items: [
 				]

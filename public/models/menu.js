@@ -131,6 +131,39 @@ class Menu extends RModel {
 						]
 					},
 					{
+						id: 25,
+						name: t('Perícias'),
+						emoji: Expertise.EMOJI_MAIN,
+						action_id: '',
+						single_ton: true,
+						roles: [ Adventure.ROLE_MASTER ],
+						class: '',
+						items: [
+							{
+								id: 26,
+								name: t('Perícia'),
+								emoji: '➕',
+								action_id: 'add_expertise',
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							},
+							{
+								id: 27,
+								name: t('Listar perícias'),
+								emoji: Expertise.EMOJI_LIST,
+								action_id: 'list_expertises',
+								options: { filterAdventureId: true },
+								single_ton: true,
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							}
+						]
+					},
+					{
 						id: 12,
 						name: t('Equipamentos'),
 						emoji: Equipament.EMOJI_MAIN,

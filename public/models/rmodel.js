@@ -179,10 +179,24 @@ class RModel {
 
 		let storeName = this.name;
 
-		let storeData = JSON.parse(localStorage.getItem(storeName));
+		let staticMe = RModel.models[storeName];
+
+		let storeData = [];
+
+		storeData = JSON.parse(localStorage.getItem(storeName));
 
 		if (storeData == null || storeData == undefined) {
 			storeData = [];
+		}
+
+		// se tem definido dados estaticos, concatenar com os dados ja pegos
+		if (typeof staticMe.getStaticAll == 'function') {
+
+			let allStaticData = staticMe.getStaticAll();
+
+			console.log('allStaticData', allStaticData);
+
+			storeData = storeData.concat(allStaticData);
 		}
 
 		let allModelInstances = [];

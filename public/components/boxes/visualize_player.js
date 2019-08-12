@@ -682,6 +682,9 @@ class VisualizePlayer extends Box {
 			$('<p>').append(
 				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
 			),
+			$('<h3>').append(
+				sprintf(t('Aba %s (Atributos)'), Player.EMOJI_ATTRIBUTE)
+			),
 			$('<ul>').append(
 				$('<li>').append(
 					sprintf(t('<b>%s Vida</b> desse personagem (percentual), quanto mais constituição, menos vida perde'), Player.EMOJI_LIFE)
@@ -727,17 +730,21 @@ class VisualizePlayer extends Box {
 					)
 				)
 			),
-			$('<p>').append(
-				t('<b>Equipamentos e itens:</b> Ao clicar exibe os equipamentos que o personagem tem em seu inventario podendo equipar ou desequipar')
-			),
-			$('<p>').append(
-				sprintf(t('<b>%s:</b> Ao clicar, abre uma janela para adicionar equipamentos ao inventário desse personagem'), Equipament.EMOJI_ADD + ' ' + t('Add equipamento'))
-			),
+			Player.helpAttributesMeaning(isNPC),
 			$('<p>').append(
 				t('<b>Salvar:</b> Ao clicar salva qualquer modificação feita nos atributos ou vida do personagem')
 			),
-			$('<h4>').append(
-				'* ' + t('Equipamentos e itens:') + ' *'
+			$('<h3>').append(
+				sprintf(t('Aba %s (Perícias)'), Player.EMOJI_EXPERTISE)
+			),
+			$('<p>').append(
+				t('Está sendo implementada. Terão as perícias desse personagem')
+			),
+			$('<h3>').append(
+				sprintf(t('Aba %s (Equipamentos)'), Equipament.EMOJI_MAIN)
+			),
+			$('<p>').append(
+				t('Exibe os equipamentos que o personagem tem em seu inventario podendo equipar ou desequipar')
 			),
 			playerEquipamentTable,
 			$('<p>').append(
@@ -745,15 +752,14 @@ class VisualizePlayer extends Box {
 			),
 			'<br style="clear: both" />',
 			$('<p>').append(
-				t('Na tabela do meio, são listados os equipamentos que o personagem possui, clicando em algum, esse equipamento ficará em negrito para indicar que foi equipado. Se clicar em um equipamento em negrito, irá desequipar. Perceba que os modificadores desse equipamento farão efeito nos atributos correspondentes')
+				t('Na tabela, são listados os equipamentos que o personagem possui, clicando em algum, esse equipamento ficará em negrito para indicar que foi equipado. Se clicar em um equipamento em negrito, irá desequipar. Perceba que os modificadores desse equipamento farão efeito nos atributos correspondentes')
 			),
 			$('<p>').append(
-				t('A tabela do canto direito ainda não foi implementada, mas será a listagem dos itens consumiveis, como poções para recuperar vida por exemplo')
-			),
-			Player.helpAttributesMeaning(isNPC)
+				sprintf(t('<b>%s:</b> Ao clicar, abre uma janela para adicionar equipamentos ao inventário desse personagem'), Equipament.EMOJI_ADD + ' ' + t('Adicionar equipamento'))
+			)
 		];
 	}
-	
+
 
 	// equipar o item selecionado do jogador
 	static equipEquipament (playerId, playerEquipamentId, equipamentId, boxId, inserting = true) {

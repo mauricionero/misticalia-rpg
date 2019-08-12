@@ -27,26 +27,14 @@ class ListExpertises extends Box {
 
 		let listExpertiseDiv = $('<div>');
 
-		let listExpertiseTable = $('<table>');
-
-		// titulo das colunas na tabela
-		listExpertiseTable.append(
-			$("<tr>").append(
-				$("<th>", { title: t('Atributo') }).append(
-					Expertise.EMOJI_ATTRIBUTE
-				),
-				$("<th>", { title: t('Perícia') }).append(
-					Expertise.EMOJI_NAME
-				)
-			)
-		);
-
 		// criar as abas de atributos e habilidades
 		let expertiseTabs = $('<div>', { id: me.createId('tabs') } );
 		let expertiseTabsUl = $('<ul>');
 
+		let allAttributes = Player.ALL_ATTRIBUTES;
+
 		// criar indice das tabs
-		Player.ALL_ATTRIBUTES.forEach(function (attribute) {
+		allAttributes.forEach(function (attribute) {
 
 			let attributeId = Modifier.ALL_TYPE_IDS[attribute];
 			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
@@ -62,20 +50,50 @@ class ListExpertises extends Box {
 			);
 		});
 
+		let listExpertiseTable = [];
+
+		// criar as tabelas das tabs
+		allAttributes.forEach(function (attribute) {
+
+			let attributeId = Modifier.ALL_TYPE_IDS[attribute];
+			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			listExpertiseTable[attributeId] = $('<table>', { id: me.createId('table_attribute_' + attributeId) } );
+
+			// titulo das colunas na tabela
+			listExpertiseTable[attributeId].append(
+				$("<tr>").append(
+					$("<th>", { title: t('Atributo') }).append(
+						Expertise.EMOJI_ATTRIBUTE
+					),
+					$("<th>", { title: t('Perícia') }).append(
+						Expertise.EMOJI_NAME
+					)
+				)
+			);
+
+			expertiseTabsUl.append(
+				$('<div>', { id: me.createId('tab-' + attributeId) } ).html(
+					listExpertiseTable[attributeId]
+				)
+			);
+		});
+
 		expertiseTabs.append(
 			expertiseTabsUl
 		);
 
+		// preencher as tabelas de pericias criadas anteriormente dentro das abas
 		allExpertises.forEach(function (expertise) {
 
 			let expertiseId = expertise['id'];
 			let attributeId = expertise['attributeId'];
 			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
 			let expertiseName = expertise['name'];
-			
-			listExpertiseTable.append(
+
+			listExpertiseTable[attributeId].append(
 				$("<tr>").append(
-					$('<td>', { title: attributeName } ).append(
+					$('<td>', { title: attributeName, style: 'font-weight: normal' } ).append(
 						Modifier.EMOJI_TYPES[attributeId],
 						$("<input>", {
 							type: 'hidden',
@@ -84,7 +102,7 @@ class ListExpertises extends Box {
 							value: attributeId
 						})
 					),
-					$("<td>").append(
+					$('<td>', { style: 'font-weight: normal' } ).append(
 						expertise['name'],
 						$("<input>", {
 							type: 'hidden',
@@ -98,8 +116,7 @@ class ListExpertises extends Box {
 		});
 
 		listExpertiseDiv.append(
-			expertiseTabs,
-			listExpertiseTable
+			expertiseTabs
 		);
 
 		return listExpertiseDiv;

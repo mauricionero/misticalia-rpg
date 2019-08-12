@@ -35,6 +35,7 @@ class Player extends RModel {
 	static get EMOJI_LEVEL () { return '🎚️' };
 	static get EMOJI_POINTS () { return '🌡️' };
 	static get EMOJI_ATTRIBUTE () { return '✔️' };
+	static get EMOJI_EXPERTISE () { return '🏅' };
 	static get EMOJI_BALANCE () { return '⚖️' };
 	static get EMOJI_TEMPORARY_MODIFICATOR () { return '⌛' };
 	static get EMOJI_PERMANENT_MODIFICATOR () { return '⏳' };
@@ -337,24 +338,19 @@ class Player extends RModel {
 	}
 
 	// retorna maximo de pontuação de acordo com o nivel
-	// formula antiga: Math.ceil(level**(2.4) - level**(1.4) + level)
 	static levelMaxPointsCalculator (level) {
-		return level**2;
+		return level**2 + 7*level - level;
 	}
 
 	// retorna a formula do nivel
 	static get levelCalculatorFormula () {
-		return t('chão(√(pontos))')
+		return t('chão( (-6 + √(36 - 4 * -pontos)) / 2 )')
 	}
 	// retorna o nivel de acordo com a pontuação
 	static levelCalculator (points) {
-		if (points < 0) {
-			points *= -1;
+		let level = Math.floor( (-6 + Math.sqrt(36 - 4 * -points)) / 2 );
 
-			return Math.floor(Math.sqrt(points)) * -1;
-		}
-
-		return Math.floor(Math.sqrt(points));
+		return level;
 	}
 
 	// retorna formula do calculo dos dados em string para exibição

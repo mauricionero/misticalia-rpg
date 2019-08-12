@@ -7,15 +7,13 @@
 }
 
 .visualize_player_equipament table {
-	float: left;
 	font-size: 20px;
 }
 
 .visualize_player_equipament_item_list {
-	float: right;
-	width: 36%;
+	width: 200px;
 	height: 100px;
-	border: 1px solid #666;
+	border: 1px dashed #999;
 	margin: 5px;
 	padding: 2px;
 	overflow-y: auto;

@@ -1,6 +1,6 @@
 class Equipament extends RModel {
 
-	static get EMOJI_MAIN () { return '⛨' }
+	static get EMOJI_MAIN () { return '👕' }
 
 	static get EMOJI_ADD () { return '⛨' }
 

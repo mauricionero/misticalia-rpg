@@ -26,15 +26,77 @@ class VisualizePlayer extends Box {
 
 		let listPlayerDiv = $('<div>');
 
-		let listPlayerTableDiv = $('<div>', {
-			id: me.createId('list_player_table_div_' + playerId)
+		// criar as abas de atributos e habilidades
+		let playerTabs = $('<div>', { id: me.createId('tabs') } );
+
+		let listPlayerAttributesTableDiv = $('<div>', {
+			id: me.createId('list_player_table_div_' + playerId),
+			display: 'inline'
 		});
 
-		let visualizePlayerEquipamentDiv = $('<div>', {
-			class: 'visualize_player_equipament',
-			id: me.createId('equipaments_' + playerId),
-			style: 'display: none',
+		let listPlayerExpertiseTableDiv = $('<div>', {
+			id: me.createId('list_player_expertise_table_div_' + playerId),
+			display: 'inline'
 		});
+
+		let visualizePlayerEquipamentTableItems = $('<table>', {
+			class: 'visualize_player_equipament',
+			id: me.createId('equipaments_' + playerId)
+		});
+
+		let visualizePlayerEquipamentItems = $('<div>').append(
+			visualizePlayerEquipamentTableItems,
+			'<br />',
+			$("<input>", {
+				type: 'button',
+				id: me.createId('manage_equipament_' + playerId),
+				title: t('Adicionar equipamento ao inventário desse personagem'),
+				onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", "' + boxId + '")',
+				value: Equipament.EMOJI_ADD + ' ' + t('Adicionar equipamento')
+			}),
+		);
+
+		playerTabs.append(
+			$('<ul>').append(
+				$('<li>', { title: t('Atributos') } ).append(
+					$('<a>', { href: '#' + me.createId('tab-1') } ).html(
+						$('<b>').append(
+							Player.EMOJI_ATTRIBUTE
+						)
+					)
+				),
+				$('<li>', { title: t('Perícias') } ).append(
+					$('<a>', { href: '#' + me.createId('tab-2') } ).html(
+						$('<b>').append(
+							Player.EMOJI_EXPERTISE
+						)
+					)
+				),
+				$('<li>', { title: t('Equipamentos') } ).append(
+					$('<a>', { href: '#' + me.createId('tab-3') } ).html(
+						$('<b>').append(
+							Equipament.EMOJI_MAIN
+						)
+					)
+				)
+			),
+			$('<div>', { id: me.createId('tab-1') } ).append(
+				listPlayerAttributesTableDiv,
+				$("<input>", {
+					type: 'button',
+					id: me.createId('save'),
+					title: t('Salvar'),
+					onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
+					value: t('Salvar')
+				})
+			),
+			$('<div>', { id: me.createId('tab-2') } ).html(
+				listPlayerExpertiseTableDiv
+			),
+			$('<div>', { id: me.createId('tab-3') } ).html(
+				visualizePlayerEquipamentItems
+			)
+		);
 
 		let playerEquipamentTable = $('<table>').append(
 			$('<tr>').append(
@@ -174,43 +236,19 @@ class VisualizePlayer extends Box {
 			class: 'visualize_player_equipament_item_list'
 		});
 
-		let itemListDiv = $('<div>', {
-			id: me.createId('item_list_' + playerId),
-			class: 'visualize_player_equipament_item_list'
-		});
-
-		visualizePlayerEquipamentDiv.append(
-			playerEquipamentTable,
-			itemListDiv,
-			playerEquipamentListDiv
+		visualizePlayerEquipamentTableItems.append(
+			$('<tr>').append(
+				$('<td>').append(
+					playerEquipamentTable
+				),
+				$('<td>').append(
+					playerEquipamentListDiv
+				)
+			)
 		);
 
 		listPlayerDiv.append(
-			listPlayerTableDiv,
-			$("<input>", {
-				type: 'button',
-				title: t('Salvar'),
-				onclick: 'VisualizePlayer.toggleViewEquipaments("' + playerId + '", "' + boxId + '")',
-				value: t('Ver equipamentos e itens')
-			}),
-			' ',
-			$("<input>", {
-				type: 'button',
-				id: me.createId('manage_equipament_' + playerId),
-				title: t('Adicionar equipamento ao inventário desse personagem'),
-				onclick: 'AddPlayerEquipament.visualizeEquipaments("' + playerId + '", "' + boxId + '")',
-				value: Equipament.EMOJI_ADD + ' ' + t('Add equipamento')
-			}),
-			' ',
-			$("<input>", {
-				type: 'button',
-				id: me.createId('save'),
-				title: t('Salvar'),
-				onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
-				value: t('Salvar')
-			}),
-			'<br />',
-			visualizePlayerEquipamentDiv
+			playerTabs
 		);
 
 		return listPlayerDiv;
@@ -224,7 +262,11 @@ class VisualizePlayer extends Box {
 		let playerId = me.playerId;
 		let isNPC = me.isNPC;
 
+		let playerTabs = $('#' + me.createId('tabs') );
+		playerTabs.tabs();
+
 		me.listPlayerAttributes(playerId, isNPC);
+		me.listPlayerExpertises(playerId);
 		me.listEquipaments(playerId, isNPC);
 
 		// verificar quando eh alterado o equipamento clicado
@@ -242,7 +284,7 @@ class VisualizePlayer extends Box {
 		
 		let boxId = me.boxId;
 
-		let playerEquipamentListDiv = $('#' + me.createId('list_player_table_div_' + playerId));
+		let listPlayerAttributesTableDiv = $('#' + me.createId('list_player_table_div_' + playerId));
 
 		let player = Player.getPlayer(playerId);
 
@@ -290,10 +332,10 @@ class VisualizePlayer extends Box {
 			)
 		);
 
-		let listPlayerTable = $("<table>");
+		let listPlayerAttributesTable = $("<table>");
 
 		// titulo das colunas na tabela
-		listPlayerTable.append(
+		listPlayerAttributesTable.append(
 			$("<tr>").append(
 				$("<th>", { title: t('Atributo') }).append(
 					Player.EMOJI_ATTRIBUTE
@@ -337,7 +379,7 @@ class VisualizePlayer extends Box {
 
 			let typeId = Modifier.ALL_TYPE_IDS[attribute];
 
-			listPlayerTable.append(
+			listPlayerAttributesTable.append(
 				$("<tr>").append(
 					$("<td>").append(
 						Modifier.EMOJI_TYPES[typeId] + ' ' + Player.getAttributeName(attribute)
@@ -454,13 +496,106 @@ class VisualizePlayer extends Box {
 		});
 
 		// limpar antes de adicionar novo conteudo
-		playerEquipamentListDiv.html('');
+		listPlayerAttributesTableDiv.html('');
 
-		playerEquipamentListDiv.append(
+		listPlayerAttributesTableDiv.append(
 			playerSimpleData,
-			listPlayerTable,
+			'<br />',
+			listPlayerAttributesTable,
 			secondaryAttributes
 		);
+	}
+
+	// listar as pericias do jogador
+	listPlayerExpertises (playerId) {
+
+	}
+
+	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
+	listEquipaments (playerId, isNPC = false) {
+
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let playerEquipamentListDiv = $('#' + me.createId('equipament_list_' + playerId));
+
+		let selectedEquipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
+
+		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
+
+		let playerEquipamentListTable = $("<table>", {
+			id: me.createId('table_equipament_list_' + playerId)
+		});
+
+		playerEquipamentListTable.append(
+			$("<tr>").append(
+				$("<th>", { title: t('Tipo') }).append(
+					Equipament.EMOJI_TYPE
+				),
+				$("<th>", { title: t('Nome') }).append(
+					Equipament.EMOJI_NAME
+				)
+			)
+		);
+
+		allPlayerEquipaments.forEach(function (playerEquipament) {
+
+			let equipamentId = playerEquipament['equipamentId'];
+			let playerEquipamentId = playerEquipament['id'];
+
+			// criar filtro de equipamento
+			let options = { 'filters': { 'id': equipamentId } }
+			let equipament = Equipament.getAll(options)[0];
+
+			// criar filtro de equipamento
+			options = { 'filters': { 'equipamentId': equipamentId } }
+			let hasEquipedEquipament = (EquipedEquipament.getAllPlayerEquipedEquipaments(playerId, options)[0]) ? true : false;
+
+			let extraClass = '';
+
+			// se esta equipado esse equipamento, destacar
+			if (hasEquipedEquipament) {
+				extraClass = 'visualize_player_equiped'
+			}
+
+			let equipamentTypeId = equipament['typeId'];
+
+			playerEquipamentListTable.append(
+				$("<tr>", {
+					id: me.createId('_player_equipament_item_' + playerEquipamentId),
+					class: 'visualize_player_select_item ' + extraClass,
+					onclick: 'VisualizePlayer.equipEquipament("' + playerId + '", "' + playerEquipamentId + '", "' + equipamentId + '", "' + boxId + '", ' + (hasEquipedEquipament != true) + ')'
+				}).append(
+					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipamentTypeId] } ).append(
+						Equipament.EMOJI_TYPES[equipamentTypeId],
+						$("<input>", {
+							type: 'hidden',
+							id: me.createId('player_equipament_type_' + equipamentId),
+							disabled: 'disabled',
+							value: equipamentTypeId
+						})
+					),
+					$("<td>").append(
+						equipament['name'],
+						$("<input>", {
+							type: 'hidden',
+							id: me.createId('player_equipament_name_' + equipamentId),
+							disabled: 'disabled',
+							value: equipament['name']
+						})
+					)
+				)
+			)
+
+		});
+
+		// limpar antes de inserir o conteudo
+		playerEquipamentListDiv.html('');
+
+		playerEquipamentListDiv.append(playerEquipamentListTable);
+
+		me.filterListEquipaments (playerId, selectedEquipamentTypeId);
 	}
 
 	// Box padrao de ajuda
@@ -593,7 +728,7 @@ class VisualizePlayer extends Box {
 				)
 			),
 			$('<p>').append(
-				t('<b>Ver equipamentos e itens:</b> Ao clicar exibe os equipamentos que o personagem tem em seu inventario podendo equipar ou desequipar')
+				t('<b>Equipamentos e itens:</b> Ao clicar exibe os equipamentos que o personagem tem em seu inventario podendo equipar ou desequipar')
 			),
 			$('<p>').append(
 				sprintf(t('<b>%s:</b> Ao clicar, abre uma janela para adicionar equipamentos ao inventário desse personagem'), Equipament.EMOJI_ADD + ' ' + t('Add equipamento'))
@@ -602,7 +737,7 @@ class VisualizePlayer extends Box {
 				t('<b>Salvar:</b> Ao clicar salva qualquer modificação feita nos atributos ou vida do personagem')
 			),
 			$('<h4>').append(
-				'* ' + t('Ver equipamentos e itens:') + ' *'
+				'* ' + t('Equipamentos e itens:') + ' *'
 			),
 			playerEquipamentTable,
 			$('<p>').append(
@@ -618,93 +753,7 @@ class VisualizePlayer extends Box {
 			Player.helpAttributesMeaning(isNPC)
 		];
 	}
-
-	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
-	listEquipaments (playerId, isNPC = false) {
-
-		let me = this;
-		
-		let boxId = me.boxId;
-
-		let playerEquipamentListDiv = $('#' + me.createId('equipament_list_' + playerId));
-
-		let selectedEquipamentTypeId = $("input[name='" + me.createId('equipament_type') + "']:checked").val();
-
-		let allPlayerEquipaments = PlayerEquipament.getAllPlayerEquipaments(playerId);
-
-		let playerEquipamentListTable = $("<table>", {
-			id: me.createId('table_equipament_list_' + playerId)
-		});
-
-		playerEquipamentListTable.append(
-			$("<tr>").append(
-				$("<th>", { title: t('Tipo') }).append(
-					Equipament.EMOJI_TYPE
-				),
-				$("<th>", { title: t('Nome') }).append(
-					Equipament.EMOJI_NAME
-				)
-			)
-		);
-
-		allPlayerEquipaments.forEach(function (playerEquipament) {
-
-			let equipamentId = playerEquipament['equipamentId'];
-			let playerEquipamentId = playerEquipament['id'];
-
-			// criar filtro de equipamento
-			let options = { 'filters': { 'id': equipamentId } }
-			let equipament = Equipament.getAll(options)[0];
-
-			// criar filtro de equipamento
-			options = { 'filters': { 'equipamentId': equipamentId } }
-			let hasEquipedEquipament = (EquipedEquipament.getAllPlayerEquipedEquipaments(playerId, options)[0]) ? true : false;
-
-			let extraClass = '';
-
-			// se esta equipado esse equipamento, destacar
-			if (hasEquipedEquipament) {
-				extraClass = 'visualize_player_equiped'
-			}
-
-			let equipamentTypeId = equipament['typeId'];
-
-			playerEquipamentListTable.append(
-				$("<tr>", {
-					id: me.createId('_player_equipament_item_' + playerEquipamentId),
-					class: 'visualize_player_select_item ' + extraClass,
-					onclick: 'VisualizePlayer.equipEquipament("' + playerId + '", "' + playerEquipamentId + '", "' + equipamentId + '", "' + boxId + '", ' + (hasEquipedEquipament != true) + ')'
-				}).append(
-					$("<td>", { title: Equipament.ALL_TYPE_NAMES[equipamentTypeId] } ).append(
-						Equipament.EMOJI_TYPES[equipamentTypeId],
-						$("<input>", {
-							type: 'hidden',
-							id: me.createId('player_equipament_type_' + equipamentId),
-							disabled: 'disabled',
-							value: equipamentTypeId
-						})
-					),
-					$("<td>").append(
-						equipament['name'],
-						$("<input>", {
-							type: 'hidden',
-							id: me.createId('player_equipament_name_' + equipamentId),
-							disabled: 'disabled',
-							value: equipament['name']
-						})
-					)
-				)
-			)
-
-		});
-
-		// limpar antes de inserir o conteudo
-		playerEquipamentListDiv.html('');
-
-		playerEquipamentListDiv.append(playerEquipamentListTable);
-
-		me.filterListEquipaments (playerId, selectedEquipamentTypeId);
-	}
+	
 
 	// equipar o item selecionado do jogador
 	static equipEquipament (playerId, playerEquipamentId, equipamentId, boxId, inserting = true) {
@@ -792,14 +841,6 @@ class VisualizePlayer extends Box {
 		};
 
 		Box.openDialog(VisualizePlayer.windowName, windowTitle, options);
-	}
-
-	// mostrar e esconder os equipamentos do player
-	static toggleViewEquipaments (playerId, boxId) {
-
-		let me = Box.getBox(boxId);
-
-		$('#' + me.createId('equipaments_' + playerId)).slideToggle();
 	}
 
 	// recalcula o nivel e total de pontos

@@ -290,6 +290,24 @@ class Expertise extends RModel {
 
 		return expertises;
 	}
+
+	// retornar 1 expertise pelo id
+	static getExpertise (expertiseId) {
+		let options = { 'filters': { id: expertiseId } };
+
+		console.log('options', options);
+
+		let expertises = this.getAll(options);
+
+		console.log('expertises', expertises);
+
+		return expertises[0];
+	}
+
+	// pegar todos os atributos utilizados pelas pericias
+	static getAllAttributes () {
+		return Player.ALL_ATTRIBUTES;
+	}
 }
 
 RModel.models['Expertise'] = Expertise;

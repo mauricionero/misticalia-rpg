@@ -31,7 +31,7 @@ class ListExpertises extends Box {
 		let expertiseTabs = $('<div>', { id: me.createId('tabs') } );
 		let expertiseTabsUl = $('<ul>');
 
-		let allAttributes = Player.ALL_ATTRIBUTES;
+		let allAttributes = Expertise.getAllAttributes();
 
 		// criar indice das tabs
 		allAttributes.forEach(function (attribute) {
@@ -52,6 +52,8 @@ class ListExpertises extends Box {
 
 		let listExpertiseTable = [];
 
+		expertiseTabsUl.append('<br /><br />');
+
 		// criar as tabelas das tabs
 		allAttributes.forEach(function (attribute) {
 
@@ -62,7 +64,7 @@ class ListExpertises extends Box {
 
 			// titulo das colunas na tabela
 			listExpertiseTable[attributeId].append(
-				$("<tr>").append(
+				$('<tr>').append(
 					$("<th>", { title: t('Atributo') }).append(
 						Expertise.EMOJI_ATTRIBUTE
 					),
@@ -74,7 +76,17 @@ class ListExpertises extends Box {
 
 			expertiseTabsUl.append(
 				$('<div>', { id: me.createId('tab-' + attributeId) } ).html(
-					listExpertiseTable[attributeId]
+					$('<table>').append(
+						$('<tr>').append(
+							$('<td>', { class: 'expertise_list' } ).append(
+								listExpertiseTable[attributeId]
+							),
+							$('<td>', {
+								class: 'expertise_details',
+								id: me.createId('expertise_details_' + attributeId)
+							})
+						)
+					)
 				)
 			);
 		});
@@ -92,7 +104,10 @@ class ListExpertises extends Box {
 			let expertiseName = expertise['name'];
 
 			listExpertiseTable[attributeId].append(
-				$("<tr>").append(
+				$('<tr>', {
+					class: 'click_pointer',
+					onclick: 'ListExpertises.visualizeExpertise("' + boxId + '", "' + attributeId + '", "' + expertiseId + '")'
+				}).append(
 					$('<td>', { title: attributeName, style: 'font-weight: normal' } ).append(
 						Modifier.EMOJI_TYPES[attributeId],
 						$("<input>", {
@@ -141,6 +156,40 @@ class ListExpertises extends Box {
 			),
 			sprintf(t('Para ver os detalhes de uma perícia, clique em <b>%s</b>'), Expertise.EMOJI_VISUALIZE)
 		];
+	}
+
+
+	// visualizar informações detalhadas da pericia
+	static visualizeExpertise (boxId, attributeId, expertiseId) {
+
+		let me = Box.getBox(boxId);
+
+		let expertise = Expertise.getExpertise(expertiseId);
+
+		console.log('expertiseId', expertiseId);
+		console.log('expertise', expertise);
+
+		let expertiseDetailsTd = $('#' + me.createId('expertise_details_' + attributeId));
+
+		expertiseDetailsTd.html('');
+
+		expertiseDetailsTd.append(
+			$('<h3>').append(
+				expertise['name']
+			),
+			$('<p>').append(
+				$('<b>').append(
+					t('Descrição') + ': '
+				),
+				expertise['description']
+			),
+			$('<p>').append(
+				$('<b>').append(
+					t('Regras') + ': '
+				),
+				expertise['rule']
+			)
+		);
 	}
 
 }

@@ -1,0 +1,18 @@
+.expertise_list {
+	vertical-align: top;
+}
+
+.expertise_details {
+	font-weight: normal;
+	vertical-align: top;
+	max-width: 300px;
+	min-width: 200px;
+	min-height: 100px;
+	padding: 5px;
+	border: 1px dashed #999;
+	margin-left: 5px;
+}
+
+.expertise_details h3 {
+	margin-block-start: 5px;
+}

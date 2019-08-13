@@ -295,11 +295,7 @@ class Expertise extends RModel {
 	static getExpertise (expertiseId) {
 		let options = { 'filters': { id: expertiseId } };
 
-		console.log('options', options);
-
 		let expertises = this.getAll(options);
-
-		console.log('expertises', expertises);
 
 		return expertises[0];
 	}

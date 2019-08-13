@@ -166,9 +166,6 @@ class ListExpertises extends Box {
 
 		let expertise = Expertise.getExpertise(expertiseId);
 
-		console.log('expertiseId', expertiseId);
-		console.log('expertise', expertise);
-
 		let expertiseDetailsTd = $('#' + me.createId('expertise_details_' + attributeId));
 
 		expertiseDetailsTd.html('');

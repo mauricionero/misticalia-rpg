@@ -20,15 +20,20 @@ class ListExpertises extends Box {
 			}
 		}
 
+		let allExpertises = [];
+
 		// se deve filtrar por globais apenas
 		if (isGlobal) {
-			optionFilter['filters']['isGlobal'] = true;
+			allExpertises = Expertise.getAllStatic(optionFilter);
 		} else {
-			optionFilter['filters']['isGlobal'] = false;
+			allExpertises = Expertise.getAllExpertises(optionFilter);
+			
+			// na listagem local, se nao tem nenhuma, eh a primeira vez que entra provavelmente, salvar as globais no local
+			if (allExpertises.length == 0) {
+				Expertise.setup();
+			}
 		}
 		this.optionFilter = optionFilter;
-
-		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
 		// // se deve filtrar por aventura
 		// if (options['filterAdventureId']) {
@@ -36,11 +41,6 @@ class ListExpertises extends Box {
 		// } else {
 		// 	allExpertises = Expertise.getAllExpertises(optionFilter);
 		// }
-
-		// se nao tem nenhuma, eh a primeira vez que entra provavelmente, salvar as globais no local
-		if (allExpertises.length == 0) {
-			Expertise.setup();
-		}
 
 		let listExpertiseDiv = $('<div>', { id: me.createId('list_expertise_div') } );
 
@@ -68,7 +68,14 @@ class ListExpertises extends Box {
 
 		let listExpertiseDiv = $('#' + me.createId('list_expertise_div'));
 
-		let allExpertises = Expertise.getAllExpertises(optionFilter);
+		let allExpertises = [];
+
+		// se deve filtrar por globais apenas
+		if (isGlobal) {
+			allExpertises = Expertise.getAllStatic(optionFilter);
+		} else {
+			allExpertises = Expertise.getAllExpertises(optionFilter);
+		}
 
 		// criar as abas de atributos e habilidades
 		let expertiseTabs = $('<div>', { id: me.createId('tabs') } );

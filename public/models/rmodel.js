@@ -173,9 +173,14 @@ class RModel {
 			return false;
 		}
 	}
+
+	// retorna todos os dados estáticos da model
+	static getAllStatic (options = {}, invert = false) {
+		return this.getAll(options, invert, true);
+	}
 	
 	// retornar todos os dados relacionados aa essa model
-	static getAll (options = {}, invert = false) {
+	static getAll (options = {}, invert = false, onlyStatic = false) {
 
 		let storeName = this.name;
 
@@ -183,18 +188,22 @@ class RModel {
 
 		let storeData = [];
 
-		storeData = JSON.parse(localStorage.getItem(storeName));
+		// se deve retornar apenas os estaticos
+		if (onlyStatic) {
 
-		if (storeData == null || storeData == undefined) {
-			storeData = [];
-		}
+			// deve ter definido dados estaticos
+			if (typeof staticMe.getStaticAll == 'function') {
+				storeData = staticMe.getStaticAll();
+			}
 
-		// se tem definido dados estaticos, concatenar com os dados ja pegos
-		if (typeof staticMe.getStaticAll == 'function') {
+		// retornar os dados normais da localStorage
+		} else {
 
-			let allStaticData = staticMe.getStaticAll();
+			storeData = JSON.parse(localStorage.getItem(storeName));
 
-			storeData = storeData.concat(allStaticData);
+			if (storeData == null || storeData == undefined) {
+				storeData = [];
+			}
 		}
 
 		let allModelInstances = [];

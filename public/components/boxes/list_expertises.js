@@ -10,12 +10,21 @@ class ListExpertises extends Box {
 
 		// filtrar se eh npc ou nao
 		let optionFilter = {
+			'filters': {},
 			'order': {
 				'attributeId': 'ASC',
 				'name': 'ASC'
 			}
 		}
 
+		// se deve filtrar por globais apenas
+		if (options['isGlobal']) {
+			optionFilter['filters']['isGlobal'] = true;
+		} else {
+			optionFilter['filters']['isGlobal'] = false;
+		}
+
+		// pega apenas as globais
 		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
 		// // se deve filtrar por aventura
@@ -70,6 +79,9 @@ class ListExpertises extends Box {
 					),
 					$("<th>", { title: t('Perícia') }).append(
 						Expertise.EMOJI_NAME
+					),
+					$("<th>", { title: t('Multiplicador') }).append(
+						Expertise.EMOJI_MULTIPLIER
 					)
 				)
 			);
@@ -99,9 +111,22 @@ class ListExpertises extends Box {
 		allExpertises.forEach(function (expertise) {
 
 			let expertiseId = expertise['id'];
-			let attributeId = expertise['attributeId'];
-			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			if (! expertiseId) {
+				return;
+			}
+
 			let expertiseName = expertise['name'];
+			let expertiseMultiplier = expertise['multiplier'];
+
+			let attributeId = expertise['attributeId'];
+
+			if (! attributeId) {
+				return;
+			}
+			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			console.log('attributeId', attributeId);
 
 			listExpertiseTable[attributeId].append(
 				$('<tr>', {
@@ -122,6 +147,15 @@ class ListExpertises extends Box {
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('name_' + expertiseId),
+							disabled: 'disabled',
+							value: expertiseName
+						})
+					),
+					$('<td>', { style: 'font-weight: normal' } ).append(
+						expertise['multiplier'],
+						$("<input>", {
+							type: 'hidden',
+							id: me.createId('multiplier_' + expertiseId),
 							disabled: 'disabled',
 							value: expertiseName
 						})
@@ -154,7 +188,33 @@ class ListExpertises extends Box {
 			$('<h3>').append(
 				t('Listar perícias')
 			),
-			sprintf(t('Para ver os detalhes de uma perícia, clique em <b>%s</b>'), Expertise.EMOJI_VISUALIZE)
+			$('<p>').append(
+				t('As perícias estão divididas em atríbutos nas abas. Deixe o mouse em cima para ver os nomes de cada atributo.')
+			),
+			Player.helpAttributesMeaning(),
+			$('<p>').append(
+				t('Para ver os detalhes de uma perícia, clique no nome da perícia')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					$('<b>').append(
+						t('Descrição') + ': '
+					),
+					t('Uma breve descrição da ideia dessa perícia.'),
+				),
+				$('<li>').append(
+					$('<b>').append(
+						t('Regras') + ': '
+					),
+					t('Como usar e sugestões de uso.'),
+				),
+				$('<li>').append(
+					$('<b>').append(
+						t('Multiplicador') + ': '
+					),
+					t('O quanto irá multiplicar no atributo ao usar essa perícia. Quanto mais específico, maior o multiplicador. Normalmente entre 0,1 e 0,5'),
+				)
+			)
 		];
 	}
 
@@ -185,6 +245,12 @@ class ListExpertises extends Box {
 					t('Regras') + ': '
 				),
 				expertise['rule']
+			),
+			$('<p>').append(
+				$('<b>').append(
+					t('Multiplicador') + ': '
+				),
+				expertise['multiplier']
 			)
 		);
 	}

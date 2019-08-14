@@ -9,7 +9,6 @@ class VisualizeExpertise extends Box {
 		let expertiseId = options['expertiseId'] || null;
 
 		let originBoxId = options['originBoxId'] || '';
-		this.originBoxId = originBoxId;
 
 		let boxId = me.boxId;
 
@@ -21,8 +20,6 @@ class VisualizeExpertise extends Box {
 		let expertiseRule = '';
 		let attributeId = 1; // selecionar o primeiro por default
 		let attributeName = '';
-
-		console.log('expertise', expertise);
 
 		if (expertise) {
 			expertiseId = expertise['id'];
@@ -62,6 +59,7 @@ class VisualizeExpertise extends Box {
 
 		addExpertiseDiv.append(
 			$('<table>').append(
+
 				$('<tr>').append(
 					$('<th>').append(
 						Expertise.EMOJI_ATTRIBUTE + ' ' + t('Atributo')
@@ -79,7 +77,7 @@ class VisualizeExpertise extends Box {
 
 				$('<tr>').append(
 					$('<th>').append(
-						Expertise.EMOJI_NAME + ' ' + t('Nome')
+						Expertise.EMOJI_NAME + ' ' + t('Nome') + '*'
 					),
 					$('<td>').append(
 						$("<input>", {
@@ -92,7 +90,7 @@ class VisualizeExpertise extends Box {
 
 				$('<tr>').append(
 					$('<th>').append(
-						Expertise.EMOJI_MULTIPLIER + ' ' + t('Multiplicador')
+						Expertise.EMOJI_MULTIPLIER + ' ' + t('Multiplicador') + '*'
 					),
 					$('<td>').append(
 						$("<input>", {
@@ -124,7 +122,7 @@ class VisualizeExpertise extends Box {
 						$('<textarea>', {
 							id: me.createId('expertise_rule'),
 							width: '100%',
-							lines: 3
+							lines: 5
 						}).html(expertiseRule)
 					)
 				),
@@ -226,19 +224,14 @@ class VisualizeExpertise extends Box {
 		}
 	}
 
-	// abrir visualização de detalhes do expertise
+	// abrir visualização de detalhes da pericia
 	static visualizeExpertise (expertiseId, originBoxId) {
 
 		let expertise = Expertise.getExpertise(expertiseId);
 
-		// se nao estiver preenchido, eh pq provavelmente nao veio dessa dialog, buscar da localStorage
-		if (! expertise) {
-			expertise = Expertise.getExpertise(expertiseId);
-		}
+		let expertiseName = expertise['name'];
 
-		let expertiseTitle = expertise['title'];
-
-		let windowTitle = Expertise.EMOJI_VISUALIZE + ' ' + expertiseTitle;
+		let windowTitle = Expertise.EMOJI_MAIN + ' ' + expertiseName;
 
 		let options = {
 			expertiseId: expertiseId,

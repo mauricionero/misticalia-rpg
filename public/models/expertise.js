@@ -371,6 +371,37 @@ class Expertise extends RModel {
 		return Player.ALL_ATTRIBUTES;
 	}
 
+	// setup de expertises, carregar as globais no local
+	static setup () {
+		console.log('Criando perícias...'); // deixar esse console.log
+
+		let allExpertises = Expertise.getStaticAll();
+
+		// criar pericias baseadas nas globais e salvar no local
+		allExpertises.forEach(function (expertise) {
+
+			let expertiseId = expertise['id'];
+
+			let expertiseName = expertise['name'];
+			let expertiseAttributeId = expertise['attributeId'];
+			let expertiseMultiplier = expertise['multiplier'];
+			let expertiseDescription = expertise['description'];
+			let expertiseRule = expertise['rule'];
+
+			let localExpertise = new Expertise({
+				'name': expertiseName,
+				'attributeId': expertiseAttributeId,
+				'multiplier': expertiseMultiplier,
+				'description': expertiseDescription,
+				'rule': expertiseRule,
+				'isGlobal': false
+			});
+
+			localExpertise.saveExpertise();
+		});
+		console.log('Finalizado criação de perícias iniciais'); // deixar esse console.log
+	}
+
 
 	// salvar a pericia (editar ou criar uma nova)
 	saveExpertise () {

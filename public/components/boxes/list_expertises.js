@@ -8,7 +8,10 @@ class ListExpertises extends Box {
 		
 		let boxId = me.boxId;
 
-		// filtrar se eh npc ou nao
+		let isGlobal = options['isGlobal'];
+		this.isGlobal = isGlobal;
+
+		// ordenar por atributo e nome
 		let optionFilter = {
 			'filters': {},
 			'order': {
@@ -18,13 +21,13 @@ class ListExpertises extends Box {
 		}
 
 		// se deve filtrar por globais apenas
-		if (options['isGlobal']) {
+		if (isGlobal) {
 			optionFilter['filters']['isGlobal'] = true;
 		} else {
 			optionFilter['filters']['isGlobal'] = false;
 		}
+		this.optionFilter = optionFilter;
 
-		// pega apenas as globais
 		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
 		// // se deve filtrar por aventura
@@ -34,7 +37,38 @@ class ListExpertises extends Box {
 		// 	allExpertises = Expertise.getAllExpertises(optionFilter);
 		// }
 
-		let listExpertiseDiv = $('<div>');
+		// se nao tem nenhuma, eh a primeira vez que entra provavelmente, salvar as globais no local
+		if (allExpertises.length == 0) {
+			Expertise.setup();
+		}
+
+		let listExpertiseDiv = $('<div>', { id: me.createId('list_expertise_div') } );
+
+		return listExpertiseDiv;
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+
+		let me = this;
+
+		me.listExpertises();
+	}
+
+	// listar as expertises dinamicamente
+	listExpertises () {
+
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let optionFilter = this.optionFilter;
+
+		let isGlobal = this.isGlobal;
+
+		let listExpertiseDiv = $('#' + me.createId('list_expertise_div'));
+
+		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
 		// criar as abas de atributos e habilidades
 		let expertiseTabs = $('<div>', { id: me.createId('tabs') } );
@@ -63,6 +97,15 @@ class ListExpertises extends Box {
 
 		expertiseTabsUl.append('<br /><br />');
 
+		let viewEdit = '';
+
+		// pode editar se for local
+		if (! isGlobal) {
+			viewEdit = $("<th>", { title: t('Visualizer / editar') }).append(
+				Expertise.EMOJI_VISUALIZE
+			)
+		}
+
 		// criar as tabelas das tabs
 		allAttributes.forEach(function (attribute) {
 
@@ -82,7 +125,9 @@ class ListExpertises extends Box {
 					),
 					$("<th>", { title: t('Multiplicador') }).append(
 						Expertise.EMOJI_MULTIPLIER
-					)
+					),
+
+					viewEdit
 				)
 			);
 
@@ -103,10 +148,6 @@ class ListExpertises extends Box {
 			);
 		});
 
-		expertiseTabs.append(
-			expertiseTabsUl
-		);
-
 		// preencher as tabelas de pericias criadas anteriormente dentro das abas
 		allExpertises.forEach(function (expertise) {
 
@@ -126,7 +167,17 @@ class ListExpertises extends Box {
 			}
 			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
 
-			console.log('attributeId', attributeId);
+			// pode editar se for local
+			if (! isGlobal) {
+				viewEdit = $('<td>').append(
+					$("<input>", {
+						type: 'button',
+						id: me.createId('visualize_' + expertiseId),
+						onclick: 'VisualizeExpertise.visualizeExpertise("' + expertiseId + '", "' + boxId + '")',
+						value: Item.EMOJI_VISUALIZE
+					})
+				)
+			}
 
 			listExpertiseTable[attributeId].append(
 				$('<tr>', {
@@ -159,24 +210,23 @@ class ListExpertises extends Box {
 							disabled: 'disabled',
 							value: expertiseName
 						})
-					)
+					),
+
+					viewEdit
 				)
 			)
 		});
+
+		expertiseTabs.append(
+			expertiseTabsUl
+		);
+
+		listExpertiseDiv.html('');
 
 		listExpertiseDiv.append(
 			expertiseTabs
 		);
 
-		return listExpertiseDiv;
-	}
-
-	// executa após printar a janela
-	callBackRender () {
-
-		let me = this;
-
-		let expertiseTabs = $('#' + me.createId('tabs') );
 		expertiseTabs.tabs();
 	}
 

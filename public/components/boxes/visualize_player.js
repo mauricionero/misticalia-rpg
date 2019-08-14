@@ -91,7 +91,14 @@ class VisualizePlayer extends Box {
 				})
 			),
 			$('<div>', { id: me.createId('tab-2') } ).html(
-				listPlayerExpertiseTableDiv
+				listPlayerExpertiseTableDiv,
+				$("<input>", {
+					type: 'button',
+					id: me.createId('save_expertise'),
+					title: t('Salvar'),
+					onclick: 'VisualizePlayer.updateExpertise("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
+					value: t('Salvar')
+				})
 			),
 			$('<div>', { id: me.createId('tab-3') } ).html(
 				visualizePlayerEquipamentItems
@@ -266,7 +273,7 @@ class VisualizePlayer extends Box {
 		playerTabs.tabs();
 
 		me.listPlayerAttributes(playerId, isNPC);
-		me.listPlayerExpertises(playerId);
+		// me.listPlayerExpertises(playerId);
 		me.listEquipaments(playerId, isNPC);
 
 		// verificar quando eh alterado o equipamento clicado
@@ -509,6 +516,182 @@ class VisualizePlayer extends Box {
 	// listar as pericias do jogador
 	listPlayerExpertises (playerId) {
 
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let listPlayerExpertiseTableDiv = $('#' + me.createId('list_player_expertise_table_div_' + playerId));
+
+		let player = Player.getPlayer(playerId);
+
+		let inputWidth = VisualizePlayer.inputWidth;
+		let inputWidthSmall = VisualizePlayer.inputWidthSmall;
+		let inputHeight = VisualizePlayer.inputHeight;
+
+		let listPlayerAttributesTable = $("<table>");
+
+		// titulo das colunas na tabela
+		listPlayerAttributesTable.append(
+			$("<tr>").append(
+				$("<th>", { title: t('Perícia') }).append(
+					Player.EMOJI_MAIN
+				),
+				$("<th>", { title: t('Pontos base') }).append(
+					Player.EMOJI_POINTS
+				),
+				$("<th>", { title: t('Atributo') }).append(
+					Player.EMOJI_ATTRIBUTE
+				),
+				$("<th>", { title: t('Modificador temporario') }).append(
+					Player.EMOJI_TEMPORARY_MODIFICATOR
+				),
+				$("<th>", { title: t('Total de pontos') }).append(
+					Player.EMOJI_TOTAL_POINTS
+				),
+				$("<th>", { title: t('Rolagem de dados') }).append(
+					Player.EMOJI_ROLL_DICE
+				),
+				$("<th>", { title: t('Dificuldade') }).append(
+					Player.EMOJI_DIFFICULTY
+				),
+				$("<th>", { title: t('Resultado rolagem') }).append(
+					Player.EMOJI_RESULT
+				)
+			)
+		);
+
+		let allExpertises = PlayerExpertise.getAllPlayerExpertises(playerId);
+
+		allExpertises.forEach(function (attribute) {
+			let basePoints = player.getAttribute(attribute, 'basePoints');
+			let permanentModifier = player.getAttribute(attribute, 'permanentModifier');
+			let temporaryModifier = player.getAttribute(attribute, 'temporaryModifier');
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			listPlayerAttributesTable.append(
+				$("<tr>").append(
+					$("<td>").append(
+						Modifier.EMOJI_TYPES[typeId] + ' ' + Player.getAttributeName(attribute)
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							disabled: 'disabled',
+							id: me.createId('level_' + playerId + '_' + attribute),
+							width: inputWidthSmall,
+							height: inputHeight,
+							value: Player.levelCalculator(basePoints)
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('base_points_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
+							value: basePoints
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('permanent_modifier_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							disabled: 'disabled',
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
+							value: permanentModifier
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('temporary_modifier_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
+							value: temporaryModifier
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							disabled: 'disabled',
+							id: me.createId('points_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							value: Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier)
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('dice_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
+							placeholder: Dice.EMOJI_DICE
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('difficulty_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
+							value: 0
+						})
+					),
+					$("<td>").append(
+						$("<input>", {
+							type: 'text',
+							disabled: 'disabled',
+							class: 'bold',
+							id: me.createId('result_' + playerId + '_' + attribute),
+							width: inputWidth,
+							height: inputHeight,
+							value: 0
+						})
+					)
+				)
+			);
+		});
+
+		let secondaryAttributes = $('<div>').append('&nbsp;');
+
+		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
+			if (player[attribute] == undefined) {
+				player[attribute] = {};
+			}
+
+			let points = parseInt(player[attribute]['points'] || 0);
+
+			// se for zero, nem exibir
+			if (points == 0) {
+				return true;
+			}
+
+			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+
+			let modifierName = Modifier.ALL_TYPE_NAMES[typeId];
+
+			secondaryAttributes.append(
+				$('<span>', { title: modifierName } ).append(
+					Modifier.EMOJI_TYPES[typeId] + points + ' '
+				)
+			);
+		});
+
+		// limpar antes de adicionar novo conteudo
+		listPlayerExpertiseTableDiv.html('');
+
+		listPlayerExpertiseTableDiv.append(
+			listPlayerAttributesTable,
+			secondaryAttributes
+		);
 	}
 
 	// atualizar lista de equipamentos de acordo com filtro de tipo opcional

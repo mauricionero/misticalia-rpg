@@ -194,8 +194,6 @@ class RModel {
 
 			let allStaticData = staticMe.getStaticAll();
 
-			console.log('allStaticData', allStaticData);
-
 			storeData = storeData.concat(allStaticData);
 		}
 

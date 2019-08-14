@@ -59,6 +59,20 @@ class Player extends RModel {
 		}
 	};
 
+	static get ALL_ATTRIBUTES_TYPES () {
+		return {
+			1: 'strength',
+			2: 'dextery',
+			3: 'agility',
+			4: 'constitution',
+			5: 'inteligence',
+			6: 'wisdom',
+			7: 'charisma',
+			8: 'magic',
+			9: 'sanity'
+		}
+	};
+
 	static get ALL_ATTRIBUTES () {
 		return [
 			'strength',

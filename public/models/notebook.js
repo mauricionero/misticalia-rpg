@@ -1,13 +1,32 @@
 class Notebook extends RModel {
    
-	static get EMOJI_MAIN () { return '📚' };
-	static get EMOJI_SINGLE () { return '📕' };
-   
+	static get EMOJI_MAIN () { return '📚' }
+	static get EMOJI_SINGLE () { return '📕' }
+
 	static get EMOJI_NEW () { return '✚' }
 	static get EMOJI_VISUALIZE () { return '📖' }
-	static get EMOJI_SAVE () { return '💾' };
+	static get EMOJI_SAVE () { return '💾' }
 
 	static get EMOJI_TITLE () { return '🔖' }
+
+	// traduções dos campos
+	static get fieldTranslations () {
+		return {
+			'title': 'Título',
+		}
+	}
+
+	// validações dessa model
+	validations () {
+		return {
+			'title': {
+				'uniqueness': {
+					'scope': [ 'currentAdventureId' ]
+				},
+				'mandatory': true
+			}
+		}
+	}
 
 	static richtextTranslations () {
 		return {

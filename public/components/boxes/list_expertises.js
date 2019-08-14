@@ -8,13 +8,25 @@ class ListExpertises extends Box {
 		
 		let boxId = me.boxId;
 
-		// filtrar se eh npc ou nao
+		let isGlobal = options['isGlobal'];
+		this.isGlobal = isGlobal;
+
+		// ordenar por atributo e nome
 		let optionFilter = {
+			'filters': {},
 			'order': {
 				'attributeId': 'ASC',
 				'name': 'ASC'
 			}
 		}
+
+		// se deve filtrar por globais apenas
+		if (isGlobal) {
+			optionFilter['filters']['isGlobal'] = true;
+		} else {
+			optionFilter['filters']['isGlobal'] = false;
+		}
+		this.optionFilter = optionFilter;
 
 		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
@@ -25,13 +37,44 @@ class ListExpertises extends Box {
 		// 	allExpertises = Expertise.getAllExpertises(optionFilter);
 		// }
 
-		let listExpertiseDiv = $('<div>');
+		// se nao tem nenhuma, eh a primeira vez que entra provavelmente, salvar as globais no local
+		if (allExpertises.length == 0) {
+			Expertise.setup();
+		}
+
+		let listExpertiseDiv = $('<div>', { id: me.createId('list_expertise_div') } );
+
+		return listExpertiseDiv;
+	}
+
+	// executa após printar a janela
+	callBackRender () {
+
+		let me = this;
+
+		me.listExpertises();
+	}
+
+	// listar as expertises dinamicamente
+	listExpertises () {
+
+		let me = this;
+		
+		let boxId = me.boxId;
+
+		let optionFilter = this.optionFilter;
+
+		let isGlobal = this.isGlobal;
+
+		let listExpertiseDiv = $('#' + me.createId('list_expertise_div'));
+
+		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
 		// criar as abas de atributos e habilidades
 		let expertiseTabs = $('<div>', { id: me.createId('tabs') } );
 		let expertiseTabsUl = $('<ul>');
 
-		let allAttributes = Player.ALL_ATTRIBUTES;
+		let allAttributes = Expertise.getAllAttributes();
 
 		// criar indice das tabs
 		allAttributes.forEach(function (attribute) {
@@ -52,6 +95,17 @@ class ListExpertises extends Box {
 
 		let listExpertiseTable = [];
 
+		expertiseTabsUl.append('<br /><br />');
+
+		let viewEdit = '';
+
+		// pode editar se for local
+		if (! isGlobal) {
+			viewEdit = $("<th>", { title: t('Visualizer / editar') }).append(
+				Expertise.EMOJI_VISUALIZE
+			)
+		}
+
 		// criar as tabelas das tabs
 		allAttributes.forEach(function (attribute) {
 
@@ -62,37 +116,74 @@ class ListExpertises extends Box {
 
 			// titulo das colunas na tabela
 			listExpertiseTable[attributeId].append(
-				$("<tr>").append(
+				$('<tr>').append(
 					$("<th>", { title: t('Atributo') }).append(
 						Expertise.EMOJI_ATTRIBUTE
 					),
 					$("<th>", { title: t('Perícia') }).append(
 						Expertise.EMOJI_NAME
-					)
+					),
+					$("<th>", { title: t('Multiplicador') }).append(
+						Expertise.EMOJI_MULTIPLIER
+					),
+
+					viewEdit
 				)
 			);
 
 			expertiseTabsUl.append(
 				$('<div>', { id: me.createId('tab-' + attributeId) } ).html(
-					listExpertiseTable[attributeId]
+					$('<table>').append(
+						$('<tr>').append(
+							$('<td>', { class: 'expertise_list' } ).append(
+								listExpertiseTable[attributeId]
+							),
+							$('<td>', {
+								class: 'expertise_details',
+								id: me.createId('expertise_details_' + attributeId)
+							})
+						)
+					)
 				)
 			);
 		});
-
-		expertiseTabs.append(
-			expertiseTabsUl
-		);
 
 		// preencher as tabelas de pericias criadas anteriormente dentro das abas
 		allExpertises.forEach(function (expertise) {
 
 			let expertiseId = expertise['id'];
-			let attributeId = expertise['attributeId'];
-			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			if (! expertiseId) {
+				return;
+			}
+
 			let expertiseName = expertise['name'];
+			let expertiseMultiplier = expertise['multiplier'];
+
+			let attributeId = expertise['attributeId'];
+
+			if (! attributeId) {
+				return;
+			}
+			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			// pode editar se for local
+			if (! isGlobal) {
+				viewEdit = $('<td>').append(
+					$("<input>", {
+						type: 'button',
+						id: me.createId('visualize_' + expertiseId),
+						onclick: 'VisualizeExpertise.visualizeExpertise("' + expertiseId + '", "' + boxId + '")',
+						value: Item.EMOJI_VISUALIZE
+					})
+				)
+			}
 
 			listExpertiseTable[attributeId].append(
-				$("<tr>").append(
+				$('<tr>', {
+					class: 'click_pointer',
+					onclick: 'ListExpertises.visualizeExpertise("' + boxId + '", "' + attributeId + '", "' + expertiseId + '")'
+				}).append(
 					$('<td>', { title: attributeName, style: 'font-weight: normal' } ).append(
 						Modifier.EMOJI_TYPES[attributeId],
 						$("<input>", {
@@ -110,24 +201,32 @@ class ListExpertises extends Box {
 							disabled: 'disabled',
 							value: expertiseName
 						})
-					)
+					),
+					$('<td>', { style: 'font-weight: normal' } ).append(
+						expertise['multiplier'],
+						$("<input>", {
+							type: 'hidden',
+							id: me.createId('multiplier_' + expertiseId),
+							disabled: 'disabled',
+							value: expertiseName
+						})
+					),
+
+					viewEdit
 				)
 			)
 		});
+
+		expertiseTabs.append(
+			expertiseTabsUl
+		);
+
+		listExpertiseDiv.html('');
 
 		listExpertiseDiv.append(
 			expertiseTabs
 		);
 
-		return listExpertiseDiv;
-	}
-
-	// executa após printar a janela
-	callBackRender () {
-
-		let me = this;
-
-		let expertiseTabs = $('#' + me.createId('tabs') );
 		expertiseTabs.tabs();
 	}
 
@@ -139,8 +238,71 @@ class ListExpertises extends Box {
 			$('<h3>').append(
 				t('Listar perícias')
 			),
-			sprintf(t('Para ver os detalhes de uma perícia, clique em <b>%s</b>'), Expertise.EMOJI_VISUALIZE)
+			$('<p>').append(
+				t('As perícias estão divididas em atríbutos nas abas. Deixe o mouse em cima para ver os nomes de cada atributo.')
+			),
+			Player.helpAttributesMeaning(),
+			$('<p>').append(
+				t('Para ver os detalhes de uma perícia, clique no nome da perícia')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					$('<b>').append(
+						t('Descrição') + ': '
+					),
+					t('Uma breve descrição da ideia dessa perícia.'),
+				),
+				$('<li>').append(
+					$('<b>').append(
+						t('Regras') + ': '
+					),
+					t('Como usar e sugestões de uso.'),
+				),
+				$('<li>').append(
+					$('<b>').append(
+						t('Multiplicador') + ': '
+					),
+					t('O quanto irá multiplicar no atributo ao usar essa perícia. Quanto mais específico, maior o multiplicador. Normalmente entre 0,1 e 0,5'),
+				)
+			)
 		];
+	}
+
+
+	// visualizar informações detalhadas da pericia
+	static visualizeExpertise (boxId, attributeId, expertiseId) {
+
+		let me = Box.getBox(boxId);
+
+		let expertise = Expertise.getExpertise(expertiseId);
+
+		let expertiseDetailsTd = $('#' + me.createId('expertise_details_' + attributeId));
+
+		expertiseDetailsTd.html('');
+
+		expertiseDetailsTd.append(
+			$('<h3>').append(
+				expertise['name']
+			),
+			$('<p>').append(
+				$('<b>').append(
+					t('Descrição') + ': '
+				),
+				expertise['description']
+			),
+			$('<p>').append(
+				$('<b>').append(
+					t('Regras') + ': '
+				),
+				expertise['rule']
+			),
+			$('<p>').append(
+				$('<b>').append(
+					t('Multiplicador') + ': '
+				),
+				expertise['multiplier']
+			)
+		);
 	}
 
 }

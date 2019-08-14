@@ -40,3 +40,7 @@ th {
 .neutral_result {
 	color: #320;
 }
+
+.click_pointer {
+  cursor: pointer;
+}

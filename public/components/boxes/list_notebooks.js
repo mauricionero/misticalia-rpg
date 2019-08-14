@@ -95,9 +95,9 @@ class ListNotebooks extends Box {
 
 		return [
 			$('<h3>').append(
-				t('Listar notebookos da aventura')
+				t('Listar cadernos da aventura')
 			),
-			sprintf(t('Para ver os modificadores de um notebooko, clique em <b>%s</b>'), Notebook.EMOJI_VISUALIZE)
+			sprintf(t('Para ver o que foi anotado no caderno, clique em <b>%s</b>'), Notebook.EMOJI_VISUALIZE)
 		];
 	}
 

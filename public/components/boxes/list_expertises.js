@@ -174,7 +174,7 @@ class ListExpertises extends Box {
 						type: 'button',
 						id: me.createId('visualize_' + expertiseId),
 						onclick: 'VisualizeExpertise.visualizeExpertise("' + expertiseId + '", "' + boxId + '")',
-						value: Item.EMOJI_VISUALIZE
+						value: Expertise.EMOJI_VISUALIZE
 					})
 				)
 			}
@@ -245,24 +245,24 @@ class ListExpertises extends Box {
 			$('<p>').append(
 				t('Para ver os detalhes de uma perícia, clique no nome da perícia')
 			),
+			$('<p>').append(
+				sprintf(t('Para editar uma perícia, clique em %s'), Expertise.EMOJI_VISUALIZE)
+			),
+			$('<p>').append(
+				t('A primeira vez que se entra na listagem das perícias da aventura, se não houver nenhuma perícia cadastrada, o sistema roda um setup e insere todas as perícias globais para facilitar. As perícias globais são sugestões de perícias pré cadastradas. Essas perícias globais podem ser visualizadas no menu <b>Acessórios > Listar Perícias</b>')
+			),
+			$('<p>').append(
+				'<b>' + t('Legendas') + ':</b>'
+			),
 			$('<ul>').append(
 				$('<li>').append(
-					$('<b>').append(
-						t('Descrição') + ': '
-					),
-					t('Uma breve descrição da ideia dessa perícia.'),
+					sprintf(t('<b>%s Atributo:</b> A qual atributo essa perícia pertence'), Expertise.EMOJI_ATTRIBUTE)
 				),
 				$('<li>').append(
-					$('<b>').append(
-						t('Regras') + ': '
-					),
-					t('Como usar e sugestões de uso.'),
+					sprintf(t('<b>%s Nome:</b> Nome dessa perícia'), Expertise.EMOJI_NAME)
 				),
 				$('<li>').append(
-					$('<b>').append(
-						t('Multiplicador') + ': '
-					),
-					t('O quanto irá multiplicar no atributo ao usar essa perícia. Quanto mais específico, maior o multiplicador. Normalmente entre 0,1 e 0,5'),
+					sprintf(t('<b>%s Multiplicador:</b> O quanto irá multiplicar no atributo ao usar essa perícia. Quanto mais específico, maior o multiplicador. Normalmente entre 0,1 e 0,5'), Expertise.EMOJI_MULTIPLIER)
 				)
 			)
 		];

@@ -10,6 +10,7 @@
 /* Make jQuery UI Menu into a horizontal menubar with vertical dropdown */
 #menubar > li { /* Menubar buttons */
   display: inline-block;
+  white-space: nowrap;
 }
 #menubar > li > ul > li { /* Menubar buttons inside dropdown */
   display: block;

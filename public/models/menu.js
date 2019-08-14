@@ -56,7 +56,7 @@ class Menu extends RModel {
 					},
 					{
 						id: 28,
-						name: t('Listar perícias'),
+						name: t('Ver perícias'),
 						emoji: Expertise.EMOJI_LIST_GLOBAL,
 						action_id: 'list_expertises',
 						options: { filterAdventureId: false, isGlobal: true, windowId: 'list_global_expertises' },
@@ -163,7 +163,7 @@ class Menu extends RModel {
 							},
 							{
 								id: 27,
-								name: t('Listar perícias'),
+								name: t('Perícias da aventura'),
 								emoji: Expertise.EMOJI_LIST,
 								action_id: 'list_expertises',
 								options: { filterAdventureId: true, windowId: 'list_expertises_adventure' },

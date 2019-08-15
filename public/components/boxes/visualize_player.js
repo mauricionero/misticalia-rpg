@@ -273,7 +273,7 @@ class VisualizePlayer extends Box {
 		playerTabs.tabs();
 
 		me.listPlayerAttributes(playerId, isNPC);
-		// me.listPlayerExpertises(playerId);
+		me.listPlayerExpertises(playerId);
 		me.listEquipaments(playerId, isNPC);
 
 		// verificar quando eh alterado o equipamento clicado
@@ -528,170 +528,217 @@ class VisualizePlayer extends Box {
 		let inputWidthSmall = VisualizePlayer.inputWidthSmall;
 		let inputHeight = VisualizePlayer.inputHeight;
 
-		let listPlayerAttributesTable = $("<table>");
+		// ordenar por atributo e nome
+		let optionFilter = {
+			'filters': {},
+			'order': {
+				'attributeId': 'ASC',
+				'name': 'ASC'
+			}
+		}
+		
+		let allExpertises = Expertise.getAllExpertises(optionFilter);
 
-		// titulo das colunas na tabela
-		listPlayerAttributesTable.append(
-			$("<tr>").append(
-				$("<th>", { title: t('Perícia') }).append(
-					Player.EMOJI_MAIN
-				),
-				$("<th>", { title: t('Pontos base') }).append(
-					Player.EMOJI_POINTS
-				),
-				$("<th>", { title: t('Atributo') }).append(
-					Player.EMOJI_ATTRIBUTE
-				),
-				$("<th>", { title: t('Modificador temporario') }).append(
-					Player.EMOJI_TEMPORARY_MODIFICATOR
-				),
-				$("<th>", { title: t('Total de pontos') }).append(
-					Player.EMOJI_TOTAL_POINTS
-				),
-				$("<th>", { title: t('Rolagem de dados') }).append(
-					Player.EMOJI_ROLL_DICE
-				),
-				$("<th>", { title: t('Dificuldade') }).append(
-					Player.EMOJI_DIFFICULTY
-				),
-				$("<th>", { title: t('Resultado rolagem') }).append(
-					Player.EMOJI_RESULT
+		let allAttributes = Expertise.getAllAttributes();
+
+		let organizedPlayerExpertises = PlayerExpertise.getPlayerExpertisesIndex(playerId);
+
+		// criar as abas de atributos e habilidades
+		let expertiseTabs = $('<div>', { id: me.createId('tabs') } );
+		let expertiseTabsUl = $('<ul>');
+
+		// criar indice das tabs
+		allAttributes.forEach(function (attribute) {
+
+			let attributeId = Modifier.ALL_TYPE_IDS[attribute];
+			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			expertiseTabsUl.append(
+				$('<li>', { title: attributeName } ).append(
+					$('<a>', { href: '#' + me.createId('expertise-tab-' + attributeId) } ).html(
+						$('<b>').append(
+							Modifier.EMOJI_TYPES[attributeId]
+						)
+					)
 				)
-			)
-		);
+			);
+		});
 
-		let allExpertises = PlayerExpertise.getAllPlayerExpertises(playerId);
+		expertiseTabsUl.append('<br /><br />');
 
-		allExpertises.forEach(function (attribute) {
-			let basePoints = player.getAttribute(attribute, 'basePoints');
-			let permanentModifier = player.getAttribute(attribute, 'permanentModifier');
-			let temporaryModifier = player.getAttribute(attribute, 'temporaryModifier');
+		let listExpertiseTable = [];
 
-			let typeId = Modifier.ALL_TYPE_IDS[attribute];
+		// criar as tabelas das tabs
+		allAttributes.forEach(function (attribute) {
 
-			listPlayerAttributesTable.append(
-				$("<tr>").append(
-					$("<td>").append(
-						Modifier.EMOJI_TYPES[typeId] + ' ' + Player.getAttributeName(attribute)
+			let attributeId = Modifier.ALL_TYPE_IDS[attribute];
+			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+
+			listExpertiseTable[attributeId] = $('<table>', { id: me.createId('table_attribute_' + attributeId) } );
+
+			// titulo das colunas na tabela
+			listExpertiseTable[attributeId].append(
+				$('<tr>').append(
+					$('<th>', { title: t('Perícia') }).append(
+						Expertise.EMOJI_MAIN
 					),
-					$("<td>").append(
+					$('<th>', { title: t('Pontos') }).append(
+						PlayerExpertise.EMOJI_POINTS
+					),
+					$('<th>', { title: t('Multiplicador') }).append(
+						Expertise.EMOJI_MULTIPLIER
+					),
+					$('<th>', { title: t('Pontos do atributo') }).append(
+						Player.EMOJI_ATTRIBUTE
+					),
+					$('<th>', { title: t('Modificador temporario') }).append(
+						Expertise.EMOJI_TEMPORARY_MODIFIER
+					),
+					$('<th>', { title: t('Total de pontos nessa perícia') }).append(
+						Expertise.EMOJI_TOTAL_POINTS
+					),
+					$('<th>', { title: t('Rolagem de dados') }).append(
+						Player.EMOJI_ROLL_DICE
+					),
+					$('<th>', { title: t('Dificuldade') }).append(
+						Player.EMOJI_DIFFICULTY
+					),
+					$('<th>', { title: t('Resultado rolagem') }).append(
+						Player.EMOJI_RESULT
+					)
+				)
+			);
+
+			expertiseTabsUl.append(
+				$('<div>', { id: me.createId('expertise-tab-' + attributeId) } ).html(
+					listExpertiseTable[attributeId]
+				)
+			);
+		});
+
+		// preencher as tabelas de pericias criadas anteriormente dentro das abas
+		allExpertises.forEach(function (expertise) {
+
+			let expertiseId = expertise['id'];
+
+			if (! expertiseId) {
+				return;
+			}
+
+			let expertiseName = expertise['name'];
+			let expertiseMultiplier = expertise['multiplier'];
+
+			let attributeId = expertise['attributeId'];
+
+			if (! attributeId) {
+				return;
+			}
+			let attributeName = Modifier.ALL_TYPE_NAMES[attributeId];
+			let attributeEmoji = Modifier.EMOJI_TYPES[attributeId];
+			let attribute = Modifier.ALL_TYPES[attributeId];
+			let attributePoints = $('#' + me.createId('points_' + playerId + '_' + attribute)).val();
+
+			let expertisePoints = (organizedPlayerExpertises[expertiseId]) ? organizedPlayerExpertises[expertiseId]['points'] : 0;
+
+			listExpertiseTable[attributeId].append(
+				$("<tr>").append(
+					$('<td>').append(
+						expertiseName
+					),
+					$('<td>').append(
 						$("<input>", {
 							type: 'text',
-							disabled: 'disabled',
-							id: me.createId('level_' + playerId + '_' + attribute),
+							id: me.createId('expertise_' + expertiseId),
 							width: inputWidthSmall,
 							height: inputHeight,
-							value: Player.levelCalculator(basePoints)
+							onkeyup: 'VisualizePlayer.reCalculateExpertisePoints("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							value: expertisePoints
 						})
 					),
-					$("<td>").append(
+					$('<td>', { title: attributeName } ).append(
 						$("<input>", {
 							type: 'text',
-							id: me.createId('base_points_' + playerId + '_' + attribute),
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
-							value: basePoints
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('permanent_modifier_' + playerId + '_' + attribute),
-							width: inputWidth,
+							id: me.createId('expertise_multiplier_' + expertiseId),
+							width: inputWidthSmall,
 							height: inputHeight,
 							disabled: 'disabled',
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
-							value: permanentModifier
+							value: expertiseMultiplier
 						})
 					),
-					$("<td>").append(
+					$('<td>').append(
+						attributeEmoji,
 						$("<input>", {
 							type: 'text',
-							id: me.createId('temporary_modifier_' + playerId + '_' + attribute),
+							id: me.createId('expertise_attribute_points_' + expertiseId),
 							width: inputWidth,
 							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateTotalPoints("' + boxId + '", "' + playerId + '", "' + attribute + '")',
-							value: temporaryModifier
+							onkeyup: 'VisualizePlayer.reCalculateExpertisePoints("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							value: attributePoints
 						})
 					),
-					$("<td>").append(
+					$('<td>').append(
 						$("<input>", {
 							type: 'text',
-							disabled: 'disabled',
-							id: me.createId('points_' + playerId + '_' + attribute),
+							id: me.createId('expertise_modifier_' + expertiseId),
 							width: inputWidth,
 							height: inputHeight,
-							value: Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier)
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('dice_' + playerId + '_' + attribute),
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
-							placeholder: Dice.EMOJI_DICE
-						})
-					),
-					$("<td>").append(
-						$("<input>", {
-							type: 'text',
-							id: me.createId('difficulty_' + playerId + '_' + attribute),
-							width: inputWidth,
-							height: inputHeight,
-							onkeyup: 'VisualizePlayer.reCalculateDiceResult("' + boxId + '", "' + playerId + '", "' + attribute + '")',
+							onkeyup: 'VisualizePlayer.reCalculateExpertisePoints("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
 							value: 0
 						})
 					),
-					$("<td>").append(
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('expertise_total_points_' + expertiseId),
+							width: inputWidth,
+							height: inputHeight,
+							value: PlayerExpertise.calculateTotalPoints(expertisePoints, expertiseMultiplier, attributePoints)
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('expertise_dice_' + expertiseId),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateExpertiseDiceResult("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							placeholder: Dice.EMOJI_DICE
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('expertise_difficulty_' + expertiseId),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateExpertiseDiceResult("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							value: 0
+						})
+					),
+					$('<td>').append(
 						$("<input>", {
 							type: 'text',
 							disabled: 'disabled',
 							class: 'bold',
-							id: me.createId('result_' + playerId + '_' + attribute),
+							id: me.createId('expertise_result_' + expertiseId),
 							width: inputWidth,
 							height: inputHeight,
 							value: 0
 						})
 					)
 				)
-			);
+			)
 		});
 
-		let secondaryAttributes = $('<div>').append('&nbsp;');
+		expertiseTabs.append(
+			expertiseTabsUl
+		);
 
-		Player.ALL_SECONDARY_ATTRIBUTES.forEach(function (attribute) {
-			if (player[attribute] == undefined) {
-				player[attribute] = {};
-			}
-
-			let points = parseInt(player[attribute]['points'] || 0);
-
-			// se for zero, nem exibir
-			if (points == 0) {
-				return true;
-			}
-
-			let typeId = Modifier.ALL_TYPE_IDS[attribute];
-
-			let modifierName = Modifier.ALL_TYPE_NAMES[typeId];
-
-			secondaryAttributes.append(
-				$('<span>', { title: modifierName } ).append(
-					Modifier.EMOJI_TYPES[typeId] + points + ' '
-				)
-			);
-		});
-
-		// limpar antes de adicionar novo conteudo
 		listPlayerExpertiseTableDiv.html('');
 
-		listPlayerExpertiseTableDiv.append(
-			listPlayerAttributesTable,
-			secondaryAttributes
-		);
+		listPlayerExpertiseTableDiv.append(expertiseTabs);
+
+		expertiseTabs.tabs();
 	}
 
 	// atualizar lista de equipamentos de acordo com filtro de tipo opcional
@@ -713,10 +760,10 @@ class VisualizePlayer extends Box {
 
 		playerEquipamentListTable.append(
 			$("<tr>").append(
-				$("<th>", { title: t('Tipo') }).append(
+				$('<th>', { title: t('Tipo') }).append(
 					Equipament.EMOJI_TYPE
 				),
-				$("<th>", { title: t('Nome') }).append(
+				$('<th>', { title: t('Nome') }).append(
 					Equipament.EMOJI_NAME
 				)
 			)
@@ -1085,6 +1132,40 @@ class VisualizePlayer extends Box {
 			inputResult.removeClass('negative_result');
 			inputResult.addClass('neutral_result');
 		}
+	}
+
+	// recalcula o total de pontos da pericia + atributo
+	static reCalculateExpertisePoints (boxId, playerId, expertiseId) {
+
+		let me = Box.getBox(boxId);
+
+		let expertisePoints = $('#' + me.createId('expertise_' + expertiseId)).val() || 0;
+		let expertiseMultiplier = $('#' + me.createId('expertise_multiplier_' + expertiseId)).val() || 0;
+		let attributePoints = $('#' + me.createId('expertise_attribute_points_' + expertiseId)).val() || 0;
+		let expertiseModifier = $('#' + me.createId('expertise_modifier_' + expertiseId)).val() || 0;
+
+		let attributeTotalPointsInput = $('#' + me.createId('expertise_total_points_' + expertiseId));
+
+		let totalPoints = PlayerExpertise.calculateTotalPoints(expertisePoints, expertiseMultiplier, attributePoints, expertiseModifier);
+
+		attributeTotalPointsInput.val(totalPoints);
+	}
+
+	// recalcula o total de pontos
+	static reCalculateExpertiseDiceResult (boxId, playerId, expertiseId) {
+
+		let me = Box.getBox(boxId);
+
+		let attributeTotalPoints = $('#' + me.createId('expertise_total_points_' + expertiseId)).val() || 0;
+		let expertiseDie = $('#' + me.createId('expertise_dice_' + expertiseId)).val() || 0;
+		let expertiseDificulty = $('#' + me.createId('expertise_difficulty_' + expertiseId)).val() || 0;
+
+		let expertiseResultInput = $('#' + me.createId('expertise_result_' + expertiseId));
+
+		let result = PlayerExpertise.calculateDiceResult(attributeTotalPoints, expertiseDie, expertiseDificulty);
+
+		// mudar cor conforme resultado
+		processVisualResultInput(expertiseResultInput, result);
 	}
 
 	// salvar modificações do jogador

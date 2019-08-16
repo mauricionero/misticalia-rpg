@@ -964,12 +964,52 @@ class VisualizePlayer extends Box {
 			$('<p>').append(
 				t('<b>Salvar:</b> Ao clicar salva qualquer modificação feita nos atributos ou vida do personagem')
 			),
+
 			$('<h3>').append(
 				sprintf(t('Aba %s (Perícias)'), Player.EMOJI_EXPERTISE)
 			),
 			$('<p>').append(
-				t('Está sendo implementada. Terão as perícias desse personagem')
+				t('Essa aba contém todas as perícias do personagem')
 			),
+			$('<p>').append(
+				t('Sempre que precisar fazer uma rolagem de algo mais específico que apenas o atributo do personagem, deve-se rolar nessa aba.')
+			),
+			$('<p>').append(
+				t('Podem ser criadas novas perícias no menu da aventura. A ideia é que quanto mais específico a perícia for, maior o multiplicador dela que será somado ao atributo relacionado.')
+			),
+			$('<p>').append(
+				t('<b>Legendas:</b>')
+			),
+			$('<ul>').append(
+				$('<li>').append(
+					sprintf(t('<b>%s Perícia:</b> Nome dessa perícia'), Expertise.EMOJI_MAIN)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Pontos:</b> Quantos pontos tem nessa perícia. A sugestão é que a soma de todas as perícias de um atributo nunca passem o valor do atributo.'), PlayerExpertise.EMOJI_POINTS)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Multiplicador:</b> Por quanto irá multiplicar os pontos dessa perícia antes de somar aos pontos do atributo relacionado'), Expertise.EMOJI_MULTIPLIER)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Pontos do atributo:</b> Pontuação total do atributo relacionado.'), Player.EMOJI_ATTRIBUTE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Modificador temporario:</b> Modificador para alterar a pontuação final rapidamente. Útil para algum bônus ou penalidade numa rolagem de dados.'), Expertise.EMOJI_TEMPORARY_MODIFIER)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Total de pontos nessa perícia:</b> (perícia + modificador) * multiplicador + atributo.'), Expertise.EMOJI_TOTAL_POINTS)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Rolagem de dados:</b> Rolar um d100 para essa perícia para realizar algum teste.'), Player.EMOJI_ROLL_DICE)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Dificuldade:</b> A dificuldade que esse teste tem nessa perícia.'), Player.EMOJI_DIFFICULTY)
+				),
+				$('<li>').append(
+					sprintf(t('<b>%s Resultado rolagem:</b> Resultado que a rolagem teve em comparação com a dificuldade do teste.'), Player.EMOJI_RESULT)
+				),
+			),
+
 			$('<h3>').append(
 				sprintf(t('Aba %s (Equipamentos)'), Equipament.EMOJI_MAIN)
 			),

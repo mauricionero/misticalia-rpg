@@ -15,6 +15,7 @@ class AddPlayer extends Box {
 		}
 
 		let inputWidthBig = 120;
+		let inputWidthMedium = 40;
 		let inputWidth = 36;
 		let inputWidthSmall = 24;
 		let inputHeight = 12;
@@ -31,8 +32,70 @@ class AddPlayer extends Box {
 			saveButtonText = t('Adicionar NPC');
 		}
 
+		let allAttributes = Player.ALL_ATTRIBUTES;
+
+		if (isNPC) {
+			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
+		}
+
+		let sugestedPointsPerLevel = Player.SUGESTION_POINTS_PER_ATTRIBUTE;
+
+		let sugestedExpectedPoints = sugestedPointsPerLevel * Player.ALL_ATTRIBUTES.length;
+
 		// titulo das colunas na tabela
 		addPlayerTable.append(
+			$("<tr>").append(
+				$("<th>").append(
+					t('Desejado')
+				),
+				$("<th>", { title: t('Nível do personagem'), colspan: 4 } ).append(
+					Player.EMOJI_LEVEL,
+					' &nbsp; ',
+					t('Total')
+				)
+			),
+			$("<tr>").append(
+				$("<th>").append(
+					$("<input>", {
+						type: 'text',
+						id: me.createId('expected_player_points'),
+						width: inputWidthMedium,
+						value: sugestedExpectedPoints
+					}),
+					$("<input>", {
+						type: 'button',
+						title: t('Distribuir igualmente nos atributos'),
+						onclick: 'AddPlayer.distributePoints("' + boxId + '")',
+						value: Player.EMOJI_DISTRIBUTE
+					})
+				),
+				$("<th>", { colspan: 4 } ).append(
+					$("<input>", {
+						type: 'text',
+						disabled: 'disabled',
+						id: me.createId('player_level'),
+						width: inputWidthSmall,
+						value: Player.levelCalculator(0)
+					}),
+					' ',
+					$("<input>", {
+						type: 'text',
+						id: me.createId('total_player_points'),
+						width: inputWidthMedium,
+						disabled: 'disabled',
+						value: 0
+					})
+				)
+			),
+			$("<tr>").append(
+				$("<th>").append(
+					'&nbsp;'
+				),
+				$("<th>", { colspan: 4 } ).append(
+					' '
+				)
+			),
+
 			$("<tr>", { style: 'display: ' + loginDisplay } ).append(
 				$("<th>").append(
 					' ',
@@ -139,12 +202,6 @@ class AddPlayer extends Box {
 			)
 		);
 
-		let allAttributes = Player.ALL_ATTRIBUTES;
-
-		if (isNPC) {
-			allAttributes = allAttributes.concat(Player.ALL_SECONDARY_ATTRIBUTES);
-		}
-
 		allAttributes.forEach(function (attribute) {
 			addPlayerTable.append(
 				$("<tr>").append(
@@ -225,6 +282,15 @@ class AddPlayer extends Box {
 			),
 			complement,
 			$('<p>').append(
+				sprintf(t('O sistema irá trazer automaticamente uma sugestão de total de pontos a serem preenchidos, a principio é sugerido começar com %s por atributo do jogador no total. Esses devem ser distribuidos entre todos os atributos.'), Player.SUGESTION_POINTS_PER_ATTRIBUTE)
+			),
+			$('<p>').append(
+				sprintf(t('Clique em <b>%s</b> para distribuir igualmente a pontuação entre os atributos.'), Player.EMOJI_DISTRIBUTE)
+			),
+			$('<p>').append(
+				t('Conforme preenche a pontuação, será exibido o total e o nível do personagem na direita em cima.')
+			),
+			$('<p>').append(
 				t('<b>Legendas:</b> (basta deixar o mouse em cima de cada icone para aparecer o que significam)')
 			),
 			$('<ul>').append(
@@ -261,13 +327,15 @@ class AddPlayer extends Box {
 		let permanentModifier = 0;
 
 		let levelInput = $('#' + me.createId('level_' + attribute));
-		let totalPointsInput = $('#' + me.createId('points_' + attribute))
+		let totalPointsInput = $('#' + me.createId('points_' + attribute));
 
 		let level = Player.levelCalculator(basePoints);
 		let totalPoints = Player.calculateTotalPoints(basePoints, temporaryModifier, permanentModifier);
 
 		totalPointsInput.val(totalPoints);
 		levelInput.val(level);
+
+		this.recalculateTotalPoints(boxId);
 	}
 
 	// adicionar jogador à aventura
@@ -326,6 +394,71 @@ class AddPlayer extends Box {
 		}
 	}
 
+	// distribuir igualmente os pontos desejados entre os atributos
+	static distributePoints (boxId) {
+
+		let me = Box.getBox(boxId);
+
+		let expectedPlayerPoints = parseInt($('#' + me.createId('expected_player_points')).val());
+		let playerLevel = parseInt($('#' + me.createId('player_level')).val());
+
+		let allAttributes = Player.ALL_ATTRIBUTES;
+
+		let pointsPerLevel = Math.ceil(expectedPlayerPoints / allAttributes.length);
+		let remainingpoints = expectedPlayerPoints % allAttributes.length;
+
+		let playerTotalPoints = 0;
+
+		allAttributes.forEach(function (attribute) {
+			let basePointsInput = $('#' + me.createId('base_points_' + attribute));
+			let pointsInput = $('#' + me.createId('points_' + attribute));
+
+			let attributePoints = pointsPerLevel;
+
+			if (remainingpoints >= 1) {
+				attributePoints += 1;
+				remainingpoints -= 1;
+			}
+
+			playerTotalPoints += attributePoints;
+
+			basePointsInput.val(attributePoints);
+			pointsInput.val(attributePoints);
+		});
+
+		this.recalculateTotalPoints(boxId);
+	}
+
+	// recalcular o total de pontos do jogador
+	static recalculateTotalPoints (boxId) {
+
+		let me = Box.getBox(boxId);
+
+		let totalPlayerPointsInput = $('#' + me.createId('total_player_points'));
+		let playerLevelInput = $('#' + me.createId('player_level'));
+
+		let playerTotalPoints = 0;
+
+		let allAttributes = Player.ALL_ATTRIBUTES;
+
+		allAttributes.forEach(function (attribute) {
+
+			let levelInput = $('#' + me.createId('level_' + attribute));
+
+			let basePoints = parseInt($('#' + me.createId('base_points_' + attribute)).val());
+
+			let level = Player.levelCalculator(basePoints);
+
+			levelInput.val(level);
+
+			playerTotalPoints += basePoints;
+		});
+
+		let pointsPerAttributeAvg = Math.round(playerTotalPoints / allAttributes.length);
+
+		totalPlayerPointsInput.val(playerTotalPoints);
+		playerLevelInput.val(Player.levelCalculator(pointsPerAttributeAvg));
+	}
 }
 
 Box.boxes[AddPlayer.windowName] = AddPlayer;

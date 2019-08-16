@@ -20,7 +20,7 @@ class AddPlayer extends Box {
 		let inputWidthSmall = 24;
 		let inputHeight = 12;
 
-		let addPlayerDiv = $('<div>')
+		let addPlayerHolder = $('<table>')
 
 		let addPlayerTable = $("<table>");
 
@@ -256,9 +256,64 @@ class AddPlayer extends Box {
 			)
 		);
 
-		addPlayerDiv.append(addPlayerTable);
+		let addPlayerDescriptions = $('<table>').append(
+			$('<tr>').append(
+				$('<th>', { title: t('Clique no manual acima da janela para mais informações') } ).append(
+					Player.EMOJI_BACKGROUND,
+					t('Background'),
+					'<br />',
+					$("<textarea>", {
+						type: 'text',
+						id: me.createId('background'),
+						placeholder: t('História do personagem'),
+						width: 300,
+						height: 110
+					})
+				)
+			),
+			$('<tr>').append(
+				$('<th>', { title: t('Clique no manual acima da janela para mais informações') } ).append(
+					Player.EMOJI_DEFECTS,
+					t('Defeitos e imperfeições'),
+					'<br />',
+					$("<textarea>", {
+						type: 'text',
+						id: me.createId('defects'),
+						placeholder: t('Defeitos e imperfeições do personagem'),
+						width: 300,
+						height: 110
+					})
+				)
+			),
+			$('<tr>').append(
+				$('<th>', { title: t('Clique no manual acima da janela para mais informações') } ).append(
+					Player.EMOJI_MOTIVATIONS,
+					t('Motivações'),
+					'<br />',
+					$("<textarea>", {
+						type: 'text',
+						id: me.createId('motivations'),
+						placeholder: t('O que motiva esse personagem'),
+						width: 300,
+						height: 110
+					})
+				)
+			)
+		);
 
-		return addPlayerDiv;
+		addPlayerHolder.append(
+			$('<tr>').append(
+				$('<td>', { style: 'vertical-align: top' } ).append(
+					addPlayerTable
+				),
+				$('<td>', { style: 'vertical-align: top' } ).append(
+					addPlayerDescriptions
+				)
+			)
+			
+		);
+
+		return addPlayerHolder;
 	}
 
 	// Box padrao de ajuda
@@ -313,7 +368,16 @@ class AddPlayer extends Box {
 					sprintf(t('<b>%s Total de pontos</b>, isso irá mudar ao longo da aventura. Alguns equipamentos e modificadores podem alterar isso'), Player.EMOJI_TOTAL_POINTS)
 				)
 			),
-			Player.helpAttributesMeaning(isNPC)
+			Player.helpAttributesMeaning(isNPC),
+			$('<p>').append(
+				sprintf(t('<b>%s Background:</b> O jogador deve criar uma descrição para o seu personagem descrevendo seu background, da onde veio, parentes, onde morou, porque se mudou, o que gosta de fazer, o que não gosta. O mestre pode incentivar um bom background em troca de alguns pontos a mais'), Player.EMOJI_BACKGROUND)
+			),
+			$('<p>').append(
+				sprintf(t('<b>%s Defeitos e imperfeições:</b> É sugerido ao mestre negociar mais pontos para o jogador distribuir extra em troca de ter algum defeito, quanto pior o defeito, mais pontos a ser dado ao jogador para distribuir extra.'), Player.EMOJI_DEFECTS)
+			),
+			$('<p>').append(
+				sprintf(t('<b>%s Motivações:</b> É sugerido que o jogador crie algumas motivações para o seu personagem para que na aventura seja dado mais vida ao que o jogador persegue e o que o motiva a seguir, o que defende, o que gosta, o que persegue. Sempre que o jogador conseguir algo que o motiva, pode ser dado por exemplo um bônus de motivação em uma próxima rolagem de dados com a justificativa do personagem estar se sentindo mais confiante de si, ou até mesmo rolar novamente no caso de uma falha se for algo que o motivou muito. Pensar sempre em algo proporcional.'), Player.EMOJI_MOTIVATIONS)
+			),
 		];
 	}
 
@@ -348,6 +412,10 @@ class AddPlayer extends Box {
 		let playerName = $('#' + me.createId('name')).val();
 		let isNPC = $('#' + me.createId('is_npc')).val();
 
+		let playerBackground = $('#' + me.createId('background')).val();
+		let playerDefects = $('#' + me.createId('defects')).val();
+		let playerMotivations = $('#' + me.createId('motivations')).val();
+
 		isNPC = (isNPC == 'true') ? true : false;
 
 		let newPlayer = new Player({
@@ -356,7 +424,10 @@ class AddPlayer extends Box {
 			'name': playerName,
 			'isNPC': isNPC,
 			'life': 100,
-			'maxLife': 100
+			'maxLife': 100,
+			'background': playerBackground,
+			'defects': playerDefects,
+			'motivations': playerMotivations
 		});
 
 		let allAttributes = Player.ALL_ATTRIBUTES;

@@ -33,6 +33,20 @@ class PlayerExpertise extends RModel {
 		return organizedPlayerExpertises;
 	}
 
+	// retornar a expertise de um player
+	static getPlayerExpertise (playerId, expertiseId) {
+		// se nao tiver os filtros, adicionar
+		let options = {
+			'filters': {
+				'expertiseId': expertiseId
+			}
+		};
+
+		let playerExpertise = this.getAllPlayerExpertises(playerId, options);
+
+		return playerExpertise[0];
+	}
+
 	// calcular o total de pontos de uma pericia + atributo
 	static calculateTotalPoints (expertisePoints, expertiseMultiplier, attributePoints, expertiseModifier = 0) {
 

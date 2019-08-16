@@ -56,6 +56,11 @@ class VisualizePlayer extends Box {
 			}),
 		);
 
+		let listPlayerDescriptions = $('<div>', {
+			id: me.createId('list_player_descriptions_div_' + playerId),
+			display: 'inline'
+		});
+
 		playerTabs.append(
 			$('<ul>').append(
 				$('<li>', { title: t('Atributos') } ).append(
@@ -78,6 +83,13 @@ class VisualizePlayer extends Box {
 							Equipament.EMOJI_MAIN
 						)
 					)
+				),
+				$('<li>', { title: t('Descrições') } ).append(
+					$('<a>', { href: '#' + me.createId('tab-4') } ).html(
+						$('<b>').append(
+							Player.EMOJI_BACKGROUND
+						)
+					)
 				)
 			),
 			$('<div>', { id: me.createId('tab-1') } ).append(
@@ -90,18 +102,21 @@ class VisualizePlayer extends Box {
 					value: t('Salvar')
 				})
 			),
-			$('<div>', { id: me.createId('tab-2') } ).html(
-				listPlayerExpertiseTableDiv,
+			$('<div>', { id: me.createId('tab-2') } ).append(
+				listPlayerExpertiseTableDiv
+			),
+			$('<div>', { id: me.createId('tab-3') } ).append(
+				visualizePlayerEquipamentItems
+			),
+			$('<div>', { id: me.createId('tab-4') } ).append(
+				listPlayerDescriptions,
 				$("<input>", {
 					type: 'button',
-					id: me.createId('save_expertise'),
+					id: me.createId('save_2'),
 					title: t('Salvar'),
-					onclick: 'VisualizePlayer.updateExpertise("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
+					onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
 					value: t('Salvar')
 				})
-			),
-			$('<div>', { id: me.createId('tab-3') } ).html(
-				visualizePlayerEquipamentItems
 			)
 		);
 
@@ -275,6 +290,7 @@ class VisualizePlayer extends Box {
 		me.listPlayerAttributes(playerId, isNPC);
 		me.listPlayerExpertises(playerId);
 		me.listEquipaments(playerId, isNPC);
+		me.listPlayerDescriptions(playerId);
 
 		// verificar quando eh alterado o equipamento clicado
 		$("input[name='" + me.createId('equipament_type') + "']").change(function() {
@@ -652,6 +668,7 @@ class VisualizePlayer extends Box {
 							width: inputWidthSmall,
 							height: inputHeight,
 							onkeyup: 'VisualizePlayer.reCalculateExpertisePoints("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							onchange: 'VisualizePlayer.savePlayerExpertise("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
 							value: expertisePoints
 						})
 					),
@@ -673,6 +690,7 @@ class VisualizePlayer extends Box {
 							width: inputWidth,
 							height: inputHeight,
 							onkeyup: 'VisualizePlayer.reCalculateExpertisePoints("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							onchange: 'VisualizePlayer.savePlayerExpertise("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
 							value: attributePoints
 						})
 					),
@@ -683,6 +701,7 @@ class VisualizePlayer extends Box {
 							width: inputWidth,
 							height: inputHeight,
 							onkeyup: 'VisualizePlayer.reCalculateExpertisePoints("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
+							onchange: 'VisualizePlayer.savePlayerExpertise("' + boxId + '", "' + playerId + '", "' + expertiseId + '")',
 							value: 0
 						})
 					),
@@ -826,6 +845,87 @@ class VisualizePlayer extends Box {
 		playerEquipamentListDiv.append(playerEquipamentListTable);
 
 		me.filterListEquipaments (playerId, selectedEquipamentTypeId);
+	}
+
+	// listar as descrições do personagem, tal como background, motivações e defeitos
+	listPlayerDescriptions(playerId) {
+		let me = this;
+
+		let listPlayerDescriptions = $('#' + me.createId('list_player_descriptions_div_' + playerId));
+		
+		let player = Player.getPlayer(playerId);
+
+		let playerBackground = player['background'];
+		let playerDefects = player['defects'];
+		let playerMotivations = player['motivations'];
+
+		listPlayerDescriptions.append(
+			$('<table>').append(
+				$('<tr>').append(
+					$('<th>').append(
+						Player.EMOJI_BACKGROUND,
+						t('Background'),
+						'<br />',
+						$("<textarea>", {
+							type: 'text',
+							id: me.createId('background'),
+							placeholder: t('História do personagem'),
+							width: 400,
+							height: 130
+						}).html(playerBackground)
+					)
+				),
+				$('<tr>').append(
+					$('<th>').append(
+						Player.EMOJI_DEFECTS,
+						t('Defeitos e imperfeições'),
+						'<br />',
+						$("<textarea>", {
+							type: 'text',
+							id: me.createId('defects'),
+							placeholder: t('Defeitos e imperfeições do personagem'),
+							width: 400,
+							height: 130
+						}).html(playerDefects)
+					)
+				),
+				$('<tr>').append(
+					$('<th>').append(
+						Player.EMOJI_MOTIVATIONS,
+						t('Motivações'),
+						'<br />',
+						$("<textarea>", {
+							type: 'text',
+							id: me.createId('motivations'),
+							placeholder: t('O que motiva esse personagem'),
+							width: 400,
+							height: 130
+						}).html(playerMotivations)
+					)
+				)
+			)
+		);
+	}
+
+	// filtrar tabela contendo os equipamentos do jogador
+	filterListEquipaments (playerId, equipamentTypeId) {
+
+		let me = this;
+
+		let playerEquipamentListTable = $('#' + me.createId('table_equipament_list_' + playerId) + ' tr');
+
+		let filterValue = '';
+
+		if (equipamentTypeId != 0) {
+			filterValue = Equipament.EMOJI_TYPES[equipamentTypeId];
+		}
+
+		playerEquipamentListTable.filter(function() {
+			$(this).toggle(
+				// filtrar pelo tipo do equipamento + a label no titulo + remover equipamento
+				$(this).text().toLowerCase().indexOf(filterValue) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_NAME) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_REMOVE) > -1
+			)
+		});
 	}
 
 	// Box padrao de ajuda
@@ -1076,27 +1176,6 @@ class VisualizePlayer extends Box {
 		}
 	}
 
-	// filtrar tabela contendo os equipamentos do jogador
-	filterListEquipaments (playerId, equipamentTypeId) {
-
-		let me = this;
-
-		let playerEquipamentListTable = $('#' + me.createId('table_equipament_list_' + playerId) + ' tr');
-
-		let filterValue = '';
-
-		if (equipamentTypeId != 0) {
-			filterValue = Equipament.EMOJI_TYPES[equipamentTypeId];
-		}
-
-		playerEquipamentListTable.filter(function() {
-			$(this).toggle(
-				// filtrar pelo tipo do equipamento + a label no titulo + remover equipamento
-				$(this).text().toLowerCase().indexOf(filterValue) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_NAME) > -1 || $(this).text().toLowerCase().indexOf(Equipament.EMOJI_REMOVE) > -1
-			)
-		});
-	}
-
 	// abrir dialog de visualização do player
 	static visualizePlayer (playerId, isNPC, boxId = null) {
 
@@ -1191,6 +1270,33 @@ class VisualizePlayer extends Box {
 		attributeTotalPointsInput.val(totalPoints);
 	}
 
+	// salvar a pericia especifica do jogador
+	static savePlayerExpertise (boxId, playerId, expertiseId) {
+
+		let me = Box.getBox(boxId);
+
+		let expertisePoints = parseInt($('#' + me.createId('expertise_' + expertiseId)).val()) || 0;
+		let expertiseModifier = parseInt($('#' + me.createId('expertise_modifier_' + expertiseId)).val()) || 0;
+
+		let playerExpertise = PlayerExpertise.getPlayerExpertise(playerId, expertiseId);
+
+		if (! playerExpertise) {
+			playerExpertise = new PlayerExpertise({
+				'playerId': playerId,
+				'expertiseId': expertiseId,
+				'points': expertisePoints,
+				'modifier': expertiseModifier
+			});
+		} else {
+			playerExpertise['points'] = expertisePoints;
+			playerExpertise['modifier'] = modifier;
+		}
+
+		if (! playerExpertise.save() ) {
+			console.error(t('Não foi possível salvar a perícia do personagem :('));
+		}
+	}
+
 	// recalcula o total de pontos
 	static reCalculateExpertiseDiceResult (boxId, playerId, expertiseId) {
 
@@ -1227,9 +1333,17 @@ class VisualizePlayer extends Box {
 		let maxLife = parseInt($('#' + me.createId('max_life_' + playerId)).val());
 		let mana = parseInt($('#' + me.createId('mana_' + playerId)).val());
 
+		let playerBackground = $('#' + me.createId('background')).val();
+		let playerDefects = $('#' + me.createId('defects')).val();
+		let playerMotivations = $('#' + me.createId('motivations')).val();
+
 		editPlayer['life'] = life;
 		editPlayer['maxLife'] = maxLife;
 		editPlayer['mana'] = mana;
+
+		editPlayer['background'] = playerBackground;
+		editPlayer['defects'] = playerDefects;
+		editPlayer['motivations'] = playerMotivations;
 
 		allAttributes.forEach(function (attribute) {
 			let basePoints = parseInt($('#' + me.createId('base_points_' + playerId + '_' + attribute)).val());
@@ -1252,12 +1366,14 @@ class VisualizePlayer extends Box {
 		let resultSaved = editPlayer.savePlayer();
 
 		let saveButton = $('#' + me.createId('save'));
+		let saveButton2 = $('#' + me.createId('save_2'));
 
 		if (resultSaved) {
 
 			saveButton.val(t('Salvo!'));
-			saveButton.attr('disabled', 'disabled');
-			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+			saveButton.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300);
+			saveButton2.val(t('Salvo!'));
+			saveButton2.animate({ backgroundColor: "#3f3"}, 300).animate({ backgroundColor: "none"}, 300);
 
 			// atualizar listagem da dialog que originou essa dialog
 			if (originBoxId) {
@@ -1268,9 +1384,11 @@ class VisualizePlayer extends Box {
 		} else {
 
 			saveButton.val('😟'); // :(
-			saveButton.attr('disabled', 'disabled');
-			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300).removeAttr('disabled');
+			saveButton.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300);
 			saveButton.val(Equipament.EMOJI_ADD);
+			saveButton2.val('😟'); // :(
+			saveButton2.animate({ backgroundColor: "#f33"}, 300).animate({ backgroundColor: "none"}, 300);
+			saveButton2.val(Equipament.EMOJI_ADD);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 class Player extends RModel {
 
+	static get SUGESTION_POINTS_PER_ATTRIBUTE () { return 80 };
+
 	static get EMOJI_MAIN () { return '♟️' };
 	static get EMOJI_NPC_MAIN () { return '😐' };
 	static get EMOJI_LIST () { return '📝' };
@@ -16,6 +18,9 @@ class Player extends RModel {
 	static get EMOJI_LIFE () { return '❤️' };
 	static get EMOJI_MAXLIFE () { return '💗' };
 	static get EMOJI_MANA () { return '✨' };
+	static get EMOJI_BACKGROUND () { return '📜' };
+	static get EMOJI_DEFECTS () { return '👎' };
+	static get EMOJI_MOTIVATIONS () { return '👍' };
 
 	static get EMOJI_GENDER () { return '⚤' };
 	static get EMOJI_GENDER_MALE () { return '👨' };
@@ -49,6 +54,8 @@ class Player extends RModel {
 	static get EMOJI_IS_NOT_NPC () { return '♟️' };
 
 	static get EMOJI_SAVE () { return '💾' };
+
+	static get EMOJI_DISTRIBUTE () { return '📊' };
 
 	static get EMOJI_GENDERS () {
 		return {

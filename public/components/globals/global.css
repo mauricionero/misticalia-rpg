@@ -2,6 +2,10 @@ body {
   background-color: #dde;
 }
 
+h3 {
+  font-size: 1.30em;
+}
+
 input:-moz-read-only { /* For Firefox */
   background-color: #ccc;
   border: 1px solid #a8a8a8;

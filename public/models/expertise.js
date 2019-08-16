@@ -1,15 +1,18 @@
 class Expertise extends RModel {
 
-	static get EMOJI_MAIN () { return '🏅' };
-	static get EMOJI_LIST () { return '🏅' };
-	static get EMOJI_LIST_GLOBAL () { return '🌎🏅' };
-	static get EMOJI_VISUALIZE () { return '👁️' };
+	static get EMOJI_MAIN () { return '🏅' }
+	static get EMOJI_LIST () { return '🏅' }
+	static get EMOJI_LIST_GLOBAL () { return '🌎🏅' }
+	static get EMOJI_VISUALIZE () { return '👁️' }
 
-	static get EMOJI_ATTRIBUTE () { return Player.EMOJI_ATTRIBUTE };
-	static get EMOJI_NAME () { return '🏷' };
-	static get EMOJI_MULTIPLIER () { return '❌' };
-	static get EMOJI_DESCRIPTION () { return '📄' };
-	static get EMOJI_RULE () { return '📃' };
+	static get EMOJI_ATTRIBUTE () { return Player.EMOJI_ATTRIBUTE }
+	static get EMOJI_NAME () { return '🏷' }
+	static get EMOJI_MULTIPLIER () { return '❌' }
+	static get EMOJI_DESCRIPTION () { return '📄' }
+	static get EMOJI_RULE () { return '📃' }
+
+	static get EMOJI_TEMPORARY_MODIFIER () { return '⌛' }
+	static get EMOJI_TOTAL_POINTS () { return '💯' }
 
 	// traduções dos campos
 	static get fieldTranslations () {

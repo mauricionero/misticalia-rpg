@@ -91,13 +91,23 @@ class ListBackgrounds extends Box {
 
 		// titulo das colunas na tabela
 		listBackgroundDiv.append(
-			listBackgroundTable.append(
+			$('<table>').append(
 				$('<tr>').append(
-					$("<th>", { title: t('Antecedente') }).append(
-						Background.EMOJI_NAME
-					),
+					$('<td>', { class: 'background_list' } ).append(
+						listBackgroundTable.append(
+							$('<tr>').append(
+								$("<th>", { title: t('Antecedente') }).append(
+									Background.EMOJI_NAME
+								),
 
-					viewEdit
+								viewEdit
+							)
+						)
+					),
+					$('<td>', {
+						class: 'expertise_details',
+						id: me.createId('background_details')
+					})
 				)
 			)
 		);
@@ -131,6 +141,8 @@ class ListBackgrounds extends Box {
 					onclick: 'ListBackgrounds.visualizeBackground("' + boxId + '", "' + backgroundId + '")'
 				}).append(
 					$('<td>', { style: 'font-weight: normal' } ).append(
+						Background.EMOJI_MAIN,
+						' ',
 						backgroundName,
 						$("<input>", {
 							type: 'hidden',
@@ -186,37 +198,25 @@ class ListBackgrounds extends Box {
 
 
 	// visualizar informações detalhadas da pericia
-	static visualizeBackground (boxId, attributeId, BackgroundId) {
+	static visualizeBackground (boxId, backgroundId) {
 
 		let me = Box.getBox(boxId);
 
-		let Background = Background.getBackground(BackgroundId);
+		let background = Background.getBackground(backgroundId);
 
-		let BackgroundDetailsTd = $('#' + me.createId('Background_details_' + attributeId));
+		let backgroundDetailsTd = $('#' + me.createId('background_details'));
 
-		BackgroundDetailsTd.html('');
+		backgroundDetailsTd.html('');
 
-		BackgroundDetailsTd.append(
+		backgroundDetailsTd.append(
 			$('<h3>').append(
-				Background['name']
+				background['name']
 			),
 			$('<p>').append(
 				$('<b>').append(
 					t('Descrição') + ': '
 				),
-				Background['description']
-			),
-			$('<p>').append(
-				$('<b>').append(
-					t('Regras') + ': '
-				),
-				Background['rule']
-			),
-			$('<p>').append(
-				$('<b>').append(
-					t('Multiplicador') + ': '
-				),
-				Background['multiplier']
+				background['description']
 			)
 		);
 	}

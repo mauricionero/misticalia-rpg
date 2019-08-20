@@ -65,6 +65,18 @@ class Menu extends RModel {
 						class: 'open_box',
 						items: [
 						]
+					},
+					{
+						id: 29,
+						name: t('Ver Antecedentes'),
+						emoji: Background.EMOJI_LIST_GLOBAL,
+						action_id: 'list_backgrounds',
+						options: { filterAdventureId: false, isGlobal: true, windowId: 'list_global_backgrounds' },
+						single_ton: true,
+						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
+						class: 'open_box',
+						items: [
+						]
 					}
 				]
 			},

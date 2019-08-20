@@ -61,6 +61,11 @@ class VisualizePlayer extends Box {
 			display: 'inline'
 		});
 
+		let listPlayerBackgrounds = $('<div>', {
+			id: me.createId('list_player_backgrounds_div_' + playerId),
+			display: 'inline'
+		});
+
 		playerTabs.append(
 			$('<ul>').append(
 				$('<li>', { title: t('Atributos') } ).append(
@@ -86,6 +91,13 @@ class VisualizePlayer extends Box {
 				),
 				$('<li>', { title: t('Descrições') } ).append(
 					$('<a>', { href: '#' + me.createId('tab-4') } ).html(
+						$('<b>').append(
+							Player.EMOJI_DESCRIPTIONS
+						)
+					)
+				),
+				$('<li>', { title: t('Antecedentes') } ).append(
+					$('<a>', { href: '#' + me.createId('tab-5') } ).html(
 						$('<b>').append(
 							Player.EMOJI_BACKGROUND
 						)
@@ -117,6 +129,9 @@ class VisualizePlayer extends Box {
 					onclick: 'VisualizePlayer.updatePlayer("' + playerId + '", "' + boxId + '", "' + originBoxId + '")',
 					value: t('Salvar')
 				})
+			),
+			$('<div>', { id: me.createId('tab-5') } ).append(
+				listPlayerBackgrounds
 			)
 		);
 
@@ -291,6 +306,7 @@ class VisualizePlayer extends Box {
 		me.listPlayerExpertises(playerId);
 		me.listEquipaments(playerId, isNPC);
 		me.listPlayerDescriptions(playerId);
+		me.listPlayerBackgrounds(playerId);
 
 		// verificar quando eh alterado o equipamento clicado
 		$("input[name='" + me.createId('equipament_type') + "']").change(function() {
@@ -907,6 +923,148 @@ class VisualizePlayer extends Box {
 		);
 	}
 
+	// listar os antecedentes do personagem
+	listPlayerBackgrounds(playerId) {
+		let me = this;
+
+		let listPlayerBackgrounds = $('#' + me.createId('list_player_backgrounds_div_' + playerId));
+
+		listPlayerBackgrounds.html('');
+		
+		let player = Player.getPlayer(playerId);
+
+		let inputWidth = VisualizePlayer.inputWidth;
+		let inputWidthSmall = VisualizePlayer.inputWidthSmall;
+		let inputHeight = VisualizePlayer.inputHeight;
+
+		// ordenar por atributo e nome
+		let optionFilter = {
+			'filters': {},
+			'order': {
+				'attributeId': 'ASC',
+				'name': 'ASC'
+			}
+		}
+		
+		let allBackgrounds = Background.getAllBackgrounds(optionFilter);
+
+		let organizedPlayerBackgrounds = PlayerBackground.getPlayerBackgroundsIndex(playerId);
+
+		let listBackgroundTable = $('<table>');
+
+		listPlayerBackgrounds.append(
+			listBackgroundTable.append(
+				$('<tr>').append(
+					$('<th>', { title: t('Antecedente') }).append(
+						Background.EMOJI_MAIN
+					),
+					$('<th>', { title: t('Pontos') }).append(
+						PlayerBackground.EMOJI_POINTS
+					),
+					$('<th>', { title: t('Modificador temporario') }).append(
+						Background.EMOJI_TEMPORARY_MODIFIER
+					),
+					$('<th>', { title: t('Total de pontos nesse antecedente') }).append(
+						Background.EMOJI_TOTAL_POINTS
+					),
+					$('<th>', { title: t('Rolagem de dados') }).append(
+						Player.EMOJI_ROLL_DICE
+					),
+					$('<th>', { title: t('Dificuldade') }).append(
+						Player.EMOJI_DIFFICULTY
+					),
+					$('<th>', { title: t('Resultado rolagem') }).append(
+						Player.EMOJI_RESULT
+					)
+				)
+			)
+		);
+
+		// preencher as tabelas de pericias criadas anteriormente dentro das abas
+		allBackgrounds.forEach(function (background) {
+
+			let backgroundId = background['id'];
+
+			if (! backgroundId) {
+				return;
+			}
+
+			let backgroundName = background['name'];
+
+			let backgroundPoints = (organizedPlayerBackgrounds[backgroundId]) ? organizedPlayerBackgrounds[backgroundId]['points'] : 0;
+
+			listBackgroundTable.append(
+				$("<tr>").append(
+					$('<td>').append(
+						backgroundName
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('background_' + backgroundId),
+							width: inputWidthSmall,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateBackgroundPoints("' + boxId + '", "' + playerId + '", "' + backgroundId + '")',
+							onchange: 'VisualizePlayer.savePlayerBackground("' + boxId + '", "' + playerId + '", "' + backgroundId + '")',
+							value: backgroundPoints
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('background_modifier_' + backgroundId),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateBackgroundPoints("' + boxId + '", "' + playerId + '", "' + backgroundId + '")',
+							onchange: 'VisualizePlayer.savePlayerBackground("' + boxId + '", "' + playerId + '", "' + backgroundId + '")',
+							value: 0
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('background_total_points_' + backgroundId),
+							width: inputWidth,
+							height: inputHeight,
+							value: backgroundPoints
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('background_dice_' + backgroundId),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateBackgroundDiceResult("' + boxId + '", "' + playerId + '", "' + backgroundId + '")',
+							placeholder: Dice.EMOJI_DICE
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							id: me.createId('background_difficulty_' + backgroundId),
+							width: inputWidth,
+							height: inputHeight,
+							onkeyup: 'VisualizePlayer.reCalculateBackgroundDiceResult("' + boxId + '", "' + playerId + '", "' + backgroundId + '")',
+							value: 0
+						})
+					),
+					$('<td>').append(
+						$("<input>", {
+							type: 'text',
+							disabled: 'disabled',
+							class: 'bold',
+							id: me.createId('background_result_' + backgroundId),
+							width: inputWidth,
+							height: inputHeight,
+							value: 0
+						})
+					)
+				)
+			)
+		});
+	}
+
 	// filtrar tabela contendo os equipamentos do jogador
 	filterListEquipaments (playerId, equipamentTypeId) {
 
@@ -1263,11 +1421,41 @@ class VisualizePlayer extends Box {
 		let attributePoints = $('#' + me.createId('expertise_attribute_points_' + expertiseId)).val() || 0;
 		let expertiseModifier = $('#' + me.createId('expertise_modifier_' + expertiseId)).val() || 0;
 
-		let attributeTotalPointsInput = $('#' + me.createId('expertise_total_points_' + expertiseId));
+		let expertiseTotalPointsInput = $('#' + me.createId('expertise_total_points_' + expertiseId));
 
 		let totalPoints = PlayerExpertise.calculateTotalPoints(expertisePoints, expertiseMultiplier, attributePoints, expertiseModifier);
 
-		attributeTotalPointsInput.val(totalPoints);
+		expertiseTotalPointsInput.val(totalPoints);
+	}
+
+	// recalcula o total de pontos do antecedente
+	static reCalculateBackgroundDiceResult (boxId, playerId, backgroundId) {
+
+		let me = Box.getBox(boxId);
+
+		let backgroundPoints = $('#' + me.createId('background_' + backgroundId)).val() || 0;
+		let backgroundModifier = $('#' + me.createId('background_modifier_' + backgroundId)).val() || 0;
+
+		let backgroundTotalPointsInput = $('#' + me.createId('background_total_points_' + backgroundId));
+
+		let totalPoints = PlayerBackground.calculateTotalPoints(backgroundPoints, backgroundModifier);
+
+		backgroundTotalPointsInput.val(totalPoints);
+	}
+
+	// recalcula o total de pontos do atencedente
+	static reCalculateBackgroundPoints (boxId, playerId, backgroundId) {
+
+		let me = Box.getBox(boxId);
+
+		let backgroundPoints = $('#' + me.createId('background_' + backgroundId)).val() || 0;
+		let backgroundModifier = $('#' + me.createId('background_modifier_' + backgroundId)).val() || 0;
+
+		let backgroundTotalPointsInput = $('#' + me.createId('expertise_total_points_' + expertiseId));
+
+		let totalPoints = PlayerBackground.calculateTotalPoints(backgroundPoints, backgroundModifier);
+
+		backgroundTotalPointsInput.val(totalPoints);
 	}
 
 	// salvar a pericia especifica do jogador
@@ -1294,6 +1482,34 @@ class VisualizePlayer extends Box {
 		}
 
 		if (! playerExpertise.save() ) {
+			console.error(t('Não foi possível salvar a perícia do personagem :('));
+		}
+	}
+
+	// salvar o antecedente especifico do jogador
+	static savePlayerBackground (boxId, playerId, backgroundId) {
+
+		let me = Box.getBox(boxId);
+
+		let backgroundPoints = parseInt($('#' + me.createId('background_' + backgroundId)).val()) || 0;
+		let backgroundModifier = parseInt($('#' + me.createId('background_modifier_' + backgroundId)).val()) || 0;
+
+		let playerBackground = PlayerBackground.getPlayerBackground(playerId, backgroundId);
+
+		// se nao existe ainda cadastrado
+		if (! playerBackground) {
+			playerBackground = new PlayerBackground({
+				'playerId': playerId,
+				'backgroundId': backgroundId,
+				'points': backgroundPoints,
+				'modifier': backgroundModifier
+			});
+		} else {
+			playerBackground['points'] = backgroundPoints;
+			playerBackground['modifier'] = backgroundModifier;
+		}
+
+		if (! playerBackground.save() ) {
 			console.error(t('Não foi possível salvar a perícia do personagem :('));
 		}
 	}

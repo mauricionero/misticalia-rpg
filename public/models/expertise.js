@@ -347,6 +347,16 @@ class Expertise extends RModel {
 				name: t('Auto ajuda'),
 				description: t('Em situações desanimadoras, consegue manter mais a calma e até se animar a continuar tentando algo'),
 				rule: t('Diminui as penalidades de re-teste')
+			},
+
+			{
+				id: 38,
+				isGlobal: true,
+				attributeId: Modifier.CHARISMA,
+				multiplier: 0.2,
+				name: t('Liderança'),
+				description: t('Os outros sentem em você um senso de liderança'),
+				rule: t('')
 			}
 		];
 	}

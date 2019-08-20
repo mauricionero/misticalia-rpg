@@ -1280,6 +1280,7 @@ class VisualizePlayer extends Box {
 
 		let playerExpertise = PlayerExpertise.getPlayerExpertise(playerId, expertiseId);
 
+		// se nao existe ainda cadastrado
 		if (! playerExpertise) {
 			playerExpertise = new PlayerExpertise({
 				'playerId': playerId,
@@ -1289,7 +1290,7 @@ class VisualizePlayer extends Box {
 			});
 		} else {
 			playerExpertise['points'] = expertisePoints;
-			playerExpertise['modifier'] = modifier;
+			playerExpertise['modifier'] = expertiseModifier;
 		}
 
 		if (! playerExpertise.save() ) {

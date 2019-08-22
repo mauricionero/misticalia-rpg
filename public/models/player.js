@@ -18,6 +18,8 @@ class Player extends RModel {
 	static get EMOJI_LIFE () { return '❤️' };
 	static get EMOJI_MAXLIFE () { return '💗' };
 	static get EMOJI_MANA () { return '✨' };
+
+	static get EMOJI_DESCRIPTIONS () { return '📓' };
 	static get EMOJI_BACKGROUND () { return '📜' };
 	static get EMOJI_DEFECTS () { return '👎' };
 	static get EMOJI_MOTIVATIONS () { return '👍' };

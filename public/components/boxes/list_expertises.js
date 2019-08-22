@@ -8,7 +8,7 @@ class ListExpertises extends Box {
 		
 		let boxId = me.boxId;
 
-		let isGlobal = options['isGlobal'];
+		let isGlobal = options['isGlobal'] || false;
 		this.isGlobal = isGlobal;
 
 		// ordenar por atributo e nome
@@ -201,7 +201,7 @@ class ListExpertises extends Box {
 						})
 					),
 					$('<td>', { style: 'font-weight: normal' } ).append(
-						expertise['name'],
+						expertiseName,
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('name_' + expertiseId),
@@ -210,12 +210,12 @@ class ListExpertises extends Box {
 						})
 					),
 					$('<td>', { style: 'font-weight: normal' } ).append(
-						expertise['multiplier'],
+						expertiseMultiplier,
 						$("<input>", {
 							type: 'hidden',
 							id: me.createId('multiplier_' + expertiseId),
 							disabled: 'disabled',
-							value: expertiseName
+							value: expertiseMultiplier
 						})
 					),
 

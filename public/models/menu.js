@@ -65,6 +65,18 @@ class Menu extends RModel {
 						class: 'open_box',
 						items: [
 						]
+					},
+					{
+						id: 29,
+						name: t('Ver Antecedentes'),
+						emoji: Background.EMOJI_LIST_GLOBAL,
+						action_id: 'list_backgrounds',
+						options: { filterAdventureId: false, isGlobal: true, windowId: 'list_global_backgrounds' },
+						single_ton: true,
+						roles: [ Adventure.ROLE_UNDEFINED, Adventure.ROLE_PLAYER, Adventure.ROLE_MASTER ],
+						class: 'open_box',
+						items: [
+						]
 					}
 				]
 			},
@@ -167,6 +179,39 @@ class Menu extends RModel {
 								emoji: Expertise.EMOJI_LIST,
 								action_id: 'list_expertises',
 								options: { filterAdventureId: true, windowId: 'list_expertises_adventure' },
+								single_ton: true,
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							}
+						]
+					},
+					{
+						id: 30,
+						name: t('Antecedentes'),
+						emoji: Background.EMOJI_MAIN,
+						action_id: '',
+						single_ton: true,
+						roles: [ Adventure.ROLE_MASTER ],
+						class: '',
+						items: [
+							{
+								id: 31,
+								name: t('Antecedente'),
+								emoji: '➕',
+								action_id: 'visualize_background',
+								roles: [ Adventure.ROLE_MASTER ],
+								class: 'open_box',
+								items: [
+								]
+							},
+							{
+								id: 32,
+								name: t('Antecedentes da aventura'),
+								emoji: Background.EMOJI_LIST,
+								action_id: 'list_backgrounds',
+								options: { filterAdventureId: true, windowId: 'list_backgrounds_adventure' },
 								single_ton: true,
 								roles: [ Adventure.ROLE_MASTER ],
 								class: 'open_box',

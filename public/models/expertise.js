@@ -363,7 +363,7 @@ class Expertise extends RModel {
 
 	// retornar todas as expertises
 	static getAllExpertises (options = {}) {
-		let expertises = this.getAll(options); 
+		let expertises = this.getAll(options);
 
 		return expertises;
 	}
@@ -373,6 +373,11 @@ class Expertise extends RModel {
 		let options = { 'filters': { id: expertiseId } };
 
 		let expertises = this.getAll(options);
+
+		// se nao achou, procurar nos estáticos
+		if (expertises.length == 0) {
+			expertises = Expertise.getAllStatic(options);
+		}
 
 		return expertises[0];
 	}

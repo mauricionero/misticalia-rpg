@@ -75,6 +75,11 @@ class Background extends RModel {
 
 		let backgrounds = this.getAll(options);
 
+		// se nao achou, procurar nos estáticos
+		if (backgrounds.length == 0) {
+			backgrounds = Background.getAllStatic(options);
+		}
+
 		return backgrounds[0];
 	}
 

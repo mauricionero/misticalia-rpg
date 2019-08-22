@@ -8,7 +8,7 @@ class ListExpertises extends Box {
 		
 		let boxId = me.boxId;
 
-		let isGlobal = options['isGlobal'];
+		let isGlobal = options['isGlobal'] || false;
 		this.isGlobal = isGlobal;
 
 		// ordenar por atributo e nome

@@ -8,7 +8,7 @@ class ListBackgrounds extends Box {
 		
 		let boxId = me.boxId;
 
-		let isGlobal = options['isGlobal'];
+		let isGlobal = options['isGlobal'] || false;
 		this.isGlobal = isGlobal;
 
 		// ordenar por nome
@@ -164,33 +164,23 @@ class ListBackgrounds extends Box {
 
 		return [
 			$('<h3>').append(
-				t('Listar perícias')
+				t('Listar antecedentes')
 			),
 			$('<p>').append(
-				t('As perícias estão divididas em atríbutos nas abas. Deixe o mouse em cima para ver os nomes de cada atributo.')
-			),
-			Player.helpAttributesMeaning(),
-			$('<p>').append(
-				t('Para ver os detalhes de uma perícia, clique no nome da perícia')
+				t('Para ver os detalhes de uma antecedente, clique no nome do antecedente')
 			),
 			$('<p>').append(
-				sprintf(t('Para editar uma perícia, clique em %s'), Background.EMOJI_VISUALIZE)
+				sprintf(t('Para editar uma antecedente, clique em %s'), Background.EMOJI_VISUALIZE)
 			),
 			$('<p>').append(
-				t('A primeira vez que se entra na listagem das perícias da aventura, se não houver nenhuma perícia cadastrada, o sistema roda um setup e insere todas as perícias globais para facilitar. As perícias globais são sugestões de perícias pré cadastradas. Essas perícias globais podem ser visualizadas no menu <b>Acessórios > Listar Perícias</b>')
+				t('A primeira vez que se entra na listagem das antecedentes da aventura, se não houver nenhum antecedente cadastrado, o sistema roda um setup e insere todos os antecedentes globais para facilitar. Os antecedentes globais são sugestões de antecedentes pré cadastrados. Esses antecedentes globais podem ser visualizados no menu <b>Acessórios > Listar Antecedentes</b>')
 			),
 			$('<p>').append(
 				'<b>' + t('Legendas') + ':</b>'
 			),
 			$('<ul>').append(
 				$('<li>').append(
-					sprintf(t('<b>%s Atributo:</b> A qual atributo essa perícia pertence'), Background.EMOJI_ATTRIBUTE)
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s Nome:</b> Nome dessa perícia'), Background.EMOJI_NAME)
-				),
-				$('<li>').append(
-					sprintf(t('<b>%s Multiplicador:</b> O quanto irá multiplicar no atributo ao usar essa perícia. Quanto mais específico, maior o multiplicador. Normalmente entre 0,1 e 0,5'), Background.EMOJI_MULTIPLIER)
+					sprintf(t('<b>%s Nome:</b> Nome dessa antecedente'), Background.EMOJI_NAME)
 				)
 			)
 		];

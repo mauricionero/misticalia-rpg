@@ -95,7 +95,7 @@ class RModel {
 	save () {
 		let storeName = this.constructor.name;
 
-		let randomId = Date.now() + Math.floor(Math.random() * 100);
+		let randomId = parseInt((Date.now() + '' + Math.floor(Math.random() * 100)));
 
 		this['currentAdventureId'] = RModel.getSingleAttribute('currentAdventureId');
 
@@ -108,7 +108,7 @@ class RModel {
 
 			// se nao tiver id: criar um para depois adicionar o novo item
 			if (! this['id']) {
-				this['id'] = randomId; // criar um id temporario local enquanto nao salva no servidor
+				this['id'] = randomId; // criar um id temporario local
 
 			// se ja tiver id, procurar na store local e apagar para depois re-adicionar o item
 			} else {

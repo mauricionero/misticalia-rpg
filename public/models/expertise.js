@@ -357,7 +357,15 @@ class Expertise extends RModel {
 				name: t('Liderança'),
 				description: t('Os outros sentem em você um senso de liderança'),
 				rule: t('')
-			}
+			},
+			{
+				id: 39,
+				isGlobal: true,
+				attributeId: Modifier.DEXTERY,
+				multiplier: 0.2,
+				name: t('Briga'),
+				description: t('Habilidade de se sair bem em uma briga.')
+			},
 		];
 	}
 
